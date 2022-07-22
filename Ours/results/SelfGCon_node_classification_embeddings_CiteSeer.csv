@@ -1,0 +1,2 @@
+model,dataset,silhouette,davies,c-h
+SelfGCon,CiteSeer,0.04061657,4.834478602747919,36.246165271597725

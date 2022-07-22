@@ -1,0 +1,2 @@
+model,dataset,silhouette,davies,c-h
+CCA-SSG,Cora,0.054869104,2.343706457114712,52.198342453569545

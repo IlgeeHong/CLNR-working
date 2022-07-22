@@ -1,0 +1,2 @@
+model,dataset,silhouette,davies,c-h
+MVGRL,Cora,0.007950182,2.9553209457867555,37.62467674898718

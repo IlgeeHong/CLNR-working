@@ -1,0 +1,2 @@
+model,dataset,silhouette,davies,c-h
+DGI,Cora,0.027665589,3.509480046099899,30.875952767614926

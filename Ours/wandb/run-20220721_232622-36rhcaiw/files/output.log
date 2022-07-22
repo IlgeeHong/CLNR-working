@@ -1,0 +1,12 @@
+[34m[1mwandb[39m[22m: [33mWARNING[39m Calling wandb.login() after wandb.init() has no effect.
+[34m[1mwandb[39m[22m: Agent Starting Run: w3gq30rn with config:
+[34m[1mwandb[39m[22m: 	channels: 128
+[34m[1mwandb[39m[22m: 	dre: 0
+[34m[1mwandb[39m[22m: 	drf: 0
+[34m[1mwandb[39m[22m: 	epochs: 20
+[34m[1mwandb[39m[22m: 	lr1: 0.0005
+[34m[1mwandb[39m[22m: 	lr2: 0.001
+[34m[1mwandb[39m[22m: 	n_layers: 1
+[34m[1mwandb[39m[22m: 	tau: 0.1
+[34m[1mwandb[39m[22m: 	wd1: 0.0005
+[34m[1mwandb[39m[22m: 	wd2: 0.0001

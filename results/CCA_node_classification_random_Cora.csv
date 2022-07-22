@@ -1,0 +1,2 @@
+model,dataset,non-linearity,normalize,lr,channels,epoch,drop_edge_rate,drop_feat_rate,accuracy
+CCA,Cora,True,True,0.001,512,50,0.1,0.4,tensor(0.8220)

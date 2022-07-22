@@ -1,0 +1,3 @@
+2022-07-21 22:42:32,889 INFO    MainThread:43508 [internal.py:wandb_internal():90] W&B internal server running at pid: 43508, started at: 2022-07-21 22:42:32.889184
+2022-07-21 22:42:32,891 INFO    WriterThread:43508 [datastore.py:open_for_write():75] open: wandb/run-20220721_224232-1v0wdxq9/run-1v0wdxq9.wandb
+2022-07-21 22:42:32,892 DEBUG   SenderThread:43508 [sender.py:send():236] send: header

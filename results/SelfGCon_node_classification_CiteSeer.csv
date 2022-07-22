@@ -1,0 +1,2 @@
+model,dataset,epochs,layers,tau,lr1,lr2,wd2,channels,drop_edge_rate,drop_feat_rate,accuracy
+GRACE,CiteSeer,20,1,0.5,0.001,0.01,0.01,512,0.3,0.3,tensor(0.7160)

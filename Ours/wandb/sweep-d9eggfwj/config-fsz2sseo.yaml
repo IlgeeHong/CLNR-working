@@ -1,0 +1,22 @@
+wandb_version: 1
+
+channels:
+  value: 128
+dre:
+  value: 0
+drf:
+  value: 0
+epochs:
+  value: 20
+lr1:
+  value: 0.0005
+lr2:
+  value: 0.001
+n_layers:
+  value: 1
+tau:
+  value: 0.1
+wd1:
+  value: 0.0005
+wd2:
+  value: 0.001

@@ -1,0 +1,2 @@
+model,dataset,non-linearity,normalize,lr,channels,epoch,drop_edge_rate,drop_feat_rate,accuracy
+GRACE,PubMed,True,True,0.001,512,100,0.4,0.4,tensor(0.8160)

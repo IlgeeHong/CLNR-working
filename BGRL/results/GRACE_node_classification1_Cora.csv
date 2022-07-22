@@ -1,0 +1,2 @@
+model,dataset,epochs,layers,lr1,lr2,wd1,wd2,channels,proj_dim,tau,der1,der2,dfr1,dfr2,accuracy
+GRACE,Cora,200,2,0.0005,0.01,1e-05,0.01,128,128,0.4,0.2,0.4,0.3,0.4,tensor(0.7670)

@@ -1,0 +1,22 @@
+> /Users/ilgeehong/Desktop/SemGCon/Ours/hyperparameter.py(166)<module>()
+-> wandb.agent(sweep_id, main)
+
+
+(Pdb) wandb.config
+{'method': 'grid', 'metric': {'goal': 'minimize', 'name': 'best_val_loss'}, 'parameters': {'channels': {'values': [128, 256, 512, 1024]}, 'dre': {'values': [0, 0.1, 0.2, 0.3, 0.4, 0.5]}, 'drf': {'values': [0, 0.1, 0.2, 0.3, 0.4, 0.5]}, 'epochs': {'values': [20, 50, 100, 150, 200]}, 'lr1': {'values': [0.0005, 0.001, 0.005, 0.01]}, 'lr2': {'values': [0.001, 0.005, 0.01]}, 'n_layers': {'values': [1, 2, 3]}, 'tau': {'values': [0.1, 0.3, 0.5, 0.7, 0.9]}, 'wd1': {'values': [0.0005, 0.001, 0.005, 0.01]}, 'wd2': {'values': [0.0001, 0.001, 0.01]}}}
+
+
+(Pdb) main(wandb.config)
+*** KeyError: 'n_experiments'
+(Pdb)
+Traceback (most recent call last):
+  File "/Users/ilgeehong/Desktop/SemGCon/Ours/hyperparameter.py", line 166, in <module>
+    wandb.agent(sweep_id, main)
+  File "/Users/ilgeehong/Desktop/SemGCon/Ours/hyperparameter.py", line 166, in <module>
+    wandb.agent(sweep_id, main)
+  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/bdb.py", line 88, in trace_dispatch
+    return self.dispatch_line(frame)
+  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/bdb.py", line 113, in dispatch_line
+    if self.quitting: raise BdbQuit
+
+(Pdb) exit

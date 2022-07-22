@@ -1,0 +1,2 @@
+model,dataset,silhouette,davies,c-h
+GRACE,Cora,0.058157053,2.2531688170641937,60.244310688866456

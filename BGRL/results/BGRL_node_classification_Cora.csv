@@ -1,0 +1,2 @@
+model,dataset,non-linearity,normalize,lr,hid_dim,epoch,drf1,dre1,accuracy
+BGRL,Cora,True,True,0.001,512,50,0.2,0.4,tensor(0.6570)

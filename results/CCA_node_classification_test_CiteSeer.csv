@@ -1,0 +1,2 @@
+model,dataset,non-linearity,normalize,lr,channels,epoch,drop_edge_rate,drop_feat_rate,accuracy
+CCA,CiteSeer,True,True,0.001,512,100,0.2,0.2,tensor(0.7130)

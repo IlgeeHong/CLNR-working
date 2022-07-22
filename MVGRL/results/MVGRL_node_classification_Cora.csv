@@ -1,0 +1,2 @@
+model,dataset,epochs,layers,lr1,lr2,wd2,channels,patience,accuracy
+MVGRL,Cora,500,1,0.001,0.01,0.0,512,20,tensor(0.8100)

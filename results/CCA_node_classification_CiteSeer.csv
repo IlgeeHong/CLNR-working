@@ -1,0 +1,11 @@
+model,dataset,non-linearity,normalize,lr,channels,epoch,drop_edge_rate,drop_feat_rate,accuracy
+CCA,CiteSeer,True,True,0.001,512,20,0.0,0.4,tensor(0.7190)
+CCA,CiteSeer,True,True,0.001,512,20,0.0,0.4,tensor(0.7080)
+CCA,CiteSeer,True,True,0.001,512,20,0.0,0.4,tensor(0.6870)
+CCA,CiteSeer,True,True,0.001,512,20,0.0,0.4,tensor(0.7190)
+CCA,CiteSeer,True,True,0.001,512,20,0.0,0.4,tensor(0.7020)
+CCA,CiteSeer,True,True,0.001,512,20,0.0,0.4,tensor(0.7090)
+CCA,CiteSeer,True,True,0.001,512,20,0.0,0.4,tensor(0.7020)
+CCA,CiteSeer,True,True,0.001,512,20,0.0,0.4,tensor(0.7030)
+CCA,CiteSeer,True,True,0.001,512,20,0.0,0.4,tensor(0.6940)
+CCA,CiteSeer,True,True,0.001,512,20,0.0,0.4,tensor(0.7190)

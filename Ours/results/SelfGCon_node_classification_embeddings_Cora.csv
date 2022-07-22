@@ -1,0 +1,2 @@
+model,dataset,silhouette,davies,c-h
+SelfGCon,Cora,0.11900058,2.032440176785725,77.83504451671946

@@ -1,0 +1,56 @@
+2022-07-21 23:28:46,449 INFO    MainThread:43927 [internal.py:wandb_internal():90] W&B internal server running at pid: 43927, started at: 2022-07-21 23:28:46.448801
+2022-07-21 23:28:46,450 INFO    WriterThread:43927 [datastore.py:open_for_write():75] open: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/run-32ogdrkr.wandb
+2022-07-21 23:28:46,451 DEBUG   SenderThread:43927 [sender.py:send():236] send: header
+2022-07-21 23:28:46,451 DEBUG   SenderThread:43927 [sender.py:send():236] send: run
+2022-07-21 23:28:46,575 DEBUG   HandlerThread:43927 [handler.py:handle_request():140] handle_request: check_version
+2022-07-21 23:28:46,604 INFO    SenderThread:43927 [dir_watcher.py:__init__():216] watching files in: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files
+2022-07-21 23:28:46,604 INFO    SenderThread:43927 [sender.py:_start_run_threads():815] run started: 32ogdrkr with start time 1658464125
+2022-07-21 23:28:46,604 DEBUG   SenderThread:43927 [sender.py:send():236] send: summary
+2022-07-21 23:28:46,605 INFO    SenderThread:43927 [sender.py:_save_file():952] saving file wandb-summary.json with policy end
+2022-07-21 23:28:46,605 DEBUG   SenderThread:43927 [sender.py:send_request():250] send_request: check_version
+2022-07-21 23:28:46,665 DEBUG   HandlerThread:43927 [handler.py:handle_request():140] handle_request: run_start
+2022-07-21 23:28:46,666 DEBUG   HandlerThread:43927 [meta.py:__init__():35] meta init
+2022-07-21 23:28:46,666 DEBUG   HandlerThread:43927 [meta.py:__init__():49] meta init done
+2022-07-21 23:28:46,666 DEBUG   HandlerThread:43927 [meta.py:probe():209] probe
+2022-07-21 23:28:46,672 DEBUG   HandlerThread:43927 [git.py:repo():29] git repository is invalid
+2022-07-21 23:28:46,674 DEBUG   HandlerThread:43927 [meta.py:_save_pip():53] save pip
+2022-07-21 23:28:46,675 DEBUG   HandlerThread:43927 [meta.py:_save_pip():67] save pip done
+2022-07-21 23:28:46,675 DEBUG   HandlerThread:43927 [meta.py:probe():247] probe done
+2022-07-21 23:28:46,679 DEBUG   SenderThread:43927 [sender.py:send():236] send: files
+2022-07-21 23:28:46,679 INFO    SenderThread:43927 [sender.py:_save_file():952] saving file wandb-metadata.json with policy now
+2022-07-21 23:28:46,686 DEBUG   HandlerThread:43927 [handler.py:handle_request():140] handle_request: stop_status
+2022-07-21 23:28:46,686 DEBUG   SenderThread:43927 [sender.py:send_request():250] send_request: stop_status
+2022-07-21 23:28:46,737 DEBUG   SenderThread:43927 [sender.py:send():236] send: telemetry
+2022-07-21 23:28:46,990 INFO    Thread-11 :43927 [upload_job.py:push():138] Uploaded file /var/folders/_y/h0dptjbj5d94l_5zw2wf_zpm0000gn/T/tmpv5yidef6wandb/2nq9wyyr-wandb-metadata.json
+2022-07-21 23:28:47,608 INFO    Thread-7  :43927 [dir_watcher.py:_on_file_created():269] file/dir created: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/wandb-summary.json
+2022-07-21 23:28:47,608 INFO    Thread-7  :43927 [dir_watcher.py:_on_file_created():269] file/dir created: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/requirements.txt
+2022-07-21 23:28:47,608 INFO    Thread-7  :43927 [dir_watcher.py:_on_file_created():269] file/dir created: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/wandb-metadata.json
+2022-07-21 23:28:47,609 INFO    Thread-7  :43927 [dir_watcher.py:_on_file_created():269] file/dir created: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/output.log
+2022-07-21 23:28:49,611 INFO    Thread-7  :43927 [dir_watcher.py:_on_file_modified():286] file/dir modified: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/output.log
+2022-07-21 23:28:51,618 INFO    Thread-7  :43927 [dir_watcher.py:_on_file_modified():286] file/dir modified: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/output.log
+2022-07-21 23:28:53,628 INFO    Thread-7  :43927 [dir_watcher.py:_on_file_modified():286] file/dir modified: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/output.log
+2022-07-21 23:28:55,633 INFO    Thread-7  :43927 [dir_watcher.py:_on_file_modified():286] file/dir modified: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/output.log
+2022-07-21 23:28:57,644 INFO    Thread-7  :43927 [dir_watcher.py:_on_file_modified():286] file/dir modified: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/output.log
+2022-07-21 23:28:59,413 DEBUG   SenderThread:43927 [sender.py:send():236] send: telemetry
+2022-07-21 23:28:59,414 DEBUG   SenderThread:43927 [sender.py:send():236] send: telemetry
+2022-07-21 23:28:59,656 INFO    Thread-7  :43927 [dir_watcher.py:_on_file_modified():286] file/dir modified: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/output.log
+2022-07-21 23:29:01,663 INFO    Thread-7  :43927 [dir_watcher.py:_on_file_modified():286] file/dir modified: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/output.log
+2022-07-21 23:29:01,785 DEBUG   HandlerThread:43927 [handler.py:handle_request():140] handle_request: shutdown
+2022-07-21 23:29:01,785 INFO    HandlerThread:43927 [handler.py:finish():806] shutting down handler
+2022-07-21 23:29:02,668 INFO    Thread-7  :43927 [dir_watcher.py:_on_file_modified():286] file/dir modified: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/output.log
+2022-07-21 23:29:02,783 INFO    WriterThread:43927 [datastore.py:close():279] close: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/run-32ogdrkr.wandb
+2022-07-21 23:29:02,783 INFO    SenderThread:43927 [sender.py:finish():1114] shutting down sender
+2022-07-21 23:29:02,783 INFO    SenderThread:43927 [dir_watcher.py:finish():353] shutting down directory watcher
+2022-07-21 23:29:03,670 INFO    SenderThread:43927 [dir_watcher.py:finish():383] scan: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files
+2022-07-21 23:29:03,671 INFO    SenderThread:43927 [dir_watcher.py:finish():397] scan save: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/requirements.txt requirements.txt
+2022-07-21 23:29:03,671 INFO    SenderThread:43927 [dir_watcher.py:finish():397] scan save: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/output.log output.log
+2022-07-21 23:29:03,674 INFO    SenderThread:43927 [dir_watcher.py:finish():397] scan save: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/config.yaml config.yaml
+2022-07-21 23:29:03,678 INFO    SenderThread:43927 [dir_watcher.py:finish():397] scan save: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/wandb-summary.json wandb-summary.json
+2022-07-21 23:29:03,678 INFO    SenderThread:43927 [dir_watcher.py:finish():397] scan save: /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/wandb-metadata.json wandb-metadata.json
+2022-07-21 23:29:03,679 INFO    SenderThread:43927 [file_pusher.py:finish():171] shutting down file pusher
+2022-07-21 23:29:03,679 INFO    SenderThread:43927 [file_pusher.py:join():176] waiting for file pusher
+2022-07-21 23:29:03,997 INFO    Thread-15 :43927 [upload_job.py:push():138] Uploaded file /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/wandb-summary.json
+2022-07-21 23:29:04,008 INFO    Thread-12 :43927 [upload_job.py:push():138] Uploaded file /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/requirements.txt
+2022-07-21 23:29:04,012 INFO    Thread-14 :43927 [upload_job.py:push():138] Uploaded file /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/config.yaml
+2022-07-21 23:29:04,025 INFO    Thread-13 :43927 [upload_job.py:push():138] Uploaded file /Users/ilgeehong/Desktop/SemGCon/Ours/wandb/run-20220721_232845-32ogdrkr/files/output.log
+2022-07-21 23:29:04,727 INFO    MainThread:43927 [internal.py:handle_exit():80] Internal process exited

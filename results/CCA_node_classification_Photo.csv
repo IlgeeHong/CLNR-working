@@ -1,0 +1,2 @@
+model,dataset,non-linearity,normalize,lr,channels,epoch,drop_edge_rate,drop_feat_rate,accuracy
+CCA,Photo,True,True,0.001,512,50,0.2,0.3,tensor(0.8138)
