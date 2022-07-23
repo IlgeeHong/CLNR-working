@@ -18,7 +18,7 @@ from model import *
 from aug import *
 from cluster import *
 
-with open(r'config.yaml') as file:
+with open(r'config/config.yaml') as file:
     sweep = yaml.load(file, Loader=yaml.FullLoader)
 
 sweep_id = wandb.sweep(sweep, project="contrastive-learning-on-graphs")

@@ -19,9 +19,9 @@ echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 module load python
 module load pytorch 
 
-cd $SCRATCH/$USER/SelfGCon
+cd $SCRATCH/$USER/SelfGCon/Ours
 echo $1
 echo $2
-python3 hyperparameter.py --result_file $SLURM_ARRAY_TASK_ID
+python hyperparameter.py --result_file $SLURM_ARRAY_TASK_ID
 ~
 ~

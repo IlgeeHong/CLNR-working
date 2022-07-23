@@ -14,16 +14,16 @@ parameters = {
         'values' : ['Cora']
     },
     'epochs': {
-        'values' : [20, 50, 100, 150, 200]
+        'values' : [20, 50, 100, 200]
     },
     'n_layers': {
-        'values' : [1, 2, 3]
+        'values' : [1, 2]
     },
     'channels': {
         'values' : [128, 256, 512, 1024]
     },
     'tau': {
-        'values' : [0.1, 0.3, 0.5, 0.7, 0.9]
+        'values' : [0.3, 0.5, 0.7]
     },
     'lr1': {
         'values' : [5e-4, 1e-3, 5e-3, 1e-2]
@@ -32,7 +32,7 @@ parameters = {
         'values' : [1e-3, 5e-3, 1e-2]
     },
     'wd1': {
-        'values' : [5e-4, 1e-3, 5e-3, 1e-2]
+        'values' : [1e-4, 1e-3, 1e-2]
     },
     'wd2': {
         'values' : [1e-4, 1e-3, 1e-2]
