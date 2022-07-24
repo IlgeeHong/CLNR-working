@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=parallel_job
-#SBATCH --mail-type=END, FAIL
+#SBATCH --mail-type=END
 #SBATCH --mail-user=ilgee@uchicago.edu
 #SBATCH --nodes=1
 #SBATCH --ntasks=1

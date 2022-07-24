@@ -14,7 +14,7 @@ parameters = {
         'values' : ['Cora']
     },
     'epochs': {
-        'values' : [20, 50, 100, 200]
+        'values' : [20, 50, 100]
     },
     'n_layers': {
         'values' : [1, 2]
@@ -23,7 +23,7 @@ parameters = {
         'values' : [128, 256, 512, 1024]
     },
     'tau': {
-        'values' : [0.3, 0.5, 0.7]
+        'values' : [0.5]
     },
     'lr1': {
         'values' : [5e-4, 1e-3, 5e-3, 1e-2]
