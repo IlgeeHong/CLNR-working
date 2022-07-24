@@ -8,7 +8,7 @@
 #SBATCH --ntasks=1
 #SBATCH --partition=caslake
 #SBATCH --mem=20G
-#SBATCH --mail-type=END, FAIL
+#SBATCH --mail-type=END
 #SBATCH --mail-user=ilgee@uchicago.edu
 
 # Print the task id.
