@@ -17,7 +17,6 @@ echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 # Add lines here to run your computations.
 module load python
 module load pytorch 
-module load wandb
 
 cd $SCRATCH/$USER/SelfGCon
 echo $1
