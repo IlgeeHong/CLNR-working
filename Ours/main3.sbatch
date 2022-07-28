@@ -21,6 +21,6 @@ module load pytorch
 cd $SCRATCH/$USER/SelfGCon
 echo $1
 echo $2
-python3 Ours/main1.py --result_file $SLURM_ARRAY_TASK_ID
+python3 Ours/main3.py --result_file $SLURM_ARRAY_TASK_ID
 ~
 ~
