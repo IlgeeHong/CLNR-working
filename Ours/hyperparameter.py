@@ -27,7 +27,7 @@ with open(r'config/config.yaml') as file:
     sweep = yaml.load(file, Loader=yaml.FullLoader)
 
 sweep_id = wandb.sweep(sweep, project="contrastive-learning-on-graphs")
-# device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def main(args=None):    
     with wandb.init(config=sweep):
@@ -37,6 +37,8 @@ def main(args=None):
             fmr = args.fmr
             new_data1 = random_aug(data, edr, fmr)
             new_data2 = random_aug(data, edr, fmr)
+            new_data1 = new_data1.to(device)
+            new_data2 = new_data2.to(device)
             z1, z2 = model(new_data1, new_data2)   
             loss = model.loss(z1, z2)
             loss.backward()
@@ -92,6 +94,7 @@ def main(args=None):
                 loss = train(model, data)
                 print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
             
+            data = data.to(device)
             embeds = model.get_embedding(data)
 
             train_embs = embeds[train_idx]
@@ -99,15 +102,11 @@ def main(args=None):
             test_embs = embeds[test_idx]
 
             label = data.y
-            feat = data.x
+            label = label.to(device)
 
             train_labels = label[train_idx]
             val_labels = label[val_idx]
             test_labels = label[test_idx]
-
-            train_feat = feat[train_idx]
-            val_feat = feat[val_idx]
-            test_feat = feat[test_idx] 
 
             ''' Linear Evaluation '''
             logreg = LogReg(train_embs.shape[1], num_class)
