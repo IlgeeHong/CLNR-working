@@ -17,10 +17,11 @@ echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 # Add lines here to run your computations.
 module load python
 module load pytorch 
+module load wandb
 
-cd $SCRATCH/$USER/SelfGCon/Ours
+cd $SCRATCH/$USER/SelfGCon
 echo $1
 echo $2
-python3.6 hyperparameter.py --result_file $SLURM_ARRAY_TASK_ID
+python3.6 /Ours/hyperparameter.py --result_file $SLURM_ARRAY_TASK_ID
 ~
 ~
