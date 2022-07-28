@@ -24,7 +24,7 @@ from aug import *
 from cluster import *
 
 os.environ['JOBLIB_TEMP_FOLDER'] = '/tmp'
-with open(r'config/config.yaml') as file:
+with open(r'/home/ilgee/SelfGCon/ours/config/config.yaml') as file:
     sweep = yaml.load(file, Loader=yaml.FullLoader)
 
 sweep_id = wandb.sweep(sweep, project="contrastive-learning-on-graphs")
