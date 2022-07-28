@@ -1,7 +1,7 @@
 import os
 import sys
 import os.path as osp
-sys.path.append(os.getcwd()) 
+# sys.path.append(os.getcwd()) 
 import argparse
 import pdb
 

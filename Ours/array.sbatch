@@ -21,6 +21,6 @@ module load pytorch
 cd $SCRATCH/$USER/SelfGCon
 echo $1
 echo $2
-python3.6 Ours/hyperparameter.py --result_file $SLURM_ARRAY_TASK_ID
+python3 Ours/hyperparameter.py --result_file $SLURM_ARRAY_TASK_ID
 ~
 ~
