@@ -1,7 +1,6 @@
 import os
 import os.path as osp
 import argparse
-import pandas as pd
 import pdb
 
 import torch
