@@ -14,13 +14,13 @@ parameters = {
         'values' : ['Cora']
     },
     'epochs': {
-        'values' : [20, 50, 100]
+        'values' : [20, 50] #, 100
     },
     'n_layers': {
         'values' : [1, 2]
     },
     'channels': {
-        'values' : [128, 256, 512, 1024]
+        'values' : [128, 256, 512] #, 1024
     },
     'tau': {
         'values' : [0.5]
@@ -32,16 +32,16 @@ parameters = {
         'values' : [1e-3, 5e-3, 1e-2]
     },
     'wd1': {
-        'values' : [1e-4, 1e-3, 1e-2]
+        'values' : [0] #1e-4, 1e-3, 1e-2
     },
     'wd2': {
         'values' : [1e-4, 1e-3, 1e-2]
     },
     'edr': {
-        'values' : [0,0.1,0.2,0.3,0.4,0.5]
+        'values' : [0.2,0.3,0.4,0.5] #0,0.1,
     },
     'fmr': {
-        'values' : [0,0.1,0.2,0.3,0.4,0.5]
+        'values' : [0.2,0.3,0.4,0.5] #0,0.1,
     },
 }         
 sweep_config['metric'] = metric

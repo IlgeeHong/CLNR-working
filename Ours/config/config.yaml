@@ -8,14 +8,11 @@ parameters:
     - 128
     - 256
     - 512
-    - 1024
   dataset:
     values:
     - Cora
   edr:
     values:
-    - 0
-    - 0.1
     - 0.2
     - 0.3
     - 0.4
@@ -24,11 +21,8 @@ parameters:
     values:
     - 20
     - 50
-    - 100
   fmr:
     values:
-    - 0
-    - 0.1
     - 0.2
     - 0.3
     - 0.4
@@ -59,9 +53,7 @@ parameters:
     - 0.5
   wd1:
     values:
-    - 0.0001
-    - 0.001
-    - 0.01
+    - 0
   wd2:
     values:
     - 0.0001

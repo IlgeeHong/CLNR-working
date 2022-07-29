@@ -1,6 +1,6 @@
-import sys, os
+import os
 import os.path as osp
-sys.path.append('/scratch/midway3/ilgee/SelfGCon')
+# sys.path.append(os.getcwd()) 
 import argparse
 import pdb
 
