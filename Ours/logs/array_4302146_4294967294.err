@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "hyperparameter.py", line 11, in <module>
+    import wandb
+  File "/home/ilgee/.local/lib/python3.6/site-packages/wandb/__init__.py", line 26, in <module>
+    from wandb import sdk as wandb_sdk
+  File "/home/ilgee/.local/lib/python3.6/site-packages/wandb/sdk/__init__.py", line 5, in <module>
+    from . import wandb_helper as helper  # noqa: F401
+  File "/home/ilgee/.local/lib/python3.6/site-packages/wandb/sdk/wandb_helper.py", line 6, in <module>
+    from .lib import config_util
+  File "/home/ilgee/.local/lib/python3.6/site-packages/wandb/sdk/lib/config_util.py", line 7, in <module>
+    from wandb.util import load_yaml
+  File "/home/ilgee/.local/lib/python3.6/site-packages/wandb/util.py", line 51, in <module>
+    import requests
+ModuleNotFoundError: No module named 'requests'
+/var/spool/slurm/d/job4302146/slurm_script: line 25: /home/ilgee: Is a directory
+/var/spool/slurm/d/job4302146/slurm_script: line 26: /home/ilgee: Is a directory

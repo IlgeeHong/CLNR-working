@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "Ours/main3.py", line 10, in <module>
+    from torch_geometric.datasets import Planetoid, Coauthor, Amazon
+  File "/software/python-anaconda-2020.11-el8-x86_64/lib/python3.8/site-packages/torch_geometric/__init__.py", line 4, in <module>
+    import torch_geometric.data
+  File "/software/python-anaconda-2020.11-el8-x86_64/lib/python3.8/site-packages/torch_geometric/data/__init__.py", line 1, in <module>
+    from .data import Data
+  File "/software/python-anaconda-2020.11-el8-x86_64/lib/python3.8/site-packages/torch_geometric/data/data.py", line 9, in <module>
+    from torch_sparse import SparseTensor
+  File "/software/python-anaconda-2020.11-el8-x86_64/lib/python3.8/site-packages/torch_sparse/__init__.py", line 15, in <module>
+    torch.ops.load_library(importlib.machinery.PathFinder().find_spec(
+  File "/software/python-anaconda-2020.11-el8-x86_64/lib/python3.8/site-packages/torch/_ops.py", line 110, in load_library
+    ctypes.CDLL(path)
+  File "/software/python-anaconda-2020.11-el8-x86_64/lib/python3.8/ctypes/__init__.py", line 381, in __init__
+    self._handle = _dlopen(self._name, mode)
+OSError: /software/python-anaconda-2020.11-el8-x86_64/lib/python3.8/site-packages/torch_sparse/_convert_cpu.so: undefined symbol: _ZNK2at6Tensor5zero_Ev
+/var/spool/slurm/d/job4305803/slurm_script: line 25: /home/ilgee: Is a directory
+/var/spool/slurm/d/job4305803/slurm_script: line 26: /home/ilgee: Is a directory
