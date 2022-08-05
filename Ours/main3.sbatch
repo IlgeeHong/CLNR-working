@@ -16,11 +16,12 @@ echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 
 # Add lines here to run your computations.
 module load python
-module load pytorch 
+source activate pytorch_env  
 
 cd $SCRATCH/$USER/SelfGCon
 echo $1
 echo $2
 python3 Ours/main3.py --result_file $SLURM_ARRAY_TASK_ID
+source deactivate
 ~
 ~
