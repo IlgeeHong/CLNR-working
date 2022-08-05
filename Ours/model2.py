@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
-from torch_geometric.utils import to_dense_adj
+from torch_geometric.utils import to_dense_adj, dense_to_sparse
 import pdb
 
 class LogReg(nn.Module):
@@ -91,22 +91,34 @@ class SelfGCon(nn.Module):
         z2 = F.normalize(z2)
         return torch.mm(z1, z2.t())
 
-    def semi_loss(self, z1, z2, data1, data2):
+    def semi_loss(self, z1, z2, data1, data2, order):
         f = lambda x: torch.exp(x / self.tau) 
         refl_sim = f(self.sim(z1, z1))
         between_sim = f(self.sim(z1, z2))
         N = data1.num_nodes
-        adj1 = to_dense_adj(data1.edge_index, max_num_nodes = N)[0] + torch.eye(N)
-        adj2 = to_dense_adj(data2.edge_index, max_num_nodes = N)[0] + torch.eye(N)
-        ret = -torch.log(
-            between_sim 
-            / (torch.mm(between_sim, adj2).sum(1) + torch.mm(refl_sim, adj1).sum(1) - refl_sim.diag())) # + self.epsilon
+        adj1 = to_dense_adj(data1.edge_index, max_num_nodes = N)[0] 
+        adj2 = to_dense_adj(data2.edge_index, max_num_nodes = N)[0]
+        adj3 = (adj1+adj2)/2
+        adj11 = torch.mm(adj1,adj1)
+        adj22 = torch.mm(adj2,adj2)
+        adj33 = (adj11+adj22)/2
+        adj111 = torch.mm(adj11,adj1) + adj11 + adj1
+        adj222 = torch.mm(adj22,adj2) + adj22 + adj2
+        adj333 = (adj11+adj22)/2
+        if order == 1:
+            ret = -torch.log(
+                between_sim 
+                / (torch.mm(between_sim, adj333).sum(1) + torch.mm(refl_sim, adj111).sum(1) - refl_sim.diag())) # + self.epsilon
+        else:
+            ret = -torch.log(
+                between_sim 
+                / (torch.mm(between_sim, adj333).sum(1) + torch.mm(refl_sim, adj222).sum(1) - refl_sim.diag())) # + self.epsilon
         # pdb.set_trace()
         return ret 
 
     def loss(self, z1, z2, data1, data2, mean = True):
-        l1 = self.semi_loss(z1, z2, data1, data2)
-        l2 = self.semi_loss(z2, z1, data1, data2)
+        l1 = self.semi_loss(z1, z2, data1, data2, 1)
+        l2 = self.semi_loss(z2, z1, data1, data2, 2)
         ret = (l1 + l2) * 0.5
         ret = ret.mean() if mean else ret.sum()
         return ret

@@ -1,6 +1,6 @@
 import sys, os
 import os.path as osp
-sys.path.append('/scratch/midway3/ilgee/SelfGCon')
+# sys.path.append('/scratch/midway3/ilgee/SelfGCon')
 import argparse
 import pdb
 
@@ -15,22 +15,66 @@ import torch_geometric.transforms as T
 from torch_geometric.utils import to_dense_adj
 from torch_geometric.utils import add_self_loops
 
-import wandb
-import yaml
-
 from model import *
 from aug import *
 from cluster import *
 
 os.environ['JOBLIB_TEMP_FOLDER'] = '/tmp'
-with open(r'config/config.yaml') as file:
-    sweep = yaml.load(file, Loader=yaml.FullLoader)
+# with open(r'config/config.yaml') as file:
+#     sweep = yaml.load(file, Loader=yaml.FullLoader)
 
-sweep_id = wandb.sweep(sweep, project="GraphContrastiveLearning")
+sweep_config = {'method': 'grid'}
+metric = {'goal' : 'minimize' , 
+          'name' : 'best_val_loss'}
+parameters = {
+    'n_experiments': {
+        'values' : [1]
+    },
+    'split': {
+        'values' : ['PublicSplit']
+    },
+    'dataset': {
+        'values' : ['PubMed']
+    },
+    'epochs': {
+        'values' : [100] ###, 20, 50
+    },
+    'n_layers': {
+        'values' : [2] # 1
+    },
+    'channels': {
+        'values' : [512] ###, 128, 256, 1024
+    },
+    'tau': {
+        'values' : [0.5]
+    },
+    'lr1': {
+        'values' : [1e-3] # (Cora) 5e-4 ###, 5e-3, 5e-4, 1e-2
+    },
+    'lr2': {
+        'values' : [1e-2] # (Cora) 1e-3, 5e-3, 
+    },
+    'wd1': {
+        'values' : [0] ### 1e-4, 1e-3, 1e-2
+    },
+    'wd2': {
+        'values' : [1e-4] #, 1e-3, 1e-2
+    },
+    'edr': {
+        'values' : [0.2,0.3,0.4,0.5] # (Cora) 0,0.1,
+    },
+    'fmr': {
+        'values' : [0.2,0.3,0.4,0.5] # (Cora) 0,0.1,
+    },
+}         
+sweep_config['metric'] = metric
+sweep_config['parameters'] = parameters
+
+sweep_id = wandb.sweep(sweep_config, project="PubMed_hyperparameter_tunning") ##########################
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def main(args=None):    
-    with wandb.init(config=sweep):
+    with wandb.init(config=sweep_config):
         args = wandb.config
         def train(model, data):
             edr = args.edr
@@ -142,7 +186,7 @@ def main(args=None):
                         if test_acc > eval_acc:
                             eval_acc = test_acc
                 
-                wandb.log({"val acc": best_val_acc})  
+            wandb.log({"val acc": best_val_acc})  
     
 wandb.agent(sweep_id, main)
     

@@ -1,0 +1,2 @@
+model,dataset,epochs,layers,tau,lr1,lr2,wd2,channels,edge_drop_rate,feat_mask_rate,accuracy
+SelfGCon,Cora,50,2,0.5,0.001,0.01,0.0001,512,0.2,0.4,tensor(0.2930)

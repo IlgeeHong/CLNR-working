@@ -1,0 +1,2 @@
+model,dataset,silhouette,davies,c-h
+SelfGCon,PubMed,0.06950397,3.049738537350921,68.33084362557312

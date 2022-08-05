@@ -1,0 +1,2 @@
+model,dataset,epochs,layers,tau,lr1,lr2,wd2,channels,edge_drop_rate,feat_mask_rate,accuracy
+SelfGCon,CiteSeer,20,1,0.5,0.001,0.01,0.01,512,0.1,0.4,tensor(0.3680)
