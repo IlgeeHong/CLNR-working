@@ -12,7 +12,7 @@ import torch_geometric.transforms as T
 
 from model import * ############## model 2
 from aug import *
-from cluster import *
+# from cluster import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='SelfGCon')
