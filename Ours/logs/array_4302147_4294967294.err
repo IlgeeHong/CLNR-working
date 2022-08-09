@@ -1,0 +1,4 @@
+ERROR: Unable to locate a modulefile for 'wandb'
+python3.6: can't open file '/Ours/hyperparameter.py': [Errno 2] No such file or directory
+/var/spool/slurm/d/job4302147/slurm_script: line 26: /home/ilgee: Is a directory
+/var/spool/slurm/d/job4302147/slurm_script: line 27: /home/ilgee: Is a directory

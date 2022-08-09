@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "hyperparameter.py", line 10, in <module>
+    import wandb
+ModuleNotFoundError: No module named 'wandb'
+/var/spool/slurm/d/job4296383/slurm_script: line 25: /home/ilgee: Is a directory
+/var/spool/slurm/d/job4296383/slurm_script: line 26: /home/ilgee: Is a directory

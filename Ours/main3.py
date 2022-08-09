@@ -20,7 +20,7 @@ parser.add_argument('--model', type=str, default='SelfGCon')
 parser.add_argument('--dataset', type=str, default='CiteSeer')
 parser.add_argument('--split', type=str, default='PublicSplit')
 parser.add_argument('--epochs', type=int, default=20)
-parser.add_argument('--n_experiments', type=int, default=1)
+parser.add_argument('--n_experiments', type=int, default=5)
 parser.add_argument('--n_layers', type=int, default=1) #CiteSeer: 1, Rest: 2
 parser.add_argument('--channels', type=int, default=512) #512
 parser.add_argument('--tau', type=float, default=0.5) #
@@ -30,7 +30,7 @@ parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-2)
 parser.add_argument('--edr', type=float, default=0.1)
 parser.add_argument('--fmr', type=float, default=0.4)
-parser.add_argument('--result_file', type=str) #, default="/results/SelfGCon_node_classification"
+parser.add_argument('--result_file', type=str, default="/Ours/results/SelfGCon_Slurm")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
@@ -90,7 +90,7 @@ for exp in range(args.n_experiments):
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
         loss = train(model, data)
-        print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
+        # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
 
@@ -143,8 +143,9 @@ for exp in range(args.n_experiments):
                 if test_acc > eval_acc:
                     eval_acc = test_acc
 
-        print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
-        print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
+       # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
+       # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
+    print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
     results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd2, args.channels, args.edr, args.fmr, eval_acc]]
     res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy'])
     res1.to_csv(file_path + "_" + args.dataset +  ".csv", index=False)

@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "Ours/main1.py", line 4, in <module>
+    import pandas as pd
+  File "/home/ilgee/.local/lib/python3.6/site-packages/pandas/__init__.py", line 17, in <module>
+    "Unable to import required dependencies:\n" + "\n".join(missing_dependencies)
+ImportError: Unable to import required dependencies:
+pytz: No module named 'pytz'
+/var/spool/slurm/d/job4302154/slurm_script: line 25: /home/ilgee: Is a directory
+/var/spool/slurm/d/job4302154/slurm_script: line 26: /home/ilgee: Is a directory

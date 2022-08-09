@@ -1,0 +1,9 @@
+usage: main3.py [-h] [--model MODEL] [--dataset DATASET] [--split SPLIT]
+                [--epochs EPOCHS] [--n_experiments N_EXPERIMENTS]
+                [--n_layers N_LAYERS] [--channels CHANNELS] [--tau TAU]
+                [--lr1 LR1] [--lr2 LR2] [--wd1 WD1] [--wd2 WD2] [--edr EDR]
+                [--fmr FMR] [--result_file RESULT_FILE]
+main3.py: error: argument --result_file: expected one argument
+DeprecationWarning: 'source deactivate' is deprecated. Use 'conda deactivate'.
+/var/spool/slurm/d/job4329458/slurm_script: line 26: /home/ilgee: Is a directory
+/var/spool/slurm/d/job4329458/slurm_script: line 27: /home/ilgee: Is a directory
