@@ -11,7 +11,7 @@ import pandas as pd
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 
-from model import * ############## model 2
+from model import * 
 from aug import *
 # from cluster import *
 
@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='SelfGCon')
 parser.add_argument('--dataset', type=str, default='CiteSeer')
 parser.add_argument('--split', type=str, default='PublicSplit')
-parser.add_argument('--epochs', type=int, default=20)
+parser.add_argument('--epochs', type=int, default=1)
 parser.add_argument('--n_experiments', type=int, default=5)
 parser.add_argument('--n_layers', type=int, default=1) #CiteSeer: 1, Rest: 2
 parser.add_argument('--channels', type=int, default=512) #512
@@ -41,6 +41,8 @@ def train(model, data):
     optimizer.zero_grad()
     new_data1 = random_aug(data, args.edr, args.fmr)
     new_data2 = random_aug(data, args.edr, args.fmr)
+    new_data1 = new_data1.to(device)
+    new_data2 = new_data2.to(device)
     z1, z2 = model(new_data1, new_data2)   
     loss = model.loss(z1, z2)
     loss.backward()
@@ -80,13 +82,13 @@ for exp in range(args.n_experiments):
     n_layers = args.n_layers
     tau = args.tau
 
-    dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
 
     ##### Train the SelfGCon model #####
     print("=== train SelfGCon model ===")
     model = SelfGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp=False)
+    model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
         loss = train(model, data)
@@ -99,6 +101,7 @@ for exp in range(args.n_experiments):
     test_embs = embeds[test_idx]
 
     label = data.y
+    label = label.to(device)
     feat = data.x
 
     train_labels = label[train_idx]
@@ -111,6 +114,7 @@ for exp in range(args.n_experiments):
 
     ''' Linear Evaluation '''
     logreg = LogReg(train_embs.shape[1], num_class)
+    logreg = logreg.to(device)
     opt = torch.optim.Adam(logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
     loss_fn = nn.CrossEntropyLoss()
 
