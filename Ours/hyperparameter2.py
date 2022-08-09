@@ -96,7 +96,7 @@ for exp in range(args.n_experiments):
                                 ''' Linear Evaluation '''
                                 logreg = LogReg(train_embs.shape[1], num_class)
                                 logreg = logreg.to(device)
-                                opt = torch.optim.Adam(logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
+                                opt = torch.optim.Adam(logreg.parameters(), lr=lr2, weight_decay=wd2)
                                 loss_fn = nn.CrossEntropyLoss()
                                 best_val_acc = 0
                                 eval_acc = 0
