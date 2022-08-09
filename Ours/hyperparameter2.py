@@ -67,7 +67,7 @@ for exp in range(args.n_experiments):
     tau = args.tau
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
-
+    results =[]
     for channels in [128, 256, 512]:
         hid_dim = channels
         out_dim = channels
@@ -77,7 +77,7 @@ for exp in range(args.n_experiments):
                     for lr2 in [1e-2]: #, 5e-3
                         for wd2 in [1e-2]: #, 1e-4
                             for epochs in [20]: #, 50, 100
-                                results =[]
+                                
                                 ''' Model Pretraining '''
                                 model = SelfGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp=args.mlp_use)
                                 model = model.to(device)
