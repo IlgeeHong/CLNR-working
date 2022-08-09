@@ -17,7 +17,7 @@ from aug import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='SelfGCon')
-parser.add_argument('--dataset', type=str, default='CiteSeer')
+parser.add_argument('--dataset', type=str, default='Cora')
 parser.add_argument('--split', type=str, default='PublicSplit')
 parser.add_argument('--lr1', type=float, default=1e-3) #
 parser.add_argument('--wd1', type=float, default=0.0)
