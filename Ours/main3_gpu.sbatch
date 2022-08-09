@@ -5,7 +5,7 @@
 #SBATCH --error=logs/gpu_%A_%a.err
 #SBATCH --time=35:00:00
 #SBATCH --nodes=1
-#SBATCH --partition=gpu2
+#SBATCH --partition=gpu
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1 
 #SBATCH --account=pi-cdonnat
