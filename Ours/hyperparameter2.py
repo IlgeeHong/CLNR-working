@@ -79,7 +79,7 @@ for exp in range(args.n_experiments):
                             for epochs in [20]: #, 50, 100
                                 results =[]
                                 ''' Model Pretraining '''
-                                model = SelfGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp=args.use_mlp)
+                                model = SelfGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp=args.mlp_use)
                                 model = model.to(device)
                                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)                       
                                 for epoch in range(epochs):
