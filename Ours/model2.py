@@ -1,7 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
+###############################
+# This is for scalable method #
+###############################
 
 import torch
 import torch.nn as nn
