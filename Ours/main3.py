@@ -19,8 +19,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='SelfGCon')
 parser.add_argument('--dataset', type=str, default='CiteSeer')
 parser.add_argument('--split', type=str, default='PublicSplit')
-parser.add_argument('--epochs', type=int, default=1)
-parser.add_argument('--n_experiments', type=int, default=5)
+parser.add_argument('--epochs', type=int, default=20)
+parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--n_layers', type=int, default=1) #CiteSeer: 1, Rest: 2
 parser.add_argument('--channels', type=int, default=512) #512
 parser.add_argument('--tau', type=float, default=0.5) #
