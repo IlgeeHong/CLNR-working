@@ -18,7 +18,7 @@ from model import *
 from aug import *
 # from cluster import *
 
-os.environ['JOBLIB_TEMP_FOLDER'] = '/tmp'
+# os.environ['JOBLIB_TEMP_FOLDER'] = '/tmp'
 # with open(r'config/config.yaml') as file:
 #     sweep = yaml.load(file, Loader=yaml.FullLoader)
 
