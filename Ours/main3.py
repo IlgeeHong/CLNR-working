@@ -30,7 +30,7 @@ parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-2)
 parser.add_argument('--edr', type=float, default=0.1)
 parser.add_argument('--fmr', type=float, default=0.4)
-parser.add_argument('--result_file', type=str, default="/results/SelfGCon_Slurm")
+parser.add_argument('--result_file', type=str, default="/Ours/results/SelfGCon_Slurm")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
