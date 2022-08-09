@@ -123,6 +123,6 @@ for exp in range(args.n_experiments):
                                                 eval_acc = test_acc
 
                                 # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-                                results += [[args.model, args.dataset, epochs, n_layers, args.tau, args.lr1, args.wd1, lr2, wd2, channels, edr, fmr, args.mlp_use, best_val_acc]]
+                                results += [[args.model, args.dataset, epochs, n_layers, args.tau, args.lr1, args.wd1, lr2, wd2, channels, edr, fmr, args.mlp_use, best_val_acc.item()]]
                                 res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'wd1', 'lr2', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'mlp_use', 'val_acc'])
                                 res1.to_csv(file_path + "_" + args.model + "_" + args.dataset +  ".csv", index=False)
