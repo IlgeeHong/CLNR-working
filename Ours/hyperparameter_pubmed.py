@@ -22,7 +22,7 @@ parser.add_argument('--split', type=str, default='PublicSplit')
 parser.add_argument('--lr1', type=float, default=1e-3) 
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/results/Slurm")
+parser.add_argument('--result_file', type=str, default="/Ours/results/Slurm2")
 parser.add_argument('--n_experiments', type=int, default=10)
 parser.add_argument('--tau', type=float, default=0.5)
 args = parser.parse_args()
@@ -50,7 +50,7 @@ for channels in [256, 512]:
             for fmr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]: 
                 for lr2 in [1e-2, 5e-3]:  
                     for wd2 in [1e-2, 1e-4]:
-                        for epochs in [20, 50, 100]:
+                        for epochs in [20, 50]:
                             best_val_acc_list = []
                             for exp in range(args.n_experiments): 
                                 if args.split == "PublicSplit":
