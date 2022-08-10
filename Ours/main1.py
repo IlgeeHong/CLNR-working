@@ -17,11 +17,11 @@ from cluster import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='SelfGCon')
-parser.add_argument('--dataset', type=str, default='CiteSeer')
-parser.add_argument('--split', type=str, default='PublicSplit')
-parser.add_argument('--epochs', type=int, default=20) 
+parser.add_argument('--dataset', type=str, default='Computers') #
+parser.add_argument('--split', type=str, default='RandomSplit')
+parser.add_argument('--epochs', type=int, default=50) 
 parser.add_argument('--n_experiments', type=int, default=1)
-parser.add_argument('--n_layers', type=int, default=1) 
+parser.add_argument('--n_layers', type=int, default=2) 
 parser.add_argument('--channels', type=int, default=512) 
 parser.add_argument('--tau', type=float, default=0.5)
 parser.add_argument('--lr1', type=float, default=1e-3) 
@@ -29,7 +29,7 @@ parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-2)
 parser.add_argument('--edr', type=float, default=0.1)
-parser.add_argument('--fmr', type=float, default=0.4)
+parser.add_argument('--fmr', type=float, default=0.3)
 parser.add_argument('--result_file', type=str, default="/results/SelfGCon_node_classification")
 parser.add_argument('--embeddings', type=str, default="/results/SelfGCon_node_classification_embeddings")
 args = parser.parse_args()
@@ -56,20 +56,21 @@ for exp in range(args.n_experiments):
                                                                          #                   num_val = 500,
                                                                          #                   num_test = 1000)])
     if args.split == "RandomSplit":
-        transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device), T.RandomNodeSplit(split="random", 
-                                                                                            num_train_per_class = 20,
-                                                                                            num_val = 160,
-                                                                                            num_test = 1280)])
+        transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device), T.RandomNodeSplit(split="train_rest", 
+                                                                                            num_val = 0.1,
+                                                                                            num_test = 0.8)])
 
     if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
         dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
         data = dataset[0]
+        
     if args.dataset in ['cs', 'physics']:
         dataset = Coauthor(args.dataset, 'public', transform=transform)
         data = dataset[0]
     if args.dataset in ['Computers', 'Photo']:
         dataset = Amazon("/Users/ilgeehong/Desktop/SemGCon/", args.dataset, transform=transform)
         data = dataset[0]
+        # pdb.set_trace()
 
     train_idx = data.train_mask 
     val_idx = data.val_mask 
@@ -81,7 +82,6 @@ for exp in range(args.n_experiments):
     n_layers = args.n_layers
     tau = args.tau
 
-    dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
 
