@@ -1,0 +1,10 @@
+  File "/scratch/midway3/ilgee/SelfGCon/Ours/main3.py", line 27
+    >>>>>>> 41b14f29454a4a24adc50f4e5eb7a30d7ffa4dac
+             ^
+SyntaxError: invalid decimal literal
+
+CommandNotFoundError: No command 'conda deactivatee'.
+Did you mean 'conda deactivate'?
+
+/var/spool/slurm/d/job4332908/slurm_script: line 26: /home/ilgee: Is a directory
+/var/spool/slurm/d/job4332908/slurm_script: line 27: /home/ilgee: Is a directory

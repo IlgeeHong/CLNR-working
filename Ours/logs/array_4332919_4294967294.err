@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/scratch/midway3/ilgee/SelfGCon/Ours/main3.py", line 151, in <module>
+    res1.to_csv(file_path + "_" + args.dataset +  ".csv", index=False)
+  File "/home/ilgee/.local/lib/python3.10/site-packages/pandas/core/generic.py", line 3551, in to_csv
+    return DataFrameRenderer(formatter).to_csv(
+  File "/home/ilgee/.local/lib/python3.10/site-packages/pandas/io/formats/format.py", line 1180, in to_csv
+    csv_formatter.save()
+  File "/home/ilgee/.local/lib/python3.10/site-packages/pandas/io/formats/csvs.py", line 241, in save
+    with get_handle(
+  File "/home/ilgee/.local/lib/python3.10/site-packages/pandas/io/common.py", line 694, in get_handle
+    check_parent_directory(str(handle))
+  File "/home/ilgee/.local/lib/python3.10/site-packages/pandas/io/common.py", line 568, in check_parent_directory
+    raise OSError(rf"Cannot save file into a non-existent directory: '{parent}'")
+OSError: Cannot save file into a non-existent directory: '/scratch/midway3/ilgee/SelfGConOurs/results'
+/var/spool/slurm/d/job4332919/slurm_script: line 26: /home/ilgee: Is a directory
+/var/spool/slurm/d/job4332919/slurm_script: line 27: /home/ilgee: Is a directory
