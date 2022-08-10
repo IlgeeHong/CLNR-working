@@ -43,7 +43,6 @@ def train(model, data, edr, fmr):
     optimizer.step()
     return loss.item()
 
-
 if args.split == "PublicSplit":
     transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)]) 
 if args.split == "RandomSplit":
@@ -123,8 +122,8 @@ for channels in [256, 512]: #
                                             best_val_acc = val_acc
                                             if test_acc > eval_acc:
                                                 eval_acc = test_acc
-                                best_val_acc_list.append(best_val_acc.item())
-                            best_val_acc_mean = mean(best_val_acc_list)
-                            results += [[args.model, args.dataset, epochs, n_layers, args.tau, args.lr1, args.wd1, lr2, wd2, channels, edr, fmr, args.mlp_use, best_val_acc_mean]]
+                            #     best_val_acc_list.append(best_val_acc.item())
+                            # best_val_acc_mean = mean(best_val_acc_list)
+                            results += [[args.model, args.dataset, epochs, n_layers, args.tau, args.lr1, args.wd1, lr2, wd2, channels, edr, fmr, args.mlp_use, best_val_acc]]
                             res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'wd1', 'lr2', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'mlp_use', 'val_acc'])
                             res1.to_csv(file_path + "_" + args.model + "_" + args.dataset +  ".csv", index=False)
