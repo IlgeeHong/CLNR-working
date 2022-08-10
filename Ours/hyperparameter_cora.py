@@ -30,11 +30,11 @@ args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data, edr, fmr):
+def train(model, data, fmr, edr):
     model.train()
     optimizer.zero_grad()
-    new_data1 = random_aug(data, edr, fmr)
-    new_data2 = random_aug(data, edr, fmr)
+    new_data1 = random_aug(data, fmr, edr)
+    new_data2 = random_aug(data, fmr, edr)
     new_data1 = new_data1.to(device)
     new_data2 = new_data2.to(device)
     z1, z2 = model(new_data1, new_data2)   
@@ -85,7 +85,7 @@ for channels in [256, 512]:
                                 model = model.to(device)
                                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)                       
                                 for epoch in range(epochs):
-                                    loss = train(model, data, edr, fmr)
+                                    loss = train(model, data, fmr, edr)
                                 embeds = model.get_embedding(data)
                                 train_embs = embeds[train_idx]
                                 val_embs = embeds[val_idx]
