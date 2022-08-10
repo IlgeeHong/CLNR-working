@@ -59,7 +59,7 @@ for exp in range(args.n_experiments):
     if args.split == "RandomSplit":
         transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device), T.RandomNodeSplit(split="train_rest", 
                                                                                             num_val = 0.1,
-                                                                                            num_test = 0.8)])                                                                                        num_test = 1280)])
+                                                                                            num_test = 0.8)])                                                                                       
 
     if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
         dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
