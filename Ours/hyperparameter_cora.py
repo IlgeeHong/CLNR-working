@@ -68,15 +68,15 @@ tau = args.tau
 num_class = int(data.y.max().item()) + 1 
 N = data.num_nodes
 results =[]
-for channels in [256, 512]: #
+for channels in [512]: # 256
     hid_dim = channels
     out_dim = channels
-    for n_layers in [1, 2]: #
-        for edr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]: #
-            for fmr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]: #
-                for lr2 in [1e-2, 5e-3]: #
-                    for wd2 in [1e-2, 1e-4]: #
-                        for epochs in [20, 50, 100]: #
+    for n_layers in [2]: # 1
+        for edr in [0.2]: # 0.0, 0.1, , 0.3, 0.4, 0.5
+            for fmr in [0.4]: # 0.0, 0.1, 0.2, 0.3, , 0.5
+                for lr2 in [1e-2]: # , 5e-3
+                    for wd2 in [1e-4]: # 1e-2, 
+                        for epochs in [50]: #20, 50, 100
                             best_val_acc_list = []
                             for exp in range(args.n_experiments): 
                                 ''' Model Pretraining '''
