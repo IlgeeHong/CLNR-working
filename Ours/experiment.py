@@ -147,6 +147,6 @@ for ratio in torch.linspace(0,1,11):
        # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
        # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
     print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    results += [[args.model, args.dataset, args.ratio, eval_acc.item()]]
+    results += [[args.model, args.dataset, ratio, eval_acc.item()]]
     res1 = pd.DataFrame(results, columns=['model', 'dataset', 'ratio', 'accuracy'])
     res1.to_csv(file_path + "_" + args.dataset +  ".csv", index=False)
