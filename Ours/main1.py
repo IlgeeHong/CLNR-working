@@ -11,45 +11,46 @@ import torch.nn.functional as F
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 
-from model import * ############## model 2
+from model_random_selection import * ############## model
 from aug import *
 from cluster import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='SelfGCon')
-parser.add_argument('--dataset', type=str, default='Computers') #
-parser.add_argument('--split', type=str, default='RandomSplit')
-parser.add_argument('--epochs', type=int, default=50) 
+parser.add_argument('--dataset', type=str, default='CiteSeer') #
+parser.add_argument('--split', type=str, default='PublicSplit')
+parser.add_argument('--epochs', type=int, default=20) 
 parser.add_argument('--n_experiments', type=int, default=1)
-parser.add_argument('--n_layers', type=int, default=2) 
+parser.add_argument('--n_layers', type=int, default=1) 
 parser.add_argument('--channels', type=int, default=512) 
 parser.add_argument('--tau', type=float, default=0.5)
 parser.add_argument('--lr1', type=float, default=1e-3) 
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-2)
-parser.add_argument('--edr', type=float, default=0.1)
-parser.add_argument('--fmr', type=float, default=0.3)
-parser.add_argument('--result_file', type=str, default="/results/SelfGCon_node_classification")
-parser.add_argument('--embeddings', type=str, default="/results/SelfGCon_node_classification_embeddings")
+parser.add_argument('--edr', type=float, default=0.2)
+parser.add_argument('--fmr', type=float, default=0.2)
+parser.add_argument('--result_file', type=str, default="/results/experiments")
+# parser.add_argument('--embeddings', type=str, default="/results/SelfGCon_node_classification_embeddings")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data):
+def train(model, data, ratio):
     model.train()
     optimizer.zero_grad()
     new_data1 = random_aug(data, args.fmr, args.edr)
     new_data2 = random_aug(data, args.fmr, args.edr)
     z1, z2 = model(new_data1, new_data2)   
-    loss = model.loss(z1, z2)
+    loss = model.loss(z1, z2, ratio)
     loss.backward()
     optimizer.step()
     return loss.item()
 
 results =[]
-for exp in range(args.n_experiments): 
+# for exp in range(args.n_experiments): 
+for ratio in torch.linspace(0,1,11):
     if args.split == "PublicSplit":
         transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)]) #, T.RandomNodeSplit(split="random", 
                                                                          #                   num_train_per_class = 20,
@@ -90,7 +91,7 @@ for exp in range(args.n_experiments):
     model = SelfGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp=False)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
-        loss = train(model, data)
+        loss = train(model, data, ratio)
         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
@@ -152,24 +153,24 @@ for exp in range(args.n_experiments):
 
 # visualize_umap(test_embs, test_labels.numpy())    
 # visualize_tsne(test_embs, test_labels.numpy())
-visualize_pca(test_embs, test_labels.numpy(), 1, 2)
-visualize_pca(test_embs, test_labels.numpy(), 1, 3)
-visualize_pca(test_embs, test_labels.numpy(), 2, 3)
+# visualize_pca(test_embs, test_labels.numpy(), 1, 2)
+# visualize_pca(test_embs, test_labels.numpy(), 1, 3)
+# visualize_pca(test_embs, test_labels.numpy(), 2, 3)
 
-from sklearn.metrics import silhouette_score
-from sklearn.metrics import davies_bouldin_score
-from sklearn.metrics import calinski_harabasz_score
+# from sklearn.metrics import silhouette_score
+# from sklearn.metrics import davies_bouldin_score
+# from sklearn.metrics import calinski_harabasz_score
 
-results2 = []
+# results2 = []
 
-sil = silhouette_score(test_embs,test_labels.numpy())
-dav = davies_bouldin_score(test_embs,test_labels.numpy())
-cal =calinski_harabasz_score(test_embs,test_labels.numpy())
-print(sil, dav, cal)
+# sil = silhouette_score(test_embs,test_labels.numpy())
+# dav = davies_bouldin_score(test_embs,test_labels.numpy())
+# cal =calinski_harabasz_score(test_embs,test_labels.numpy())
+# print(sil, dav, cal)
 # print(silhouette_score(test_logits,test_labels.numpy()))
 # print(davies_bouldin_score(test_logits,test_labels.numpy()))
 # print(calinski_harabasz_score(test_logits,test_labels.numpy()))
-file_path2 = os.getcwd() + args.embeddings
-results2 += [[args.model, args.dataset, sil, dav, cal]]
-res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
-res2.to_csv(file_path2 + "_" + args.dataset +  ".csv", index=False)
+# file_path2 = os.getcwd() + args.embeddings
+# results2 += [[args.model, args.dataset, sil, dav, cal]]
+# res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
+# res2.to_csv(file_path2 + "_" + args.dataset +  ".csv", index=False)
