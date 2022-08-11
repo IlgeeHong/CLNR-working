@@ -1,0 +1,12 @@
+model,dataset,ratio,accuracy
+SelfGCon,CiteSeer,tensor(0.),0.7260000109672546
+SelfGCon,CiteSeer,tensor(0.1000),0.7240000367164612
+SelfGCon,CiteSeer,tensor(0.2000),0.7230000495910645
+SelfGCon,CiteSeer,tensor(0.3000),0.7240000367164612
+SelfGCon,CiteSeer,tensor(0.4000),0.7320000529289246
+SelfGCon,CiteSeer,tensor(0.5000),0.7350000143051147
+SelfGCon,CiteSeer,tensor(0.6000),0.7280000448226929
+SelfGCon,CiteSeer,tensor(0.7000),0.7290000319480896
+SelfGCon,CiteSeer,tensor(0.8000),0.7320000529289246
+SelfGCon,CiteSeer,tensor(0.9000),0.7270000576972961
+SelfGCon,CiteSeer,tensor(1.),0.7330000400543213
