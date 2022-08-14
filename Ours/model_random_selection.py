@@ -99,7 +99,7 @@ class SelfGCon(nn.Module):
         indices = torch.LongTensor(random.sample(range(N), k))
 
         return -torch.log(
-            between_sim.diag()
+            between_sim.diag() 
             / (between_sim[:,indices].sum(1) + refl_sim[:,indices].sum(1) - refl_sim.diag() + 1e-6))
 
     def loss(self, z1, z2, ratio, mean = True):
