@@ -48,7 +48,7 @@ def train(model, data, ratio):
     return loss.item()
 
 results =[]
-for ratio in torch.linspace(0.01,1.1,10):
+for ratio in torch.linspace(0.01,0.1,10):
     eval_acc_list = []
     for exp in range(args.n_experiments): 
         if args.split == "PublicSplit":
