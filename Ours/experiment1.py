@@ -11,7 +11,7 @@ from statistics import mean
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 
-from model_random_selection import * ############## model
+from model_random_selection1 import * ############## model
 from aug import *
 # from cluster import *
 
