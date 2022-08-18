@@ -152,5 +152,5 @@ for ratio in [0.01, 0.1, 0.5, 1]: #torch.linspace(0.1,1,10):
         # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
         # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
         results += [[args.model, args.dataset, ratio, eval_acc.item()]] #ratio.item()eval_acc_mean, eval_acc_std
-        res1 = pd.DataFrame(results, columns=['model', 'dataset', 'ratio', 'accuracy', 'std'])
+        res1 = pd.DataFrame(results, columns=['model', 'dataset', 'ratio', 'accuracy'])
         res1.to_csv(file_path + "_" + args.dataset +  ".csv", index=False)
