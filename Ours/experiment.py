@@ -145,12 +145,12 @@ for ratio in [0.01, 0.1, 0.5, 1]: #torch.linspace(0.1,1,10):
                     best_val_acc = val_acc
                     if test_acc > eval_acc:
                         eval_acc = test_acc
-        eval_acc_list.append(eval_acc.item())
-    eval_acc_mean = mean(eval_acc_list)
-    eval_acc_std = stdev(eval_acc_list)
+        # eval_acc_list.append(eval_acc.item())
+    # eval_acc_mean = mean(eval_acc_list)
+    # eval_acc_std = stdev(eval_acc_list)
         # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
         # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
         # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    results += [[args.model, args.dataset, ratio, eval_acc_mean, eval_acc_std]] #ratio.item()
-    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'ratio', 'accuracy', 'std'])
-    res1.to_csv(file_path + "_" + args.dataset +  ".csv", index=False)
+        results += [[args.model, args.dataset, ratio, eval_acc.item()]] #ratio.item()eval_acc_mean, eval_acc_std
+        res1 = pd.DataFrame(results, columns=['model', 'dataset', 'ratio', 'accuracy', 'std'])
+        res1.to_csv(file_path + "_" + args.dataset +  ".csv", index=False)
