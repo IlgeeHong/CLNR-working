@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import pandas as pd
-from statistics import mean
+from statistics import mean, stdev
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 
@@ -30,7 +30,7 @@ parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--edr', type=float, default=0.3)
 parser.add_argument('--fmr', type=float, default=0.3)
-parser.add_argument('--result_file', type=str, default="/Ours/results/experiments")
+parser.add_argument('--result_file', type=str, default="/Ours/results/ratio_pubmed")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
@@ -48,7 +48,7 @@ def train(model, data, ratio):
     return loss.item()
 
 results =[]
-for ratio in torch.linspace(0.1,1,10):
+for ratio in [0.01, 0.1, 0.5, 1]: #torch.linspace(0.1,1,10):
     eval_acc_list = []
     for exp in range(args.n_experiments): 
         if args.split == "PublicSplit":
@@ -147,9 +147,10 @@ for ratio in torch.linspace(0.1,1,10):
                         eval_acc = test_acc
         eval_acc_list.append(eval_acc.item())
     eval_acc_mean = mean(eval_acc_list)
+    eval_acc_std = stdev(eval_acc_list)
         # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
         # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
         # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    results += [[args.model, args.dataset, ratio.item(), eval_acc_mean]]
-    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'ratio', 'accuracy'])
+    results += [[args.model, args.dataset, ratio.item(), eval_acc_mean, eval_acc_std]]
+    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'ratio', 'accuracy', 'std'])
     res1.to_csv(file_path + "_" + args.dataset +  ".csv", index=False)
