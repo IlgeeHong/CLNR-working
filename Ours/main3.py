@@ -16,20 +16,20 @@ from aug import *
 # from cluster import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='SelfGCon')
-parser.add_argument('--dataset', type=str, default='PubMed')
+parser.add_argument('--model', type=str, default='SemiGCon')
+parser.add_argument('--dataset', type=str, default='Cora')
 parser.add_argument('--split', type=str, default='PublicSplit')
 parser.add_argument('--epochs', type=int, default=50)
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--n_layers', type=int, default=2) 
-parser.add_argument('--channels', type=int, default=256) 
+parser.add_argument('--channels', type=int, default=512) 
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3) 
-parser.add_argument('--lr2', type=float, default=5e-3)
+parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd1', type=float, default=0.0)
-parser.add_argument('--wd2', type=float, default=1e-4)
-parser.add_argument('--edr', type=float, default=0.3)
-parser.add_argument('--fmr', type=float, default=0.5)
+parser.add_argument('--wd2', type=float, default=1e-2)
+parser.add_argument('--edr', type=float, default=0.0)
+parser.add_argument('--fmr', type=float, default=0.0)
 parser.add_argument('--result_file', type=str, default="/Ours/results/Final_accuracy")
 args = parser.parse_args()
 
@@ -49,11 +49,22 @@ def train(model, data):
     optimizer.step()
     return loss.item()
 
+def train_semi(model, data, num_per_class, pos_idx):
+    model.train()
+    optimizer.zero_grad()
+    new_data1 = random_aug(data, args.fmr, args.edr)
+    new_data2 = random_aug(data, args.fmr, args.edr)
+    z1, z2 = model(new_data1, new_data2)   
+    loss = model.loss(z1, z2, num_per_class, pos_idx)
+    loss.backward()
+    optimizer.step()
+    return loss.item()
+
 results =[]
 for exp in range(args.n_experiments): 
     if args.split == "PublicSplit":
         transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)]) #, T.RandomNodeSplit(split="random", 
-                                                                         #                   num_train_per_class = 20,
+        num_per_class = 20                                                                 #                   num_train_per_class = 20,
                                                                          #                   num_val = 500,
                                                                          #                   num_test = 1000)])
     if args.split == "RandomSplit":
@@ -84,13 +95,20 @@ for exp in range(args.n_experiments):
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
 
+    class_idx = []
+    for c in range(num_class):
+        index = (data.y == c) * train_idx
+        class_idx.append(index)
+    class_idx = torch.stack(class_idx).bool()
+    pos_idx = class_idx[data.y]
+
     ##### Train the SelfGCon model #####
     print("=== train SelfGCon model ===")
-    model = SelfGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp=False)
+    model = SemiGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp=False)
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
-        loss = train(model, data)
+        loss = train_semi(model, data, num_per_class, pos_idx)
         # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
