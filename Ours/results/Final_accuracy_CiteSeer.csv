@@ -1,21 +1,21 @@
 model,dataset,epochs,layers,tau,lr1,lr2,wd2,channels,edge_drop_rate,feat_mask_rate,accuracy
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7300, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7260, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7180, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7200, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7350, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7220, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7310, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7350, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7260, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7220, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7240, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7300, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7140, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7350, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7160, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7170, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7280, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7190, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7340, device='cuda:0')"
-SelfGCon,CiteSeer,50,1,0.5,0.001,0.01,0.01,512,0.2,0.2,"tensor(0.7280, device='cuda:0')"
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9310000538825989
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9280000329017639
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9310000538825989
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9350000619888306
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9330000281333923
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9310000538825989
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9350000619888306
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9320000410079956
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9360000491142273
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9290000200271606
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9300000667572021
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9310000538825989
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9310000538825989
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9310000538825989
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9310000538825989
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9340000152587891
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.937000036239624
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9320000410079956
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9340000152587891
+SemiGCon,CiteSeer,50,2,0.5,0.001,0.005,0.0001,512,0.0,0.0,0.9320000410079956
