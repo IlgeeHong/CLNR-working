@@ -103,6 +103,7 @@ for exp in range(args.n_experiments):
         class_idx.append(index)
     class_idx = torch.stack(class_idx).bool()
     pos_idx = class_idx[data.y]
+    pos_idx = pos_idx.to(device)
 
     ##### Train the SelfGCon model #####
     print("=== train SelfGCon model ===")
