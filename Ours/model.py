@@ -136,7 +136,7 @@ class SemiGCon(nn.Module):
         refl_sim = f(self.sim(z1, z1))
         between_sim = f(self.sim(z1, z2))
         N = between_sim.shape[1]
-        pdb.set_trace()
+        # pdb.set_trace()
         return -torch.log(
             (between_sim[pos_idx].reshape(N,num_per_class).sum(1) + refl_sim[pos_idx].reshape(N,num_per_class).sum(1) - refl_sim.diag())
             / (2*num_per_class-1)*(between_sim.sum(1) + refl_sim.sum(1) - refl_sim.diag()))
