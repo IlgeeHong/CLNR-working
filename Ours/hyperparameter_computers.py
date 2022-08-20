@@ -66,7 +66,7 @@ for channels in [256, 512]:
                                     dataset = Coauthor(args.dataset, 'public', transform=transform)
                                     data = dataset[0]
                                 if args.dataset in ['Computers', 'Photo']:
-                                    dataset = Amazon("/scratch/midway3/ilgee/SelfGCon/Computers", args.dataset, transform=transform)
+                                    dataset = Amazon("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
                                     data = dataset[0]
 
                                 train_idx = data.train_mask 
