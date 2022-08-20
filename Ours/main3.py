@@ -54,6 +54,8 @@ def train_semi(model, data, num_per_class, pos_idx):
     optimizer.zero_grad()
     new_data1 = random_aug(data, args.fmr, args.edr)
     new_data2 = random_aug(data, args.fmr, args.edr)
+    new_data1 = new_data1.to(device)
+    new_data2 = new_data2.to(device)
     z1, z2 = model(new_data1, new_data2)   
     loss = model.loss(z1, z2, num_per_class, pos_idx)
     loss.backward()
