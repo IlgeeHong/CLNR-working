@@ -24,7 +24,6 @@ parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/results/Hyperparameter")
 parser.add_argument('--n_experiments', type=int, default=10)
-parser.add_argument('--lambd', type=float, default=1e-3)
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
