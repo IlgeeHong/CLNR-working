@@ -79,7 +79,6 @@ for exp in range(args.n_experiments):
     hid_dim = args.channels
     out_dim = args.channels
     n_layers = args.n_layers
-    tau = args.tau
 
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
