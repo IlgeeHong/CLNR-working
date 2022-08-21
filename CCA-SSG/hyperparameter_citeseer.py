@@ -44,13 +44,13 @@ def train(model, data, fmr, edr):
 
 results =[]
 for channels in [512]:
-    for n_layers in [2]:
+    for n_layers in [1]:
         for lambd in [1e-3, 5e-4]: 
             for edr in [0.1, 0.2, 0.3, 0.4, 0.5]:
                 for fmr in [0.1, 0.2, 0.3, 0.4, 0.5]: 
                     for lr2 in [1e-2, 5e-3]:  
-                        for wd2 in [1e-2, 1e-4]:
-                            for epochs in [20, 50, 100]:
+                        for wd2 in [1e-2]:
+                            for epochs in [20]:
                                 best_val_acc_list = []
                                 for exp in range(args.n_experiments): 
                                     if args.split == "PublicSplit":
