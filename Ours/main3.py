@@ -97,12 +97,12 @@ for exp in range(args.n_experiments):
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
 
-    class_idx = []
-    for c in range(num_class):
-        index = (data.y == c) * train_idx
-        class_idx.append(index)
-    class_idx = torch.stack(class_idx).bool()
-    pos_idx = class_idx[data.y]
+    # class_idx = []
+    # for c in range(num_class):
+    #     index = (data.y == c) * train_idx
+    #     class_idx.append(index)
+    # class_idx = torch.stack(class_idx).bool()
+    # pos_idx = class_idx[data.y]
 
     ##### Train the SelfGCon model #####
     print("=== train SelfGCon model ===")
