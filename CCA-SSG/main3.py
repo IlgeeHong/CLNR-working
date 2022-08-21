@@ -92,7 +92,7 @@ for exp in range(args.n_experiments):
 
     ##### Train the SelfGCon model #####
     print("=== train SelfGCon model ===")
-    model = CCA_SSG(in_dim, hid_dim, out_dim, n_layers, args.lambd, use_mlp=False) #
+    model = CCA_SSG(in_dim, hid_dim, out_dim, n_layers, args.lambd, N, use_mlp=False) #
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
