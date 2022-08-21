@@ -56,10 +56,10 @@ class GCN(nn.Module):
                 self.convs.append(GCNConv(hid_dim, hid_dim))
             self.convs.append(GCNConv(hid_dim, out_dim))
 
-    def forward(self, x, edge_index):
+    def forward(self, x, edge_index, edge_weight=None):
 
         for i in range(self.n_layers - 1):
-            x = F.relu(self.convs[i](x, edge_index))
+            x = F.relu(self.convs[i](x, edge_index, edge_weight = edge_weight))
         x = self.convs[-1](x, edge_index)
 
         return x
@@ -75,12 +75,12 @@ class SelfGCon(nn.Module):
         self.tau = tau
 
     def get_embedding(self, data):
-        out = self.backbone(data.x, data.edge_index)
+        out = self.backbone(data.x, data.edge_index, edge_weight = data.edge_attr)
         return out.detach()
 
     def forward(self, data1, data2):
-        h1 = self.backbone(data1.x, data1.edge_index)
-        h2 = self.backbone(data2.x, data2.edge_index)
+        h1 = self.backbone(data1.x, data1.edge_index, edge_weight = data1.edge_attr)
+        h2 = self.backbone(data2.x, data2.edge_index, edge_weight = data2.edge_attr)
         z1 = (h1 - h1.mean(0)) / h1.std(0)
         z2 = (h2 - h2.mean(0)) / h2.std(0)
         return z1, z2
@@ -116,12 +116,12 @@ class SemiGCon(nn.Module):
         self.tau = tau
 
     def get_embedding(self, data):
-        out = self.backbone(data.x, data.edge_index)
+        out = self.backbone(data.x, data.edge_index, edge_weight = data.edge_attr)
         return out.detach()
 
     def forward(self, data1, data2):
-        h1 = self.backbone(data1.x, data1.edge_index)
-        h2 = self.backbone(data2.x, data2.edge_index)
+        h1 = self.backbone(data1.x, data1.edge_index, edge_weight = data1.edge_attr)
+        h2 = self.backbone(data2.x, data2.edge_index, edge_weight = data2.edge_attr)
         z1 = (h1 - h1.mean(0)) / h1.std(0)
         z2 = (h2 - h2.mean(0)) / h2.std(0)
         return z1, z2
