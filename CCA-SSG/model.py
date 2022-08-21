@@ -9,6 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class LogReg(nn.Module):
     def __init__(self, hid_dim, out_dim):
@@ -91,7 +92,7 @@ class CCA_SSG(nn.Module):
         c1 = c1 / self.N
         c2 = c2 / self.N
         loss_inv = - torch.diagonal(c).sum()
-        iden = torch.tensor(np.eye(c.shape[0]))
+        iden = torch.tensor(np.eye(c.shape[0])).to(device)
         loss_dec1 = (iden - c1).pow(2).sum()
         loss_dec2 = (iden - c2).pow(2).sum()
         lambd = self.lambd
