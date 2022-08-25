@@ -22,7 +22,7 @@ parser.add_argument('--split', type=str, default='RandomSplit')
 parser.add_argument('--lr1', type=float, default=1e-3) 
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/results/Hyperparameter")
+parser.add_argument('--result_file', type=str, default="/Ours/hyperparameter/results/Hyperparameter")
 parser.add_argument('--n_experiments', type=int, default=10)
 parser.add_argument('--tau', type=float, default=0.5)
 args = parser.parse_args()
@@ -45,7 +45,7 @@ def train(model, data, fmr, edr):
 
 results =[]
 for channels in [256, 512]:
-    for n_layers in [1, 2]: 
+    for n_layers in [2]: 
         for edr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]:
             for fmr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]: 
                 for lr2 in [1e-2, 5e-3]:  
@@ -56,9 +56,7 @@ for channels in [256, 512]:
                                 if args.split == "PublicSplit":
                                     transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)]) 
                                 if args.split == "RandomSplit":
-                                    transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device), T.RandomNodeSplit(split="train_rest", 
-                                                                                                                        num_val = 0.1,
-                                                                                                                        num_test = 0.8)])  
+                                    transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])  
                                 if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
                                     dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
                                     data = dataset[0]
