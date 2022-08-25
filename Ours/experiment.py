@@ -21,14 +21,14 @@ parser.add_argument('--dataset', type=str, default='PubMed') #
 parser.add_argument('--split', type=str, default='PublicSplit')
 parser.add_argument('--epochs', type=int, default=50) 
 parser.add_argument('--n_experiments', type=int, default=20)
-parser.add_argument('--n_layers', type=int, default=1) 
+parser.add_argument('--n_layers', type=int, default=2) 
 parser.add_argument('--channels', type=int, default=256) 
 parser.add_argument('--tau', type=float, default=0.5)
 parser.add_argument('--lr1', type=float, default=1e-3) 
-parser.add_argument('--lr2', type=float, default=5e-3)
+parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-4)
-parser.add_argument('--edr', type=float, default=0.2)
+parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--fmr', type=float, default=0.3)
 parser.add_argument('--result_file', type=str, default="/Ours/results/ratio")
 args = parser.parse_args()
@@ -48,7 +48,7 @@ def train(model, data, ratio):
     return loss.item()
 
 results =[]
-for ratio in [0.01, 0.1, 0.5]: #torch.linspace(0.1,1,10):
+for ratio in [0.005, 0.01, 0.1, 0.5]: #torch.linspace(0.1,1,10):
     eval_acc_list = []
     for exp in range(args.n_experiments): 
         if args.split == "PublicSplit":
