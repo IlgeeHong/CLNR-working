@@ -17,19 +17,20 @@ from aug import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='SelfGCon') #SemiGCon
-parser.add_argument('--dataset', type=str, default='PubMed')
-parser.add_argument('--split', type=str, default='PublicSplit') #PublicSplit
+parser.add_argument('--dataset', type=str, default='CS')
+parser.add_argument('--split', type=str, default='RandomSplit') #PublicSplit
 parser.add_argument('--epochs', type=int, default=50)
-parser.add_argument('--n_experiments', type=int, default=20)
+parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--n_layers', type=int, default=2) 
-parser.add_argument('--channels', type=int, default=256) 
+parser.add_argument('--channels', type=int, default=512) 
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3) 
-parser.add_argument('--lr2', type=float, default=1e-2)
+parser.add_argument('--lr2', type=float, default=5e-3)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-4)
-parser.add_argument('--edr', type=float, default=0.5)
-parser.add_argument('--fmr', type=float, default=0.3)
+parser.add_argument('--edr', type=float, default=0.2)
+parser.add_argument('--fmr', type=float, default=0.2)
+parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/results/Final_accuracy")
 args = parser.parse_args()
 
@@ -65,20 +66,18 @@ def train_semi(model, data, num_per_class, pos_idx):
 results =[]
 for exp in range(args.n_experiments): 
     if args.split == "PublicSplit":
-        transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)]) #, T.RandomNodeSplit(split="random", 
-        num_per_class = 20                                                                 #                   num_train_per_class = 20,
-                                                                         #                   num_val = 500,
-                                                                         #                   num_test = 1000)])
+        transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)]) 
+        num_per_class = 20                                                
+                                                                       
     if args.split == "RandomSplit":
-        transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device), T.RandomNodeSplit(split="train_rest", 
-                                                                                            num_val = 0.1,
-                                                                                            num_test = 0.8)])                                                                                       
+        transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])                                                                                       
 
     if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
         dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
         data = dataset[0]
-    if args.dataset in ['cs', 'physics']:
-        dataset = Coauthor(args.dataset, 'public', transform=transform)
+
+    if args.dataset in ['CS', 'Physics']:
+        dataset = Coauthor("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
         data = dataset[0]
     if args.dataset in ['Computers', 'Photo']:
         dataset = Amazon("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
@@ -106,7 +105,7 @@ for exp in range(args.n_experiments):
 
     ##### Train the SelfGCon model #####
     print("=== train SelfGCon model ===")
-    model = SelfGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp=False) #
+    model = SelfGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp=args.mlp_use) #
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
