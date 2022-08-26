@@ -12,7 +12,7 @@ from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 from torch_geometric.utils import to_dense_adj
 from torch_geometric.utils import add_self_loops
-from model import *
+from model_random_selection2 import * ## model
 from aug import *
 
 parser = argparse.ArgumentParser()
@@ -30,7 +30,7 @@ args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data, fmr, edr):
+def train(model, data, fmr, edr, k):
     model.train()
     optimizer.zero_grad()
     new_data1 = random_aug(data, fmr, edr)
@@ -38,7 +38,7 @@ def train(model, data, fmr, edr):
     new_data1 = new_data1.to(device)
     new_data2 = new_data2.to(device)
     z1, z2 = model(new_data1, new_data2)   
-    loss = model.loss(z1, z2)
+    loss = model.loss(z1, z2, k)
     loss.backward()
     optimizer.step()
     return loss.item()
@@ -82,7 +82,7 @@ for channels in [256, 512]:
                                 model = model.to(device)
                                 optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)                       
                                 for epoch in range(epochs):
-                                    loss = train(model, data, fmr, edr)
+                                    loss = train(model, data, fmr, edr, k = 2048)
                                 embeds = model.get_embedding(data)
                                 train_embs = embeds[train_idx]
                                 val_embs = embeds[val_idx]
