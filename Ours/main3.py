@@ -11,15 +11,15 @@ import pandas as pd
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 
-from model import * 
+from model_random_selection2 import * ##
 from aug import *
 # from cluster import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='SelfGCon') #SemiGCon
-parser.add_argument('--dataset', type=str, default='CS')
+parser.add_argument('--dataset', type=str, default='Physics')
 parser.add_argument('--split', type=str, default='RandomSplit') #PublicSplit
-parser.add_argument('--epochs', type=int, default=20)
+parser.add_argument('--epochs', type=int, default=50)
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--n_layers', type=int, default=2) 
 parser.add_argument('--channels', type=int, default=512) 
@@ -29,7 +29,7 @@ parser.add_argument('--lr2', type=float, default=5e-3)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--edr', type=float, default=0.5)
-parser.add_argument('--fmr', type=float, default=0.1)
+parser.add_argument('--fmr', type=float, default=0.5)
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/results/Final_accuracy")
 args = parser.parse_args()
@@ -37,7 +37,7 @@ args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data):
+def train(model, data, k):
     model.train()
     optimizer.zero_grad()
     new_data1 = random_aug(data, args.fmr, args.edr)
@@ -45,10 +45,23 @@ def train(model, data):
     new_data1 = new_data1.to(device)
     new_data2 = new_data2.to(device)
     z1, z2 = model(new_data1, new_data2)   
-    loss = model.loss(z1, z2)
+    loss = model.loss(z1, z2, k)
     loss.backward()
     optimizer.step()
     return loss.item()
+
+# def train(model, data):
+#     model.train()
+#     optimizer.zero_grad()
+#     new_data1 = random_aug(data, args.fmr, args.edr)
+#     new_data2 = random_aug(data, args.fmr, args.edr)
+#     new_data1 = new_data1.to(device)
+#     new_data2 = new_data2.to(device)
+#     z1, z2 = model(new_data1, new_data2)   
+#     loss = model.loss(z1, z2)
+#     loss.backward()
+#     optimizer.step()
+#     return loss.item()
 
 def train_semi(model, data, num_per_class, pos_idx):
     model.train()
@@ -109,7 +122,7 @@ for exp in range(args.n_experiments):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
-        loss = train(model, data) #train_semi(model, data, num_per_class, pos_idx)
+        loss = train(model, data, k = 2048) #train_semi(model, data, num_per_class, pos_idx)
         # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
