@@ -90,7 +90,7 @@ class SelfGCon(nn.Module):
         z1 = F.normalize(z1)
         z2 = F.normalize(z2)
         if k is not None:
-            N = z1.shape[1]
+            N = z1.shape[0]
             indices = torch.LongTensor(random.sample(range(N), k))
             z2_new = z2[indices,:]
             return torch.mm(z1, z2_new.t()), torch.mm(z1,z2.t()).diag()
@@ -101,7 +101,7 @@ class SelfGCon(nn.Module):
         f = lambda x: torch.exp(x / self.tau) 
         refl_sim, refl_diag = f(self.sim(z1, z1, k)[0]), f(self.sim(z1, z1, k)[1])
         between_sim, between_diag = f(self.sim(z1, z2, k)[0]), f(self.sim(z1, z2, k)[1])
-
+        pdb.set_trace()
         return -torch.log(
             between_diag
             / (between_sim.sum(1) + refl_sim.sum(1) - refl_diag)) # + 1e-6
