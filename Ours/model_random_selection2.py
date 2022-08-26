@@ -101,7 +101,7 @@ class SelfGCon(nn.Module):
         f = lambda x: torch.exp(x / self.tau) 
         refl_sim, refl_diag = f(self.sim(z1, z1, k)[0]), f(self.sim(z1, z1, k)[1])
         between_sim, between_diag = f(self.sim(z1, z2, k)[0]), f(self.sim(z1, z2, k)[1])
-        pdb.set_trace()
+        # pdb.set_trace()
         return -torch.log(
             between_diag
             / (between_sim.sum(1) + refl_sim.sum(1) - refl_diag)) # + 1e-6
