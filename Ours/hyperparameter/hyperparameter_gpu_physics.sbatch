@@ -24,7 +24,7 @@ source activate pytorch_env
 cd $SCRATCH/$USER/SelfGCon
 echo $1
 echo $2
-python3 Ours/hyperparameter_pubmed.py
+python3 Ours/hyperparameter/hyperparameter_physics.py
 conda deactivate
 ~
 ~
