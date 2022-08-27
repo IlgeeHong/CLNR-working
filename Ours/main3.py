@@ -29,7 +29,7 @@ parser.add_argument('--lr2', type=float, default=5e-3)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--edr', type=float, default=0.5)
-parser.add_argument('--fmr', type=float, default=0.5)
+parser.add_argument('--fmr', type=float, default=0.2)
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/results/Final_accuracy")
 args = parser.parse_args()
@@ -37,7 +37,7 @@ args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data, k):
+def train(model, data, k=None):
     model.train()
     optimizer.zero_grad()
     new_data1 = random_aug(data, args.fmr, args.edr)
@@ -84,11 +84,9 @@ for exp in range(args.n_experiments):
                                                                        
     if args.split == "RandomSplit":
         transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])                                                                                       
-
     if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
         dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
         data = dataset[0]
-
     if args.dataset in ['CS', 'Physics']:
         dataset = Coauthor("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
         data = dataset[0]
