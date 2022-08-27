@@ -32,7 +32,7 @@ class MLP(nn.Module):
         self.use_bn = use_bn
         self.act_fn = nn.ReLU()
 
-    def forward(self, _, x):
+    def forward(self, x, _):
         x = self.layer1(x)
         if self.use_bn:
             x = self.bn(x)
@@ -67,7 +67,7 @@ class GCN(nn.Module):
 
 
 class SelfGCon(nn.Module):
-    def __init__(self, in_dim, hid_dim, out_dim, n_layers, tau = 0.5, use_mlp = False):
+    def __init__(self, in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = False):
         super().__init__()
         if not use_mlp:
             self.backbone = GCN(in_dim, hid_dim, out_dim, n_layers)
@@ -93,18 +93,18 @@ class SelfGCon(nn.Module):
             N = z1.shape[0]
             indices = torch.LongTensor(random.sample(range(N), k))
             z2_new = z2[indices,:]
-            return torch.mm(z1, z2_new.t()), torch.mm(z1,z2.t()).diag()
+            sim = torch.mm(z1, z2_new.t())
+            diag = torch.mm(z1,z2.t()).diag()
         else:
-            return torch.mm(z1, z2.t()), torch.mm(z1, z2.t()).diag()
+            sim = torch.mm(z1, z2.t())
+            diag = torch.mm(z1, z2.t()).diag()
+        return sim, diag
     
     def semi_loss(self, z1, z2, k=None):
         f = lambda x: torch.exp(x / self.tau) 
         refl_sim, refl_diag = f(self.sim(z1, z1, k)[0]), f(self.sim(z1, z1, k)[1])
         between_sim, between_diag = f(self.sim(z1, z2, k)[0]), f(self.sim(z1, z2, k)[1])
-        # pdb.set_trace()
-        return -torch.log(
-            between_diag
-            / (between_sim.sum(1) + refl_sim.sum(1) - refl_diag)) # + 1e-6
+        return -torch.log(between_diag / (between_sim.sum(1) + refl_sim.sum(1) - refl_diag))
 
     def loss(self, z1, z2, k=None, mean = True):
         l1 = self.semi_loss(z1, z2, k)
