@@ -31,7 +31,7 @@ parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--edr', type=float, default=0.4)
 parser.add_argument('--fmr', type=float, default=0.2)
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/results/Final_accuracy")
+parser.add_argument('--result_file', type=str, default="/Ours/results/Final_accuracy_64")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
@@ -120,7 +120,7 @@ for exp in range(args.n_experiments):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
-        loss = train(model, data, k = 100) #train_semi(model, data, num_per_class, pos_idx)
+        loss = train(model, data, k = 64) #train_semi(model, data, num_per_class, pos_idx)
         # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
