@@ -12,7 +12,7 @@ from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 from torch_geometric.utils import to_dense_adj
 from torch_geometric.utils import add_self_loops
-from model import *
+from model_random_selection2 import * ## model
 from aug import *
 
 parser = argparse.ArgumentParser()
@@ -30,7 +30,7 @@ args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data, fmr, edr):
+def train(model, data, fmr, edr, k):
     model.train()
     optimizer.zero_grad()
     new_data1 = random_aug(data, fmr, edr)
@@ -38,7 +38,7 @@ def train(model, data, fmr, edr):
     new_data1 = new_data1.to(device)
     new_data2 = new_data2.to(device)
     z1, z2 = model(new_data1, new_data2)   
-    loss = model.loss(z1, z2)
+    loss = model.loss(z1, z2, k)
     loss.backward()
     optimizer.step()
     return loss.item()
@@ -56,12 +56,12 @@ for channels in [256, 512]:
                                 if args.split == "PublicSplit":
                                     transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)]) 
                                 if args.split == "RandomSplit":
-                                    transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])  
+                                    transform = T.Compose([T.ToDevice(device),T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
                                 if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
                                     dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
                                     data = dataset[0]
-                                if args.dataset in ['cs', 'physics']:
-                                    dataset = Coauthor(args.dataset, 'public', transform=transform)
+                                if args.dataset in ['CS', 'Physics']:
+                                    dataset = Coauthor("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
                                     data = dataset[0]
                                 if args.dataset in ['Computers', 'Photo']:
                                     dataset = Amazon("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
