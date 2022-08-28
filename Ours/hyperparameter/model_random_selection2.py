@@ -32,7 +32,7 @@ class MLP(nn.Module):
         self.use_bn = use_bn
         self.act_fn = nn.ReLU()
 
-    def forward(self, _, x):
+    def forward(self, x, _):
         x = self.layer1(x)
         if self.use_bn:
             x = self.bn(x)
