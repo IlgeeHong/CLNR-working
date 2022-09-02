@@ -11,25 +11,25 @@ import pandas as pd
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 
-from model_random_selection2 import * ##
+from model_random_selection2 import * 
 from aug import *
 # from cluster import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='SelfGCon') #SemiGCon
-parser.add_argument('--dataset', type=str, default='Photo')
-parser.add_argument('--split', type=str, default='RandomSplit') #PublicSplit
+parser.add_argument('--model', type=str, default='SemiGCon') #SemiGCon
+parser.add_argument('--dataset', type=str, default='Cora')
+parser.add_argument('--split', type=str, default='PublicSplit') #PublicSplit
 parser.add_argument('--epochs', type=int, default=50)
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--n_layers', type=int, default=2) 
 parser.add_argument('--channels', type=int, default=512) 
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3) 
-parser.add_argument('--lr2', type=float, default=1e-2)
+parser.add_argument('--lr2', type=float, default=5e-3)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--edr', type=float, default=0.5)
-parser.add_argument('--fmr', type=float, default=0.0)
+parser.add_argument('--fmr', type=float, default=0.1)
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/hyperparameter/results/Final_accuracy")
 args = parser.parse_args()
@@ -50,20 +50,7 @@ def train(model, data, k=None):
     optimizer.step()
     return loss.item()
 
-# def train(model, data):
-#     model.train()
-#     optimizer.zero_grad()
-#     new_data1 = random_aug(data, args.fmr, args.edr)
-#     new_data2 = random_aug(data, args.fmr, args.edr)
-#     new_data1 = new_data1.to(device)
-#     new_data2 = new_data2.to(device)
-#     z1, z2 = model(new_data1, new_data2)   
-#     loss = model.loss(z1, z2)
-#     loss.backward()
-#     optimizer.step()
-#     return loss.item()
-
-def train_semi(model, data, num_per_class, pos_idx):
+def train_semi(model, data, num_class, train_idx, k=None):
     model.train()
     optimizer.zero_grad()
     new_data1 = random_aug(data, args.fmr, args.edr)
@@ -71,7 +58,7 @@ def train_semi(model, data, num_per_class, pos_idx):
     new_data1 = new_data1.to(device)
     new_data2 = new_data2.to(device)
     z1, z2 = model(new_data1, new_data2)   
-    loss = model.loss(z1, z2, num_per_class, pos_idx)
+    loss = model.loss(data, z1, z2, num_class, train_idx, k)
     loss.backward()
     optimizer.step()
     return loss.item()
@@ -80,8 +67,7 @@ results =[]
 for exp in range(args.n_experiments):      
     if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
         if args.split == "PublicSplit":
-            transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)]) 
-            num_per_class = 20                                                                                                                  
+            transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
         if args.split == "RandomSplit":
             transform = T.Compose([T.NormalizeFeatures(), T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
@@ -108,24 +94,16 @@ for exp in range(args.n_experiments):
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
 
-    # class_idx = []
-    # for c in range(num_class):
-    #     index = (data.y == c) * train_idx
-    #     class_idx.append(index)
-    # class_idx = torch.stack(class_idx).bool()
-    # pos_idx = class_idx[data.y]
-
     ##### Train the SelfGCon model #####
     print("=== train SelfGCon model ===")
-    model = SelfGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp=args.mlp_use) #
+    model = SemiGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use) #
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
-        loss = train(model, data) #train_semi(model, data, num_per_class, pos_idx)
+        loss = train_semi(model, data, num_class, train_idx)  # train(model, data)
         # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
-
     train_embs = embeds[train_idx]
     val_embs = embeds[val_idx]
     test_embs = embeds[test_idx]
