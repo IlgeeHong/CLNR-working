@@ -31,7 +31,7 @@ parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--fmr', type=float, default=0.1)
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/hyperparameter/results/Final_accuracy")
+parser.add_argument('--result_file', type=str, default="/Ours/hyperparameter1/results/Final_accuracy")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
