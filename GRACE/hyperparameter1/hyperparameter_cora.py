@@ -42,8 +42,8 @@ def train(model, data, fmr, edr):
     return loss.item()
 
 results =[]
-for channels in []:
-    for proj_hid_dim in []:
+for channels in [256]:
+    for proj_hid_dim in [256]:
         for tau in [0.1, 0.3, 0.5, 0.7, 0.9]:
             for n_layers in [2]: 
                 for edr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]:
@@ -58,11 +58,9 @@ for channels in []:
                                                 transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)]) 
                                             if args.split == "RandomSplit":
                                                 transform = T.Compose([T.ToDevice(device),T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
-
                                             if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
                                                 dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
                                                 data = dataset[0]
-
                                             train_idx = data.train_mask 
                                             val_idx = data.val_mask 
                                             test_idx = data.test_mask  
