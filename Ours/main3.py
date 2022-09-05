@@ -17,7 +17,7 @@ from aug import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='SemiGCon') #SemiGCon
-parser.add_argument('--dataset', type=str, default='Computers')
+parser.add_argument('--dataset', type=str, default='Photo')
 parser.add_argument('--split', type=str, default='RandomSplit') #PublicSplit
 parser.add_argument('--epochs', type=int, default=50)
 parser.add_argument('--n_experiments', type=int, default=20)
@@ -25,7 +25,7 @@ parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--channels', type=int, default=512) 
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3) 
-parser.add_argument('--lr2', type=float, default=5e-3)
+parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--fmr', type=float, default=0.0)
