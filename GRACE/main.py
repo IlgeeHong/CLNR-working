@@ -11,7 +11,7 @@ import pandas as pd
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 
-from model_random_selection2 import * 
+from model import * 
 from aug import *
 # from cluster import *
 
