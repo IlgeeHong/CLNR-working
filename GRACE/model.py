@@ -23,20 +23,16 @@ class GCN(nn.Module):
         super().__init__()
         self.n_layers = n_layers
         self.convs = nn.ModuleList()
-
         self.convs.append(GCNConv(in_dim, hid_dim))
-
         if n_layers > 1:
             for i in range(n_layers - 2):
                 self.convs.append(GCNConv(hid_dim, hid_dim))
             self.convs.append(GCNConv(hid_dim, out_dim))
 
     def forward(self, x, edge_index):
-
         for i in range(self.n_layers - 1):
-            x = F.relu(self.convs[i](x, edge_index)) # nn.PReLU
+            x = F.relu(self.convs[i](x, edge_index))
         x = self.convs[-1](x, edge_index)
-
         return x
 
 class GRACE(nn.Module):
@@ -72,13 +68,11 @@ class GRACE(nn.Module):
         between_sim = f(self.sim(z1, z2))
 
         return -torch.log(
-            between_sim.diag()
-            / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
+            between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
 
     def loss(self, z1, z2, mean = True):
         h1 = self.projection(z1)
         h2 = self.projection(z2)
-
         l1 = self.semi_loss(h1, h2)
         l2 = self.semi_loss(h2, h1)
         ret = (l1 + l2) * 0.5
