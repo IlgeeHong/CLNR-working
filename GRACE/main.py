@@ -1,22 +1,19 @@
 import os
 import os.path as osp
 import argparse
-import pandas as pd
-import pdb
-
+import sys
+sys.path.append('/scratch/midway3/ilgee/SelfGCon')
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import numpy as np
+import pandas as pd
 
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
-from torch_geometric.utils import to_dense_adj
-from torch_geometric.utils import add_self_loops
 
-from model import *
+from model_random_selection2 import * 
 from aug import *
-from cluster import *
+# from cluster import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='GRACE')
@@ -25,60 +22,51 @@ parser.add_argument('--split', type=str, default='PublicSplit')
 parser.add_argument('--epochs', type=int, default=400)
 parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--n_layers', type=int, default=2) 
-parser.add_argument('--channels', type=int, default=256) # hid_dim, out_dim
-parser.add_argument('--proj_hid_dim', type=int, default=256) # proj_hid_dim
+parser.add_argument('--channels', type=int, default=256)
+parser.add_argument('--proj_hid_dim', type=int, default=256)
 parser.add_argument('--tau', type=float, default=0.4) 
-parser.add_argument('--lr1', type=float, default=5e-4) #
-parser.add_argument('--wd1', type=float, default=1e-5)
+parser.add_argument('--lr1', type=float, default=5e-4)
 parser.add_argument('--lr2', type=float, default=1e-2)
-parser.add_argument('--wd2', type=float, default=1e-4) #1e-2
-parser.add_argument('--der1', type=float, default=0.3)
-parser.add_argument('--der2', type=float, default=0.4)
-parser.add_argument('--dfr1', type=float, default=0.3)
-parser.add_argument('--dfr2', type=float, default=0.4)
-parser.add_argument('--result_file', type=str, default="/results/GRACE_node_classification1")
-parser.add_argument('--embeddings', type=str, default="/results/GRACE_node_classification_embeddings")
+parser.add_argument('--wd1', type=float, default=0.0)
+parser.add_argument('--wd2', type=float, default=1e-5)
+parser.add_argument('--edr', type=float, default=0.3)
+parser.add_argument('--fmr', type=float, default=0.4)
+parser.add_argument('--result_file', type=str, default="/results/Final_accuracy")
+# parser.add_argument('--embeddings', type=str, default="/results/GRACE_node_classification_embeddings")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data):
+def train(model, data, k=None):
     model.train()
     optimizer.zero_grad()
-
-    new_data1 = random_aug(data, args.dfr1, args.der1)
-    new_data2 = random_aug(data, args.dfr2, args.der2)
-
-    z1, z2 = model(new_data1, new_data2)
-    loss = model.loss(z1, z2)
-
+    new_data1 = random_aug(data, args.fmr, args.edr)
+    new_data2 = random_aug(data, args.fmr, args.edr)
+    new_data1 = new_data1.to(device)
+    new_data2 = new_data2.to(device)
+    z1, z2 = model(new_data1, new_data2)   
+    loss = model.loss(z1, z2, k)
     loss.backward()
     optimizer.step()
-
     return loss.item()
 
 results =[]
-for exp in range(args.n_experiments): 
-    if args.split == "PublicSplit":
-        transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)]) #, T.RandomNodeSplit(split="random", 
-                                                                         #                   num_train_per_class = 20,
-                                                                         #                   num_val = 500,
-                                                                         #                   num_test = 1000)])
-    if args.split == "RandomSplit":
-        transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device), T.RandomNodeSplit(split="random", 
-                                                                                            num_train_per_class = 20,
-                                                                                            num_val = 160,
-                                                                                            num_test = 1280)])
-
+for exp in range(args.n_experiments):      
     if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
+        if args.split == "PublicSplit":
+            transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
+        if args.split == "RandomSplit":
+            transform = T.Compose([T.NormalizeFeatures(), T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
         data = dataset[0]
-    if args.dataset in ['cs', 'physics']:
-        dataset = Coauthor(args.dataset, 'public', transform=transform)
+    if args.dataset in ['CS', 'Physics']:
+        transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
+        dataset = Coauthor("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
         data = dataset[0]
     if args.dataset in ['Computers', 'Photo']:
-        dataset = Amazon("/Users/ilgeehong/Desktop/SemGCon/", args.dataset, transform=transform)
+        transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
+        dataset = Amazon("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
         data = dataset[0]
 
     train_idx = data.train_mask 
@@ -92,29 +80,25 @@ for exp in range(args.n_experiments):
     n_layers = args.n_layers
     tau = args.tau
 
-    dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
 
     ##### Train GRACE model #####
     print("=== train GRACE model ===")
     model = GRACE(in_dim, hid_dim, out_dim, n_layers, proj_hid_dim, tau)
+    model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
-
     for epoch in range(args.epochs):
-        model.train()
-        optimizer.zero_grad()
         loss = train(model, data)
         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
 
     embeds = model.get_embedding(data)
-    # embeds = F.normalize(temp_embeds) ###
-
     train_embs = embeds[train_idx]
     val_embs = embeds[val_idx]
     test_embs = embeds[test_idx]
     
     label = data.y
+    label = label.to(device)
     feat = data.x
     
     train_labels = label[train_idx]
@@ -127,6 +111,7 @@ for exp in range(args.n_experiments):
 
     ''' Linear Evaluation '''
     logreg = LogReg(train_embs.shape[1], num_class)
+    logreg = logreg.to(device)
     opt = torch.optim.Adam(logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
     loss_fn = nn.CrossEntropyLoss()
 
@@ -161,31 +146,31 @@ for exp in range(args.n_experiments):
 
         print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
         print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    results += [[args.model, args.dataset, args.epochs, args.n_layers, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.proj_hid_dim, args.tau, args.der1, args.der2, args.dfr1, args.dfr2, eval_acc]]
-    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'proj_dim', 'tau', 'der1', 'der2', 'dfr1', 'dfr2', 'accuracy'])
+    results += [[args.model, args.dataset, args.epochs, args.n_layers, args.lr1, args.lr2, args.wd2, args.channels, args.proj_hid_dim, args.tau, args.edr, args.fmr, eval_acc]]
+    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'lr1', 'lr2', 'wd2', 'channels', 'proj_dim', 'tau', 'edr', 'fmr', 'accuracy'])
     res1.to_csv(file_path + "_" + args.dataset +  ".csv", index=False)
 
 
 # visualize_umap(test_embs, test_labels.numpy())    
 # visualize_tsne(test_embs, test_labels.numpy())
-visualize_pca(test_embs, test_labels.numpy(), 1, 2)
-visualize_pca(test_embs, test_labels.numpy(), 1, 3)
-visualize_pca(test_embs, test_labels.numpy(), 2, 3)
+# visualize_pca(test_embs, test_labels.numpy(), 1, 2)
+# visualize_pca(test_embs, test_labels.numpy(), 1, 3)
+# visualize_pca(test_embs, test_labels.numpy(), 2, 3)
 
-from sklearn.metrics import silhouette_score
-from sklearn.metrics import davies_bouldin_score
-from sklearn.metrics import calinski_harabasz_score
+# from sklearn.metrics import silhouette_score
+# from sklearn.metrics import davies_bouldin_score
+# from sklearn.metrics import calinski_harabasz_score
 
-results2 = []
+# results2 = []
 
-sil = silhouette_score(test_embs,test_labels.numpy())
-dav = davies_bouldin_score(test_embs,test_labels.numpy())
-cal =calinski_harabasz_score(test_embs,test_labels.numpy())
-print(sil, dav, cal)
-# print(silhouette_score(test_logits,test_labels.numpy()))
-# print(davies_bouldin_score(test_logits,test_labels.numpy()))
-# print(calinski_harabasz_score(test_logits,test_labels.numpy()))
-file_path2 = os.getcwd() + args.embeddings
-results2 += [[args.model, args.dataset, sil, dav, cal]]
-res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
-res2.to_csv(file_path2 + "_" + args.dataset +  ".csv", index=False)
+# sil = silhouette_score(test_embs,test_labels.numpy())
+# dav = davies_bouldin_score(test_embs,test_labels.numpy())
+# cal =calinski_harabasz_score(test_embs,test_labels.numpy())
+# print(sil, dav, cal)
+# # print(silhouette_score(test_logits,test_labels.numpy()))
+# # print(davies_bouldin_score(test_logits,test_labels.numpy()))
+# # print(calinski_harabasz_score(test_logits,test_labels.numpy()))
+# file_path2 = os.getcwd() + args.embeddings
+# results2 += [[args.model, args.dataset, sil, dav, cal]]
+# res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
+# res2.to_csv(file_path2 + "_" + args.dataset +  ".csv", index=False)
