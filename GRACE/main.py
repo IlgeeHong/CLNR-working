@@ -146,7 +146,7 @@ for exp in range(args.n_experiments):
 
         print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
         print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    results += [[args.model, args.dataset, args.epochs, args.n_layers, args.lr1, args.lr2, args.wd2, args.channels, args.proj_hid_dim, args.tau, args.edr, args.fmr, eval_acc]]
+    results += [[args.model, args.dataset, args.epochs, args.n_layers, args.lr1, args.lr2, args.wd2, args.channels, args.proj_hid_dim, args.tau, args.edr, args.fmr, eval_acc.item()]]
     res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'lr1', 'lr2', 'wd2', 'channels', 'proj_dim', 'tau', 'edr', 'fmr', 'accuracy'])
     res1.to_csv(file_path + "_" + args.dataset +  ".csv", index=False)
 
