@@ -48,10 +48,10 @@ for channels in [256]:
             for n_layers in [2]: 
                 for edr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]:
                     for fmr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]: 
-                        for lr1 in [1e-3, 5e-3]:
+                        for lr1 in [1e-3, 5e-4]:
                             for lr2 in [1e-2, 5e-3]:  
                                 for wd2 in [1e-5]:
-                                    for epochs in [20, 50]:
+                                    for epochs in [400]:
                                         best_val_acc_list = []
                                         for exp in range(args.n_experiments): 
                                             if args.split == "PublicSplit":
