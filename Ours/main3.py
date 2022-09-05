@@ -17,7 +17,7 @@ from aug import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='SemiGCon') #SemiGCon
-parser.add_argument('--dataset', type=str, default='CS')
+parser.add_argument('--dataset', type=str, default='Physics')
 parser.add_argument('--split', type=str, default='RandomSplit') #PublicSplit
 parser.add_argument('--epochs', type=int, default=50)
 parser.add_argument('--n_experiments', type=int, default=20)
@@ -27,10 +27,10 @@ parser.add_argument('--tau', type=float, default=0.5)
 parser.add_argument('--lr1', type=float, default=1e-3) 
 parser.add_argument('--lr2', type=float, default=5e-3)
 parser.add_argument('--wd1', type=float, default=0.0)
-parser.add_argument('--wd2', type=float, default=1e-2)
-parser.add_argument('--fmr', type=float, default=0.3)
-parser.add_argument('--edr', type=float, default=0.1)
-parser.add_argument('--mlp_use', type=bool, default=True)
+parser.add_argument('--wd2', type=float, default=1e-4)
+parser.add_argument('--fmr', type=float, default=0.2)
+parser.add_argument('--edr', type=float, default=0.4)
+parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/hyperparameter1/results/Final_accuracy")
 args = parser.parse_args()
 
@@ -101,7 +101,7 @@ for exp in range(args.n_experiments):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
-        loss = train_semi(model, data, num_class, train_idx)  # train(model, data)
+        loss = train_semi(model, data, num_class, train_idx, k=2024)  # train(model, data)
         # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
