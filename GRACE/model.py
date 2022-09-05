@@ -60,6 +60,8 @@ class GRACE(nn.Module):
             h = F.elu(self.fc3(z))
         elif layer is "linear":
             h = self.fc3(z)
+        elif layer is "standard":
+            h = (z - z.mean(0)) / z.std(0)
         return h
     
     def sim(self, z1, z2):
