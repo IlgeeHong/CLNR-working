@@ -38,7 +38,7 @@ args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data, k=None):
+def train(model, data):
     model.train()
     optimizer.zero_grad()
     new_data1 = random_aug(data, args.fmr, args.edr)
@@ -46,7 +46,7 @@ def train(model, data, k=None):
     new_data1 = new_data1.to(device)
     new_data2 = new_data2.to(device)
     z1, z2 = model(new_data1, new_data2)   
-    loss = model.loss(z1, z2, k)
+    loss = model.loss(z1, z2, layer="linear")
     loss.backward()
     optimizer.step()
     return loss.item()
