@@ -75,7 +75,6 @@ for exp in range(args.n_experiments):
 
     in_dim = data.num_features
     hid_dim = args.channels
-    out_dim = args.channels
     proj_hid_dim = args.proj_hid_dim
     n_layers = args.n_layers
     tau = args.tau
@@ -85,7 +84,7 @@ for exp in range(args.n_experiments):
 
     ##### Train GRACE model #####
     print("=== train GRACE model ===")
-    model = GRACE(in_dim, hid_dim, out_dim, n_layers, proj_hid_dim, tau)
+    model = GRACE(in_dim, hid_dim, proj_hid_dim, n_layers, tau)
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
     for epoch in range(args.epochs):
