@@ -21,7 +21,7 @@ parser.add_argument('--dataset', type=str, default='Cora')
 parser.add_argument('--split', type=str, default='PublicSplit')
 parser.add_argument('--wd1', type=float, default=0.0)
 # parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/GRACE/hyperparameter/results/Hyperparameter")
+parser.add_argument('--result_file', type=str, default="/GRACE/hyperparameter1/results/Hyperparameter")
 parser.add_argument('--n_experiments', type=int, default=10)
 args = parser.parse_args()
 
@@ -117,6 +117,6 @@ for channels in []:
                                             # print('Linear evaluation accuracy:{:.4f}'.format(best_val_acc))                            
                                             best_val_acc_list.append(best_val_acc.item())
                                         best_val_acc_mean = mean(best_val_acc_list)
-                                        results += [[args.model, args.dataset, epochs, n_layers, tau, lr1, args.wd1, lr2, wd2, channels, edr, fmr, args.mlp_use, best_val_acc_mean]]
-                                        res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'wd1', 'lr2', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'mlp_use', 'val_acc'])
+                                        results += [[args.model, args.dataset, epochs, channels, proj_hid_dim, n_layers, tau, lr1, lr2, args.wd1, wd2, edr, fmr, best_val_acc_mean]]
+                                        res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'channels', 'proj_hid_dim', 'n_layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'edge_drop_rate', 'feat_mask_rate', 'val_acc'])
                                         res1.to_csv(file_path + "_" + args.model + "_" + args.dataset +  ".csv", index=False)
