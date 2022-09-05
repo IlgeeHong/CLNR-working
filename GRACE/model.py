@@ -53,14 +53,14 @@ class GRACE(nn.Module):
         return z1, z2
     
     def projection(self, z, layer="nonlinear-hid"):
-        if layer is "nonlinear-hid":
+        if layer == "nonlinear-hid":
             z = F.elu(self.fc1(z))
             h = self.fc2(z)
-        elif layer is "nonlinear":
+        elif layer == "nonlinear":
             h = F.elu(self.fc3(z))
         elif layer is "linear":
             h = self.fc3(z)
-        elif layer is "standard":
+        elif layer == "standard":
             h = (z - z.mean(0)) / z.std(0)
         return h
     
