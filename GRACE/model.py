@@ -13,7 +13,6 @@ class LogReg(nn.Module):
     def __init__(self, hid_dim, out_dim):
         super(LogReg, self).__init__()
         self.fc = nn.Linear(hid_dim, out_dim)
-
     def forward(self, x):
         ret = self.fc(x)
         return ret
