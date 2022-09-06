@@ -17,7 +17,7 @@ from aug import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='SelfGCon')
-parser.add_argument('--dataset', type=str, default='PubMed') #
+parser.add_argument('--dataset', type=str, default='PubMed')
 parser.add_argument('--split', type=str, default='PublicSplit')
 parser.add_argument('--epochs', type=int, default=50) 
 parser.add_argument('--n_experiments', type=int, default=20)
