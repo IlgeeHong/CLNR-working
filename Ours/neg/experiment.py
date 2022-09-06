@@ -11,7 +11,7 @@ from statistics import mean, stdev
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 
-from model import * 
+from model_random_selection1 import * 
 from aug import *
 
 parser = argparse.ArgumentParser()
@@ -56,7 +56,7 @@ for k in [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, None]:
         if args.split == "PublicSplit":
             transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                             
         if args.split == "RandomSplit":
-            transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])                                                                                       
+            transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])                                                                                       
         if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
             dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
             data = dataset[0]

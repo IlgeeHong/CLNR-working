@@ -90,12 +90,11 @@ class SelfGCon(nn.Module):
         z2 = F.normalize(z2)
         return torch.mm(z1, z2.t())
 
-    def semi_loss(self, z1, z2, ratio):
+    def semi_loss(self, z1, z2, k):
         f = lambda x: torch.exp(x / self.tau) 
         refl_sim = f(self.sim(z1, z1))
         between_sim = f(self.sim(z1, z2))
-        N = between_sim.shape[1]
-        k = int(N*ratio)
+        N = between_sim.shape[0]
         indices = torch.LongTensor(random.sample(range(N), k))
 
         return -torch.log(
