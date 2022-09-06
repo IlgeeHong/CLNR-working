@@ -150,7 +150,7 @@ for proj in ["nonlinear-hid","nonlinear","linear"]:
             print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
         results += [[args.model, args.dataset, proj, args.epochs, args.n_layers, args.lr1, args.lr2, args.wd2, args.channels, args.proj_hid_dim, args.tau, args.edr, args.fmr, eval_acc.item()]]
         res1 = pd.DataFrame(results, columns=['model', 'dataset', 'proj', 'epochs', 'layers', 'lr1', 'lr2', 'wd2', 'channels', 'proj_dim', 'tau', 'edr', 'fmr', 'accuracy'])
-        res1.to_csv(file_path + "_" + args.dataset + "_" + args.proj + ".csv", index=False)
+        res1.to_csv(file_path + "_" + args.dataset + "_" + ".csv", index=False)
 
 
 # visualize_umap(test_embs, test_labels.numpy())    
