@@ -78,7 +78,7 @@ for channels in [256, 512]:
                                                 N = data.num_nodes
 
                                                 ''' Model Pretraining '''
-                                                model = GRACE(in_dim, hid_dim, proj_hid_dim, n_layers, tau, mlp_use=args.mlp_use)
+                                                model = GRACE(in_dim, hid_dim, proj_hid_dim, n_layers, tau, args.mlp_use)
                                                 model = model.to(device)
                                                 optimizer = torch.optim.Adam(model.parameters(), lr=lr1, weight_decay=wd1)                       
                                                 for epoch in range(epochs):
