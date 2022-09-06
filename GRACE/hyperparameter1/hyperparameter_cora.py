@@ -27,7 +27,7 @@ args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data):
+def train(model, data, fmr, edr):
     model.train()
     optimizer.zero_grad()
     new_data1 = random_aug(data, fmr, edr)
