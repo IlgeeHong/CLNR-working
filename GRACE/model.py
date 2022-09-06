@@ -17,6 +17,22 @@ class LogReg(nn.Module):
         ret = self.fc(x)
         return ret
 
+class MLP(nn.Module):
+    def __init__(self, nfeat, nhid, nclass, use_bn=True):
+        super(MLP, self).__init__()
+        self.layer1 = nn.Linear(nfeat, nhid, bias=True)
+        self.layer2 = nn.Linear(nhid, nclass, bias=True)
+        self.bn = nn.BatchNorm1d(nhid)
+        self.use_bn = use_bn
+        self.act_fn = nn.ReLU()
+    def forward(self, _, x):
+        x = self.layer1(x)
+        if self.use_bn:
+            x = self.bn(x)
+        x = self.act_fn(x)
+        x = self.layer2(x)
+        return x
+
 class GCN(nn.Module):
     def __init__(self, in_dim, hid_dim, out_dim, n_layers):
         super().__init__()
@@ -34,21 +50,25 @@ class GCN(nn.Module):
         return x
 
 class GRACE(nn.Module):
-    def __init__(self, in_dim, hid_dim, proj_hid_dim, n_layers, tau = 0.5):
+    def __init__(self, in_dim, hid_dim, proj_hid_dim, n_layers, tau = 0.5, use_mlp = False):
         super().__init__()
-        self.gcn = GCN(in_dim, hid_dim, hid_dim, n_layers)
+        if not use_mlp:
+            self.backbone = GCN(in_dim, hid_dim, hid_dim, n_layers)
+        else:
+            self.backbone = MLP(in_dim, hid_dim, hid_dim)
+
         self.fc1 = nn.Linear(hid_dim, proj_hid_dim)
         self.fc2 = nn.Linear(proj_hid_dim, hid_dim)
         self.fc3 = nn.Linear(hid_dim, hid_dim)
         self.tau = tau
         
     def get_embedding(self, data):
-        out = self.gcn(data.x, data.edge_index)
+        out = self.backbone(data.x, data.edge_index)
         return out.detach()
 
     def forward(self, data1, data2):
-        z1 = self.gcn(data1.x, data1.edge_index)
-        z2 = self.gcn(data2.x, data2.edge_index)
+        z1 = self.backbone(data1.x, data1.edge_index)
+        z2 = self.backbone(data2.x, data2.edge_index)
         return z1, z2
     
     def projection(self, z, layer="nonlinear-hid"):
@@ -72,9 +92,7 @@ class GRACE(nn.Module):
         f = lambda x: torch.exp(x / self.tau)
         refl_sim = f(self.sim(z1, z1))
         between_sim = f(self.sim(z1, z2))
-
-        return -torch.log(
-            between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
+        return -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
 
     def loss(self, z1, z2, layer="nonlinear-hid", mean = True):
         h1 = self.projection(z1, layer)

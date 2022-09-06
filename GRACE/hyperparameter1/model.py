@@ -13,7 +13,6 @@ class LogReg(nn.Module):
     def __init__(self, hid_dim, out_dim):
         super(LogReg, self).__init__()
         self.fc = nn.Linear(hid_dim, out_dim)
-
     def forward(self, x):
         ret = self.fc(x)
         return ret
@@ -40,6 +39,7 @@ class GRACE(nn.Module):
         self.gcn = GCN(in_dim, hid_dim, hid_dim, n_layers)
         self.fc1 = nn.Linear(hid_dim, proj_hid_dim)
         self.fc2 = nn.Linear(proj_hid_dim, hid_dim)
+        self.fc3 = nn.Linear(hid_dim, hid_dim)
         self.tau = tau
         
     def get_embedding(self, data):
@@ -51,9 +51,16 @@ class GRACE(nn.Module):
         z2 = self.gcn(data2.x, data2.edge_index)
         return z1, z2
     
-    def projection(self, z):
-        z = F.elu(self.fc1(z))
-        h = self.fc2(z)
+    def projection(self, z, layer="nonlinear-hid"):
+        if layer == "nonlinear-hid":
+            z = F.elu(self.fc1(z))
+            h = self.fc2(z)
+        elif layer == "nonlinear":
+            h = F.elu(self.fc3(z))
+        elif layer is "linear":
+            h = self.fc3(z)
+        elif layer == "standard":
+            h = (z - z.mean(0)) / z.std(0)
         return h
     
     def sim(self, z1, z2):
@@ -69,9 +76,9 @@ class GRACE(nn.Module):
         return -torch.log(
             between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
 
-    def loss(self, z1, z2, mean = True):
-        h1 = self.projection(z1)
-        h2 = self.projection(z2)
+    def loss(self, z1, z2, layer="nonlinear-hid", mean = True):
+        h1 = self.projection(z1, layer)
+        h2 = self.projection(z2, layer)
         l1 = self.semi_loss(h1, h2)
         l2 = self.semi_loss(h2, h1)
         ret = (l1 + l2) * 0.5
