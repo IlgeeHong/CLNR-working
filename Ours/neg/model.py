@@ -88,14 +88,14 @@ class CLGR(nn.Module):
     def semi_loss(self, z1, z2, indices):
         refl_sim, refl_diag = self.sim(z1, z1, indices)
         between_sim, between_diag = self.sim(z1, z2, indices)
-        # if indices is not None:
-        #     refl_diag_temp = refl_diag.clone()
-        #     refl_diag_temp[~indices] = 0.0
-        #     refl_diag_neg = refl_diag_temp.clone()
-        # else:
-        #     refl_diag_temp = refl_diag.clone()
-        #     refl_diag_neg = refl_diag_temp.clone()
-        semi_loss = - torch.log(between_diag / (between_sim.sum(1) + refl_sim.sum(1) - refl_diag)) #Computers
+        if indices is not None:
+            refl_diag_temp = refl_diag.clone()
+            refl_diag_temp[~indices] = 0.0
+            refl_diag_neg = refl_diag_temp.clone()
+        else:
+            refl_diag_temp = refl_diag.clone()
+            refl_diag_neg = refl_diag_temp.clone()
+        semi_loss = - torch.log(between_diag / (between_sim.sum(1) + refl_sim.sum(1) - refl_diag_neg))
         return semi_loss
 
     def loss(self, z1, z2, k=None, mean=True):
