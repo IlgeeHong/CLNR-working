@@ -80,7 +80,7 @@ for proj in ["nonlinear-hid","nonlinear","linear"]:
         proj_hid_dim = args.proj_hid_dim
         n_layers = args.n_layers
         tau = args.tau
-        proj = args.proj
+#         proj = args.proj
 
         num_class = int(data.y.max().item()) + 1 
         N = data.num_nodes
