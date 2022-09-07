@@ -98,7 +98,7 @@ for proj in ["nonlinear-hid","nonlinear","linear"]:
         model = model.to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
         for epoch in range(args.epochs):
-            loss = train(model, data, proj)
+            loss = train(model, data, fmr, edr, proj)
             print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
 
         embeds = model.get_embedding(data)
