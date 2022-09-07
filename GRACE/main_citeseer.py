@@ -28,7 +28,7 @@ parser.add_argument('--tau', type=float, default=0.5)
 parser.add_argument('--lr1', type=float, default=1e-3)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd1', type=float, default=1e-5)
-parser.add_argument('--wd2', type=float, default=1e-4)
+parser.add_argument('--wd2', type=float, default=1e-2)
 # parser.add_argument('--fmr', type=float, default=0.4)
 # parser.add_argument('--edr', type=float, default=0.5)
 # parser.add_argument('--proj', type=str, default="linear")
@@ -49,7 +49,7 @@ for proj in ["nonlinear-hid","nonlinear","linear"]:
         edr = 0.4
     elif proj == "linear":
         fmr = 0.5
-        edr = 0.4
+        edr = 0.4 #0.1
         
     def train(model, data, fmr, edr, proj):
         model.train()
