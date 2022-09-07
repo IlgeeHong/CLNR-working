@@ -45,8 +45,8 @@ for proj in ["nonlinear-hid","nonlinear","linear"]:
         fmr = 0.2
         edr = 0.4
     elif proj == "nonlinear":
-        fmr = 0.3
-        edr = 0.2
+        fmr = 0.2
+        edr = 0.4
     elif proj == "linear":
         fmr = 0.2
         edr = 0.4
