@@ -49,7 +49,7 @@ for proj in ["nonlinear-hid","nonlinear","linear"]:
         edr = 0.4
     elif proj == "linear":
         fmr = 0.5
-        edr = 0.1
+        edr = 0.4
         
     def train(model, data, fmr, edr, proj):
         model.train()
