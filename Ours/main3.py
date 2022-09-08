@@ -101,7 +101,7 @@ for exp in range(args.n_experiments):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
-        loss = train(model, data, num_class, train_idx)
+        loss = train(model, data)
         # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
