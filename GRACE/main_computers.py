@@ -32,7 +32,7 @@ parser.add_argument('--wd2', type=float, default=1e-4)
 # parser.add_argument('--fmr', type=float, default=0.4)
 # parser.add_argument('--edr', type=float, default=0.5)
 # parser.add_argument('--proj', type=str, default="linear")
-parser.add_argument('--result_file', type=str, default="/GRACE/results/Final_accuracy")
+parser.add_argument('--result_file', type=str, default="/GRACE/results/Final_accuracy2")
 # parser.add_argument('--embeddings', type=str, default="/results/GRACE_node_classification_embeddings")
 args = parser.parse_args()
 
@@ -40,16 +40,16 @@ file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 results =[]
-for proj in ["nonlinear-hid","nonlinear","linear"]:
+for proj in ["nonlinear-hid"]: #,"nonlinear","linear"
     if proj == "nonlinear-hid":
-        fmr = 0.1
-        edr = 0.4
-    elif proj == "nonlinear":
-        fmr = 0.1
-        edr = 0.4
-    elif proj == "linear":
-        fmr = 0.1
-        edr = 0.4
+        fmr = 0.0
+        edr = 0.5
+    # elif proj == "nonlinear":
+    #     fmr = 0.1
+    #     edr = 0.4
+    # elif proj == "linear":
+    #     fmr = 0.1
+    #     edr = 0.4
         
     def train(model, data, fmr, edr, proj):
         model.train()
