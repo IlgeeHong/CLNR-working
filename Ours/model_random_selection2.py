@@ -54,7 +54,7 @@ class GCN(nn.Module):
         x = self.convs[-1](x, edge_index)
         return x
 
-class SelfGCon(nn.Module):
+class CLGR(nn.Module):
     def __init__(self, in_dim, hid_dim, out_dim, n_layers, tau, use_mlp=False):
         super().__init__()
         if not use_mlp:
