@@ -97,11 +97,11 @@ for exp in range(args.n_experiments):
 
     ##### Train the SelfGCon model #####
     print("=== train SelfGCon model ===")
-    model = SemiGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use) #
+    model = SelfGCon(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use) #
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
-        loss = train_semi(model, data, num_class, train_idx)
+        loss = train(model, data, num_class, train_idx)
         # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
