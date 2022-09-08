@@ -27,7 +27,7 @@ parser.add_argument('--tau', type=float, default=0.5)
 parser.add_argument('--lr1', type=float, default=1e-3) 
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd1', type=float, default=1e-5)
-parser.add_argument('--wd2', type=float, default=1e-2)
+parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--fmr', type=float, default=0.3)
 parser.add_argument('--edr', type=float, default=0.1)
 parser.add_argument('--mlp_use', type=bool, default=True)
@@ -66,19 +66,17 @@ def train_semi(model, data, num_class, train_idx, k=None):
 
 results =[]
 for exp in range(args.n_experiments):      
+    if args.split == "PublicSplit":
+        transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
+    if args.split == "RandomSplit":
+        transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
     if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
-        if args.split == "PublicSplit":
-            transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
-        if args.split == "RandomSplit":
-            transform = T.Compose([T.NormalizeFeatures(), T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
         data = dataset[0]
     if args.dataset in ['CS', 'Physics']:
-        transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Coauthor("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
         data = dataset[0]
     if args.dataset in ['Computers', 'Photo']:
-        transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Amazon("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
         data = dataset[0]
 
