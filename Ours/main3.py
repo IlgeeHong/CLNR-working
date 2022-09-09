@@ -17,7 +17,7 @@ from aug import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLGR') #SemiGCon
-parser.add_argument('--dataset', type=str, default='Photo')
+parser.add_argument('--dataset', type=str, default='CS')
 parser.add_argument('--split', type=str, default='RandomSplit') #PublicSplit
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--epochs', type=int, default=100)
@@ -27,9 +27,9 @@ parser.add_argument('--lr1', type=float, default=1e-3)
 parser.add_argument('--wd1', type=float, default=1e-5)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
-parser.add_argument('--channels', type=int, default=512) 
-parser.add_argument('--edr', type=float, default=0.4)
-parser.add_argument('--fmr', type=float, default=0.0)
+parser.add_argument('--channels', type=int, default=256) 
+parser.add_argument('--edr', type=float, default=0.2)
+parser.add_argument('--fmr', type=float, default=0.4)
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/results/Final_accuracy")
 args = parser.parse_args()
