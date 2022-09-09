@@ -18,7 +18,7 @@ from aug import *
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLGR') #SemiGCon
 parser.add_argument('--dataset', type=str, default='PubMed')
-parser.add_argument('--split', type=str, default='RandomSplit') #PublicSplit
+parser.add_argument('--split', type=str, default='PublicSplit') #PublicSplit
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--epochs', type=int, default=100)
 parser.add_argument('--n_layers', type=int, default=2) 
