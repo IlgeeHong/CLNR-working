@@ -20,10 +20,10 @@ parser.add_argument('--model', type=str, default='CLGR') #SemiGCon
 parser.add_argument('--dataset', type=str, default='Cora')
 parser.add_argument('--split', type=str, default='PublicSplit') #PublicSplit
 parser.add_argument('--n_experiments', type=int, default=20)
-parser.add_argument('--epochs', type=int, default=400)
+parser.add_argument('--epochs', type=int, default=200)
 parser.add_argument('--n_layers', type=int, default=2) 
 parser.add_argument('--tau', type=float, default=0.5) 
-parser.add_argument('--lr1', type=float, default=1e-3)
+parser.add_argument('--lr1', type=float, default=4e-5)
 parser.add_argument('--wd1', type=float, default=1e-5)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
