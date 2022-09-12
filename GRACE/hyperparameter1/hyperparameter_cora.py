@@ -46,11 +46,11 @@ for channels in [256, 512]:
         for n_layers in [2]: 
             for edr in [0.1,0.2,0.3,0.4,0.5]:
                 for fmr in [0.1,0.2,0.3,0.4,0.5]: 
-                    for lr1 in [1e-3, 5e-4]:
-                        for lr2 in [1e-2]:  
-                            for wd1 in [0.0]:
+                    for lr1 in [1e-3, 5e-4]:  
+                        for wd1 in [0.0, 1e-5]:
+                            for lr2 in [1e-2]:
                                 for wd2 in [1e-4]:
-                                    for proj in ['nonlinear-hid','nonlinear','linear']:
+                                    for proj in ['nonlinear-hid','nonlinear','linear','standard']:
                                         for epochs in [100, 200, 400]:
                                             best_val_acc_list = []
                                             for exp in range(args.n_experiments): 
