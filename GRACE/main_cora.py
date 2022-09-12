@@ -22,16 +22,10 @@ parser.add_argument('--split', type=str, default='PublicSplit')
 parser.add_argument('--epochs', type=int, default=400)
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--n_layers', type=int, default=2) 
-parser.add_argument('--channels', type=int, default=256)
-parser.add_argument('--proj_hid_dim', type=int, default=256)
 parser.add_argument('--tau', type=float, default=0.5) 
-parser.add_argument('--lr1', type=float, default=5e-4)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd1', type=float, default=1e-5)
 parser.add_argument('--wd2', type=float, default=1e-4)
-# parser.add_argument('--fmr', type=float, default=0.4)
-# parser.add_argument('--edr', type=float, default=0.5)
-# parser.add_argument('--proj', type=str, default="linear")
 parser.add_argument('--result_file', type=str, default="/GRACE/results/Final_accuracy")
 # parser.add_argument('--embeddings', type=str, default="/results/GRACE_node_classification_embeddings")
 args = parser.parse_args()
@@ -42,14 +36,20 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 for proj in ["nonlinear-hid","nonlinear","linear"]:
     if proj == "nonlinear-hid":
-        fmr = 0.2
-        edr = 0.4
+        fmr = 0.3
+        edr = 0.5
+        channels = 512
+        lr1 = 5e-4
     elif proj == "nonlinear":
-        fmr = 0.2
-        edr = 0.4
+        fmr = 0.5
+        edr = 0.5
+        channels = 512
+        lr1 = 5e-4
     elif proj == "linear":
-        fmr = 0.2
-        edr = 0.4
+        fmr = 0.3
+        edr = 0.3
+        channels = 256
+        lr1 = 1e-3
         
     def train(model, data, fmr, edr, proj):
         model.train()
@@ -84,8 +84,8 @@ for proj in ["nonlinear-hid","nonlinear","linear"]:
         test_idx = data.test_mask  
 
         in_dim = data.num_features
-        hid_dim = args.channels
-        proj_hid_dim = args.proj_hid_dim
+        hid_dim = channels
+        proj_hid_dim = channels
         n_layers = args.n_layers
         tau = args.tau
 
@@ -96,7 +96,7 @@ for proj in ["nonlinear-hid","nonlinear","linear"]:
         print("=== train GRACE model ===")
         model = GRACE(in_dim, hid_dim, proj_hid_dim, n_layers, tau)
         model = model.to(device)
-        optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr1, weight_decay=args.wd1)
         for epoch in range(args.epochs):
             loss = train(model, data, fmr, edr, proj)
             print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
@@ -155,7 +155,7 @@ for proj in ["nonlinear-hid","nonlinear","linear"]:
 
             print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
             print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-        results += [[args.model, args.dataset, proj, args.epochs, args.n_layers, args.lr1, args.lr2, args.wd2, args.channels, args.proj_hid_dim, args.tau, edr, fmr, eval_acc.item()]]
+        results += [[args.model, args.dataset, proj, args.epochs, args.n_layers, lr1, args.lr2, args.wd2, channels, proj_hid_dim, args.tau, edr, fmr, eval_acc.item()]]
         res1 = pd.DataFrame(results, columns=['model', 'dataset', 'proj', 'epochs', 'layers', 'lr1', 'lr2', 'wd2', 'channels', 'proj_dim', 'tau', 'edr', 'fmr', 'accuracy'])
         res1.to_csv(file_path + "_" + args.dataset + "_" + ".csv", index=False)
 
