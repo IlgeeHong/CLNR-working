@@ -20,14 +20,14 @@ parser.add_argument('--model', type=str, default='GRACE')
 parser.add_argument('--dataset', type=str, default='PubMed')
 parser.add_argument('--split', type=str, default='PublicSplit')
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/GRACE/hyperparameter1/results/Hyperparameter")
+parser.add_argument('--result_file', type=str, default="/GRACE/hyperparameter1/results/Hyperparameter2")
 parser.add_argument('--n_experiments', type=int, default=3)
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data, fmr, edr):
+def train(model, data, fmr, edr, proj):
     model.train()
     optimizer.zero_grad()
     new_data1 = random_aug(data, fmr, edr)
@@ -44,13 +44,13 @@ results =[]
 for channels in [256]:    
     for tau in [0.5]:
         for n_layers in [2]: 
-            for edr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]:
-                for fmr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]: 
+            for edr in [0.1, 0.2, 0.3, 0.4, 0.5]:
+                for fmr in [0.1, 0.2, 0.3, 0.4, 0.5]: 
                     for lr1 in [1e-3]:
-                        for lr2 in [1e-2]:  
-                            for wd1 in [1e-5]:
+                        for wd1 in [0.0, 1e-5]:
+                            for lr2 in [1e-2]:  
                                 for wd2 in [1e-4]:
-                                    for proj in ['nonlinear-hid', 'nonlinear', 'linear']:
+                                    for proj in ['nonlinear-hid', 'nonlinear', 'linear','standard']:
                                         for epochs in [1500]:
                                             best_val_acc_list = []
                                             for exp in range(args.n_experiments): 
@@ -67,7 +67,6 @@ for channels in [256]:
                                                 if args.dataset in ['Computers', 'Photo']:
                                                     dataset = Amazon("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
                                                     data = dataset[0]
-                                        
                                                 train_idx = data.train_mask 
                                                 val_idx = data.val_mask 
                                                 test_idx = data.test_mask  
@@ -76,13 +75,12 @@ for channels in [256]:
                                                 proj_hid_dim = channels
                                                 num_class = int(data.y.max().item()) + 1 
                                                 N = data.num_nodes
-
                                                 ''' Model Pretraining '''
                                                 model = GRACE(in_dim, hid_dim, proj_hid_dim, n_layers, tau, args.mlp_use)
                                                 model = model.to(device)
                                                 optimizer = torch.optim.Adam(model.parameters(), lr=lr1, weight_decay=wd1)                       
                                                 for epoch in range(epochs):
-                                                    loss = train(model, data, fmr, edr)
+                                                    loss = train(model, data, fmr, edr, proj)
                                                 embeds = model.get_embedding(data)
                                                 train_embs = embeds[train_idx]
                                                 val_embs = embeds[val_idx]
