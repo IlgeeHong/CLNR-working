@@ -20,7 +20,7 @@ parser.add_argument('--model', type=str, default='GRACE')
 parser.add_argument('--dataset', type=str, default='Cora')
 parser.add_argument('--split', type=str, default='PublicSplit')
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/GRACE/hyperparameter1/results/Hyperparameter")
+parser.add_argument('--result_file', type=str, default="/GRACE/hyperparameter1/results/Hyperparameter2")
 parser.add_argument('--n_experiments', type=int, default=10)
 args = parser.parse_args()
 
@@ -50,7 +50,7 @@ for channels in [256, 512]:
                         for lr2 in [1e-2]:  
                             for wd1 in [0.0]:
                                 for wd2 in [1e-4]:
-                                    for proj in ['standard']:
+                                    for proj in ['nonlinear-hid','nonlinear','linear']:
                                         for epochs in [100, 200, 400]:
                                             best_val_acc_list = []
                                             for exp in range(args.n_experiments): 
