@@ -14,7 +14,6 @@ class LogReg(nn.Module):
     def __init__(self, hid_dim, out_dim):
         super(LogReg, self).__init__()
         self.fc = nn.Linear(hid_dim, out_dim)
-
     def forward(self, x):
         ret = self.fc(x)
         return ret
@@ -27,7 +26,6 @@ class MLP(nn.Module):
         self.bn = nn.BatchNorm1d(nhid)
         self.use_bn = use_bn
         self.act_fn = nn.ReLU()
-
     def forward(self, x, _):
         x = self.layer1(x)
         if self.use_bn:
@@ -72,7 +70,7 @@ class CLGR(nn.Module):
         z2 = (h2 - h2.mean(0)) / h2.std(0)
         return z1, z2
     
-    def sim(self, z1, z2, indices, refl=None):
+    def sim(self, z1, z2, indices):
         z1 = F.normalize(z1)
         z2 = F.normalize(z2)
         f = lambda x: torch.exp(x / self.tau) 
@@ -85,7 +83,7 @@ class CLGR(nn.Module):
             diag = f(torch.mm(z1, z2.t()).diag())
         return sim, diag
     
-    def semi_loss(self, z1, z2, indices):
+    def semi_loss(self, z1, z2, indices, k):
         refl_sim, refl_diag = self.sim(z1, z1, indices)
         between_sim, between_diag = self.sim(z1, z2, indices)
         if indices is not None:
@@ -95,7 +93,9 @@ class CLGR(nn.Module):
         else:
             refl_diag_temp = refl_diag.clone()
             refl_diag_neg = refl_diag_temp.clone()
-        semi_loss = - torch.log(between_diag / (between_sim.sum(1) + refl_sim.sum(1) - refl_diag_neg))
+        N = between_sim.shape[0]
+        denom = (N/k)*(between_sim.sum(1) + refl_sim.sum(1) - refl_diag_neg)
+        semi_loss = - torch.log(between_diag / denom)
         return semi_loss
 
     def loss(self, z1, z2, k=None, mean=True):
@@ -104,8 +104,8 @@ class CLGR(nn.Module):
             indices = torch.LongTensor(random.sample(range(N), k))
         else:
             indices = None
-        l1 = self.semi_loss(z1, z2, indices)
-        l2 = self.semi_loss(z2, z1, indices)
+        l1 = self.semi_loss(z1, z2, indices, k)
+        l2 = self.semi_loss(z2, z1, indices, k)
         ret = (l1 + l2) * 0.5
         ret = ret.mean() if mean else ret.sum()
         return ret
