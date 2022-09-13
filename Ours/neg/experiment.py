@@ -50,7 +50,7 @@ def train(model, data, k=None):
     return loss.item()
 
 results =[]
-for k in [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, None]:
+for k in [2, 8, 32, 128, 512, None]:
     eval_acc_list = []
     for exp in range(args.n_experiments): 
         if args.split == "PublicSplit":
