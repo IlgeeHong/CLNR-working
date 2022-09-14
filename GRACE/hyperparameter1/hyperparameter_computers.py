@@ -20,7 +20,7 @@ parser.add_argument('--model', type=str, default='GRACE')
 parser.add_argument('--dataset', type=str, default='Computers')
 parser.add_argument('--split', type=str, default='RandomSplit')
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/GRACE/hyperparameter1/results/Hyperparameter2")
+parser.add_argument('--result_file', type=str, default="/GRACE/hyperparameter1/results/Hyperparameter")
 parser.add_argument('--n_experiments', type=int, default=3)
 args = parser.parse_args()
 
@@ -41,16 +41,16 @@ def train(model, data, fmr, edr, proj):
     return loss.item()
 
 results =[]
-for channels in [128, 256, 512]:    
+for channels in [128, 256]:    
     for tau in [0.5]:
         for n_layers in [2]: 
-            for edr in [0.1, 0.2, 0.3, 0.4, 0.5]:
-                for fmr in [0.1, 0.2, 0.3, 0.4, 0.5]: 
-                    for lr1 in [1e-2,1e-3]:
+            for edr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]:
+                for fmr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]: 
+                    for lr1 in [1e-2, 1e-3]:
                         for wd1 in [0.0, 1e-5]:
                             for lr2 in [1e-2]:  
                                 for wd2 in [1e-4]:
-                                    for proj in ['nonlinear-hid', 'nonlinear', 'linear','standard']:
+                                    for proj in ['nonlinear-hid']:
                                         for epochs in [1500]:
                                             best_val_acc_list = []
                                             for exp in range(args.n_experiments): 
@@ -121,6 +121,6 @@ for channels in [128, 256, 512]:
                                                 # print('Linear evaluation accuracy:{:.4f}'.format(best_val_acc))                            
                                                 best_val_acc_list.append(best_val_acc.item())
                                             best_val_acc_mean = mean(best_val_acc_list)
-                                            results += [[args.model, args.dataset, proj, epochs, channels, lr1, lr2, wd2, edr, fmr, best_val_acc_mean]]
-                                            res1 = pd.DataFrame(results, columns=['model', 'dataset', 'projection', 'epochs', 'channels', 'lr1', 'lr2', 'wd2', 'edge_drop_rate', 'feat_mask_rate', 'val_acc'])
-                                            res1.to_csv(file_path + "_" + args.model + "_" + args.dataset +  ".csv", index=False)
+                                            results += [[args.model, args.dataset, proj, epochs, channels, lr1, lr2, wd1, wd2, edr, fmr, best_val_acc_mean]]
+                                            res1 = pd.DataFrame(results, columns=['model', 'dataset', 'projection', 'epochs', 'channels', 'lr1', 'lr2', 'wd1', 'wd2', 'edge_drop_rate', 'feat_mask_rate', 'val_acc'])
+                                            res1.to_csv(file_path + "_" + proj + "_" + args.dataset +  ".csv", index=False)
