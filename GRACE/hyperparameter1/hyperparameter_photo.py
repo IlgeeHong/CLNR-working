@@ -41,7 +41,7 @@ def train(model, data, fmr, edr, proj):
     return loss.item()
 
 results =[]
-for channels in [256, 512]:    
+for channels in [256]:    
     for tau in [0.5]:
         for n_layers in [2]: 
             for edr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]:
