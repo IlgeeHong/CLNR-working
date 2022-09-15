@@ -94,7 +94,7 @@ class CLGR(nn.Module):
             refl_diag_temp = refl_diag.clone()
             refl_diag_neg = refl_diag_temp.clone()
         N = between_sim.shape[0]
-        denom = ((2*N-1)/k)*(between_sim.sum(1) + refl_sim.sum(1) - refl_diag_neg)
+        denom = between_diag + ((N-1)/k)*(between_sim.sum(1) - between_diag + refl_sim.sum(1) - refl_diag_neg)
         semi_loss = - torch.log(between_diag / denom)
         return semi_loss
 
