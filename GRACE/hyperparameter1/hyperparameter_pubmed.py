@@ -50,7 +50,7 @@ for channels in [256]:
                         for wd1 in [0.0, 1e-5]:
                             for lr2 in [1e-2]:  
                                 for wd2 in [1e-4]:
-                                    for proj in ['nonlinear-hid']:
+                                    for proj in ['linear']:
                                         for epochs in [1500]:
                                             best_val_acc_list = []
                                             for exp in range(args.n_experiments): 
