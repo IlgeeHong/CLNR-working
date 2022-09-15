@@ -30,7 +30,7 @@ parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--fmr', type=float, default=0.2)
 parser.add_argument('--edr', type=float, default=0.4)
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/neg/results/neg2")
+parser.add_argument('--result_file', type=str, default="/Ours/neg/results/neg_final")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
