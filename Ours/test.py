@@ -109,7 +109,6 @@ for exp in range(args.n_experiments):
     tau = args.tau
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
-    pdb.set_trace()
 
     ##### Train CLGR model #####
     print("=== train CLGR model ===")
