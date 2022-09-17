@@ -96,6 +96,7 @@ for exp in range(args.n_experiments):
 
     if args.dataset in ['ogbn-arxiv']:
         dataset = PygNodePropPredDataset(name="ogbn-arxiv", root = "/scratch/midway3/ilgee/SelfGCon/dataset")
+        data = dataset[0]
         split_idx = dataset.get_idx_split()
         train_idx = split_idx["train"]
         val_idx = split_idx["valid"]
@@ -116,7 +117,7 @@ for exp in range(args.n_experiments):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
-        loss = train(model, data)
+        loss = train(model, data, k=32)
         # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
