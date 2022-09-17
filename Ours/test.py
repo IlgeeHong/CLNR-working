@@ -21,8 +21,8 @@ parser.add_argument('--model', type=str, default='CLGR') #SemiGCon
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv')
 parser.add_argument('--split', type=str, default='OGB') #PublicSplit
 parser.add_argument('--n_experiments', type=int, default=1)
-parser.add_argument('--epochs', type=int, default=50)
-parser.add_argument('--n_layers', type=int, default=3)
+parser.add_argument('--epochs', type=int, default=5)
+parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3)
 parser.add_argument('--wd1', type=float, default=0.0)
@@ -115,11 +115,10 @@ for exp in range(args.n_experiments):
     model = CLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use) #
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
-    pdb.set_trace()
     for epoch in range(args.epochs):
         loss = train(model, data, k=2)
         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
-    
+    pdb.set_trace()
     embeds = model.get_embedding(data)
     train_embs = embeds[train_idx]
     val_embs = embeds[val_idx]
