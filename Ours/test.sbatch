@@ -1,12 +1,14 @@
 #!/bin/bash
 
-#SBATCH --job-name=array-job
-#SBATCH --output=logs/array_%A_%a.out
-#SBATCH --error=logs/array_%A_%a.err
+#SBATCH --job-name=gpu-job
+#SBATCH --output=logs/gpu_%A_%a.out
+#SBATCH --error=logs/gpu_%A_%a.err
 #SBATCH --time=35:00:00
-#SBATCH --account=pi-cdonnat
+#SBATCH --nodes=1
+#SBATCH --partition=gpu
 #SBATCH --ntasks=1
-#SBATCH --partition=caslake
+#SBATCH --gres=gpu:1 
+#SBATCH --account=pi-cdonnat
 #SBATCH --mem=20G
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ilgee@uchicago.edu
@@ -16,6 +18,7 @@ echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 
 # Add lines here to run your computations.
 module load python
+module load cuda
 source activate pytorch_env  
 
 cd $SCRATCH/$USER/SelfGCon
