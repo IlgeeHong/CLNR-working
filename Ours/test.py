@@ -98,7 +98,7 @@ for exp in range(args.n_experiments):
         dataset = PygNodePropPredDataset(name="ogbn-arxiv", root = "/scratch/midway3/ilgee/SelfGCon/dataset")
         split_idx = dataset.get_idx_split()
         train_idx = split_idx["train"]
-        val_idx = split_idx["val"]
+        val_idx = split_idx["valid"]
         test_idx = split_idx["test"]
          
     in_dim = data.num_features
