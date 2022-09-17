@@ -19,10 +19,10 @@ from aug import *
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLGR') #SemiGCon
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv')
-parser.add_argument('--split', type=str, default='RandomSplit') #PublicSplit
-parser.add_argument('--n_experiments', type=int, default=20)
-parser.add_argument('--epochs', type=int, default=1500)
-parser.add_argument('--n_layers', type=int, default=2)
+parser.add_argument('--split', type=str, default='OGB') #PublicSplit
+parser.add_argument('--n_experiments', type=int, default=1)
+parser.add_argument('--epochs', type=int, default=50)
+parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3)
 parser.add_argument('--wd1', type=float, default=0.0)
@@ -71,6 +71,8 @@ for exp in range(args.n_experiments):
         transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
     if args.split == "RandomSplit":
         transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
+    if args.split == "OGB":
+        transform = T.Compose([T.ToDevice(device), T.ToUndirected()])   
     if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
         dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
         data = dataset[0]
@@ -93,7 +95,7 @@ for exp in range(args.n_experiments):
         test_idx = data.test_mask 
 
     if args.dataset in ['ogbn-arxiv']:
-        dataset = PygNodePropPredDataset(name="ogbn-arxiv")
+        dataset = PygNodePropPredDataset(name="ogbn-arxiv", root = 'dataset/')
         split_idx = dataset.get_idx_split()
         train_idx = split_idx["train"]
         val_idx = split_idx["val"]
