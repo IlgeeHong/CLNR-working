@@ -95,7 +95,7 @@ for exp in range(args.n_experiments):
         test_idx = data.test_mask 
 
     if args.dataset in ['ogbn-arxiv']:
-        dataset = PygNodePropPredDataset(name="ogbn-arxiv", root = 'dataset/')
+        dataset = PygNodePropPredDataset(name="ogbn-arxiv", root = "/scratch/midway3/ilgee/SelfGCon/dataset")
         split_idx = dataset.get_idx_split()
         train_idx = split_idx["train"]
         val_idx = split_idx["val"]
