@@ -103,7 +103,7 @@ for exp in range(args.n_experiments):
     #     train_idx = split_idx["train"]
     #     val_idx = split_idx["valid"]
     #     test_idx = split_idx["test"] 
-
+    pdb.set_trace()
     data, train_idx, val_idx, test_idx = load(args.dataset, device)
     in_dim = data.num_features
     hid_dim = args.channels
@@ -113,7 +113,7 @@ for exp in range(args.n_experiments):
 
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
-    pdb.set_trace()
+    
     ##### Train CLGR model #####
     print("=== train CLGR model ===")
     model = CLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use) #
