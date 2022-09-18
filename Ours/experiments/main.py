@@ -7,11 +7,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import pandas as pd
-from torch_geometric.datasets import Planetoid, Coauthor, Amazon
-
-# from ogb.nodeproppred import PygNodePropPredDataset
-# from torch_geometric.datasets import Planetoid, Coauthor, Amazon
-# import torch_geometric.transforms as T
 
 from dataset import *
 from model import * 
@@ -21,9 +16,8 @@ from aug import *
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLGR')
 parser.add_argument('--dataset', type=str, default='Computers')
-# parser.add_argument('--split', type=str, default='PublicSplit') 
 parser.add_argument('--n_experiments', type=int, default=1)
-parser.add_argument('--epochs', type=int, default=10)
+parser.add_argument('--epochs', type=int, default=100)
 parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3)
@@ -31,7 +25,7 @@ parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--channels', type=int, default=512) 
-parser.add_argument('--fmr', type=float, default=0.5)
+parser.add_argument('--fmr', type=float, default=0.0)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/experiments/results/Final_accuracy")
@@ -69,49 +63,12 @@ def train_semi(model, data, num_class, train_idx, k=None):
 
 results =[]
 for exp in range(args.n_experiments):      
-    # if args.split == "PublicSplit":
-    #     transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
-    # if args.split == "RandomSplit":
-    #     transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
-    # if args.split == "OGB":
-    #     transform = T.Compose([T.ToDevice(device), T.ToUndirected()])
-
-    # if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
-    #     dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
-    #     data = dataset[0]
-    #     train_idx = data.train_mask 
-    #     val_idx = data.val_mask 
-    #     test_idx = data.test_mask  
-
-    # if args.dataset in ['CS', 'Physics']:
-    #     dataset = Coauthor("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
-    #     data = dataset[0]
-    #     train_idx = data.train_mask 
-    #     val_idx = data.val_mask 
-    #     test_idx = data.test_mask  
-
-    # if args.dataset in ['Computers', 'Photo']:
-    #     dataset = Amazon("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
-    #     data = dataset[0]
-    #     train_idx = data.train_mask 
-    #     val_idx = data.val_mask 
-    #     test_idx = data.test_mask  
-
-    # if args.dataset in ['ogbn-arxiv']:
-    #     dataset = PygNodePropPredDataset(name="ogbn-arxiv", root = '/scratch/midway3/ilgee/SelfGCon/dataset/', transform=transform)
-    #     data = dataset[0]
-    #     split_idx = dataset.get_idx_split()
-    #     train_idx = split_idx["train"]
-    #     val_idx = split_idx["valid"]
-    #     test_idx = split_idx["test"] 
-    # pdb.set_trace()
     data, train_idx, val_idx, test_idx = load(args.dataset, device)
     in_dim = data.num_features
     hid_dim = args.channels
     out_dim = args.channels
     n_layers = args.n_layers
     tau = args.tau
-
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
     
@@ -179,6 +136,6 @@ for exp in range(args.n_experiments):
        # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
        # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
     print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    results += [[args.model, args.dataset, args.split, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc.item()]]
-    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'split', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy'])
+    results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc.item()]]
+    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy'])
     res1.to_csv(file_path + "_" + args.model + "_" + args.dataset +  ".csv", index=False)
