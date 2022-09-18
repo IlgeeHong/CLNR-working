@@ -90,12 +90,12 @@ class CLGR(nn.Module):
             refl_diag_temp = refl_diag.clone()
             refl_diag_temp[~indices] = 0.0
             refl_diag_neg = refl_diag_temp.clone()
+            N = between_sim.shape[0]
+            denom = between_diag + ((N-1)/k)*(between_sim.sum(1) - between_diag + refl_sim.sum(1) - refl_diag_neg)
+            semi_loss = - torch.log(between_diag / denom)
         else:
-            refl_diag_temp = refl_diag.clone()
-            refl_diag_neg = refl_diag_temp.clone()
-        N = between_sim.shape[0]
-        denom = between_diag + ((N-1)/k)*(between_sim.sum(1) - between_diag + refl_sim.sum(1) - refl_diag_neg)
-        semi_loss = - torch.log(between_diag / denom)
+            semi_loss = - torch.log(between_diag / (between_sim.sum(1) + refl_sim.sum(1) - refl_diag))
+        
         return semi_loss
 
     def loss(self, z1, z2, k=None, mean=True):
