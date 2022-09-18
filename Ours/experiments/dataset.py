@@ -15,7 +15,7 @@ def load(name, device):
         val_idx = data.val_mask 
         test_idx = data.test_mask  
 
-    if name in ['CS', 'Physics']:
+    elif name in ['CS', 'Physics']:
         transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Coauthor(name=name, transform=transform)
         data = dataset[0]
@@ -23,7 +23,7 @@ def load(name, device):
         val_idx = data.val_mask 
         test_idx = data.test_mask  
 
-    if name in ['Computers', 'Photo']:
+    elif name in ['Computers', 'Photo']:
         transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Amazon(name=name, transform=transform)
         data = dataset[0]
@@ -31,7 +31,7 @@ def load(name, device):
         val_idx = data.val_mask 
         test_idx = data.test_mask  
 
-    if name in ['ogbn-arxiv']:
+    elif name in ['ogbn-arxiv']:
         transform = T.Compose([T.ToDevice(device), T.ToUndirected()])
         dataset = PygNodePropPredDataset(name=name, root = 'dataset/', transform=transform)
         data = dataset[0]
@@ -40,5 +40,4 @@ def load(name, device):
         val_idx = split_idx["valid"]
         test_idx = split_idx["test"] 
 
-    
     return data, train_idx, val_idx, test_idx
