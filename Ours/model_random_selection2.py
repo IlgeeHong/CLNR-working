@@ -112,7 +112,7 @@ class CLGR(nn.Module):
         ret = ret.mean() if mean else ret.sum()
         return ret
 
-class SemiGCon(nn.Module):
+class SupCLGR(nn.Module):
     def __init__(self, in_dim, hid_dim, out_dim, n_layers, tau = 0.5, use_mlp = False):
         super().__init__()
         if not use_mlp:
