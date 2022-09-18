@@ -8,6 +8,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import pandas as pd
 
+from ogb.nodeproppred import PygNodePropPredDataset
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 
@@ -17,18 +18,18 @@ from aug import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLGR') #SemiGCon
-parser.add_argument('--dataset', type=str, default='PubMed')
-parser.add_argument('--split', type=str, default='PublicSplit') #PublicSplit
-parser.add_argument('--n_experiments', type=int, default=10)
-parser.add_argument('--epochs', type=int, default=50)
-parser.add_argument('--n_layers', type=int, default=2)
+parser.add_argument('--dataset', type=str, default='ogbn-arxiv')
+parser.add_argument('--split', type=str, default='OGB') #PublicSplit
+parser.add_argument('--n_experiments', type=int, default=1)
+parser.add_argument('--epochs', type=int, default=10)
+parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--channels', type=int, default=512) 
-parser.add_argument('--fmr', type=float, default=0.4)
+parser.add_argument('--fmr', type=float, default=0.5)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/results/Final_accuracy")
@@ -70,19 +71,37 @@ for exp in range(args.n_experiments):
         transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
     if args.split == "RandomSplit":
         transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
+    if args.split == "OGB":
+        transform = T.Compose([T.ToDevice(device), T.ToUndirected()])
+
     if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
         dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
         data = dataset[0]
+        train_idx = data.train_mask 
+        val_idx = data.val_mask 
+        test_idx = data.test_mask  
+
     if args.dataset in ['CS', 'Physics']:
         dataset = Coauthor("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
         data = dataset[0]
+        train_idx = data.train_mask 
+        val_idx = data.val_mask 
+        test_idx = data.test_mask  
+
     if args.dataset in ['Computers', 'Photo']:
         dataset = Amazon("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
         data = dataset[0]
+        train_idx = data.train_mask 
+        val_idx = data.val_mask 
+        test_idx = data.test_mask  
 
-    train_idx = data.train_mask 
-    val_idx = data.val_mask 
-    test_idx = data.test_mask  
+    if args.dataset in ['ogbn-arxiv']:
+        dataset = PygNodePropPredDataset(name="ogbn-arxiv", root = '/scratch/midway3/ilgee/SelfGCon/dataset/', transform=transform)
+        data = dataset[0]
+        split_idx = dataset.get_idx_split()
+        train_idx = split_idx["train"]
+        val_idx = split_idx["valid"]
+        test_idx = split_idx["test"] 
 
     in_dim = data.num_features
     hid_dim = args.channels
@@ -99,8 +118,8 @@ for exp in range(args.n_experiments):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
-        loss = train(model, data)
-        # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
+        loss = train(model, data, k=2)
+        print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
     train_embs = embeds[train_idx]
