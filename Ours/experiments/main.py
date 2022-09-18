@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import pandas as pd
+import torch_geometric
 
 # from ogb.nodeproppred import PygNodePropPredDataset
 # from torch_geometric.datasets import Planetoid, Coauthor, Amazon
