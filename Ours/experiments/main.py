@@ -103,7 +103,7 @@ for exp in range(args.n_experiments):
     #     train_idx = split_idx["train"]
     #     val_idx = split_idx["valid"]
     #     test_idx = split_idx["test"] 
-    pdb.set_trace()
+    # pdb.set_trace()
     data, train_idx, val_idx, test_idx = load(args.dataset, device)
     in_dim = data.num_features
     hid_dim = args.channels
