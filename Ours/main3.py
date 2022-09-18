@@ -116,7 +116,7 @@ for exp in range(args.n_experiments):
     print("=== train CLGR model ===")
     model = CLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use) #
     model = model.to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
     for epoch in range(args.epochs):
         loss = train(model, data, k=2)
         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
