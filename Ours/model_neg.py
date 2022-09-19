@@ -80,7 +80,7 @@ class CLGR(nn.Module):
             N = z1.shape[0]
             diag_list = []
             for i in range(N):
-                diag_list.append(torch.mm(z1[i,:], z2[i:,].t()))
+                diag_list.append(torch.inner(z1[i,:], z2[i:,]))
             diag = f(torch.Tensor(diag_list))
         else:
             sim = f(torch.mm(z1, z2.t()))
