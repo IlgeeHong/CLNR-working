@@ -77,7 +77,11 @@ class CLGR(nn.Module):
         if indices is not None:
             z2_new = z2[indices,:]
             sim = f(torch.mm(z1, z2_new.t()))
-            diag = f(torch.mm(z1,z2.t()).diag())
+            N = z1.shape[0]
+            diag_list = []
+            for i in range(N):
+                diag_list.append = torch.inner(z1[i,:], z2[i:,])
+            diag = f(torch.Tensor(diag_list))
         else:
             sim = f(torch.mm(z1, z2.t()))
             diag = f(torch.mm(z1, z2.t()).diag())
