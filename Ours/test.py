@@ -101,7 +101,6 @@ for exp in range(args.n_experiments):
         train_idx = split_idx["train"]
         val_idx = split_idx["valid"]
         test_idx = split_idx["test"]
-        pdb.set_trace()
          
     in_dim = data.num_features
     hid_dim = args.channels
@@ -119,7 +118,7 @@ for exp in range(args.n_experiments):
     for epoch in range(args.epochs):
         loss = train(model, data, k=2)
         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
-    pdb.set_trace()
+
     embeds = model.get_embedding(data)
     train_embs = embeds[train_idx]
     val_embs = embeds[val_idx]
