@@ -19,22 +19,27 @@ class LogReg(nn.Module):
         ret = self.fc(x)
         return ret
 
-class GCN(nn.Module):
-    def __init__(self, in_dim, hid_dim, out_dim, n_layers, norm = True):
+class Encoder(nn.Module):
+    def __init__(self, layer_config, dropout=None, project=False):
         super().__init__()
-        self.n_layers = n_layers
-        self.convs = nn.ModuleList()
-        self.convs.append(GCNConv(in_dim, hid_dim, normalize = norm))
-        if n_layers > 1:
-            for i in range(n_layers - 2):
-                self.convs.append(GCNConv(hid_dim, hid_dim, normalize = norm))
-            self.convs.append(GCNConv(hid_dim, out_dim, normalize = norm))
+        self.conv1 = GCNConv(layer_config[0], layer_config[1])
+        self.bn1 = nn.BatchNorm1d(layer_config[1], momentum = 0.01)
+        self.prelu1 = nn.PReLU()
+        self.conv2 = GCNConv(layer_config[1],layer_config[2])
+        self.bn2 = nn.BatchNorm1d(layer_config[2], momentum = 0.01)
+        self.prelu2 = nn.PReLU()
+    def forward(self, x, edge_index, edge_weight=None):
+        x = self.conv1(x, edge_index, edge_weight=edge_weight)
+        x = self.prelu1(self.bn1(x))
+        x = self.conv2(x, edge_index, edge_weight=edge_weight)
+        x = self.prelu2(self.bn2(x))
 
-    def forward(self, x, edge_index, edge_weight = None):
-        for i in range(self.n_layers - 1):
-            x = F.relu(self.convs[i](x, edge_index, edge_weight)) # nn.PReLU
-        x = self.convs[-1](x, edge_index, edge_weight)
         return x
+
+def init_weights(m):
+    if type(m) == nn.Linear:
+        torch.nn.init.xavier_uniform_(m.weight)
+        m.bias.data.fill_(0.01)
 
 class EMA:
     def __init__(self, beta, epochs):
@@ -65,40 +70,40 @@ def set_requires_grad(model, val):
         p.requires_grad = val
 
 class BGRL(nn.Module):
-
-    def __init__(self, in_dim, hid_dim, out_dim, n_layers, pred_hid, moving_average_decay=0.99, epochs=1000):
+    def __init__(self, layer_config, pred_hid, dropout=0.0, moving_average_decay=0.99, epochs=1000):
         super().__init__()
-        self.student_encoder = GCN(in_dim, hid_dim, out_dim, n_layers)    
+        self.student_encoder = Encoder(layer_config=layer_config, dropout=dropout)
         self.teacher_encoder = copy.deepcopy(self.student_encoder)
-        
         set_requires_grad(self.teacher_encoder, False)
         self.teacher_ema_updater = EMA(moving_average_decay, epochs)
-        rep_dim = out_dim
+        rep_dim = layer_config[-1]
         self.student_predictor = nn.Sequential(nn.Linear(rep_dim, pred_hid), nn.PReLU(), nn.Linear(pred_hid, rep_dim))
-        # self.student_predictor.apply(init_weights)
-    
+        self.student_predictor.apply(init_weights) 
     def reset_moving_average(self):
         del self.teacher_encoder
         self.teacher_encoder = None
-
     def update_moving_average(self):
         assert self.teacher_encoder is not None, 'teacher encoder has not been created yet'
         update_moving_average(self.teacher_ema_updater, self.teacher_encoder, self.student_encoder)
-
     def get_embedding(self, data):
-        z = self.teacher_encoder(data.x, data.edge_index)
-        return z.detach()    
-
+        out = self.student_encoder(data.x, data.edge_index)
+        return out.detach()
     def forward(self, data1, data2):
-        v1_student = self.student_encoder(data1.x, data1.edge_index, edge_weight=data1.edge_weight)
-        v2_student = self.student_encoder(data2.x, data2.edge_index, edge_weight=data2.edge_weight)
+        x1 = data1.x
+        edge_index_v1 = data1.edge_index
+        edge_weight_v1 = None
+        x2 = data2.x
+        edge_index_v2 = data2.edge_index
+        edge_weight_v2 = None
+        v1_student = self.student_encoder(x=x1, edge_index=edge_index_v1, edge_weight=edge_weight_v1)
+        v2_student = self.student_encoder(x=x2, edge_index=edge_index_v2, edge_weight=edge_weight_v2)
 
         v1_pred = self.student_predictor(v1_student)
         v2_pred = self.student_predictor(v2_student)
         
         with torch.no_grad():
-            v1_teacher = self.teacher_encoder(data1.x, data1.edge_index, edge_weight=data1.edge_weight)
-            v2_teacher = self.teacher_encoder(data2.x, data2.edge_index, edge_weight=data2.edge_weight)
+            v1_teacher = self.teacher_encoder(x=x1, edge_index=edge_index_v1, edge_weight=edge_weight_v1)
+            v2_teacher = self.teacher_encoder(x=x2, edge_index=edge_index_v2, edge_weight=edge_weight_v2)
             
         loss1 = loss_fn(v1_pred, v2_teacher.detach())
         loss2 = loss_fn(v2_pred, v1_teacher.detach())
