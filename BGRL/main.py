@@ -17,13 +17,13 @@ from aug import *
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='BGRL')
 parser.add_argument('--dataset', type=str, default='Computers')
-parser.add_argument('--epochs', type=int, default=1000)
+parser.add_argument('--epochs', type=int, default=20)
 parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--hid_dim', type=int, default=256)
 parser.add_argument('--out_dim', type=int, default=128)
 parser.add_argument('--pred_hid', type=int, default=512)
-parser.add_argument('--lr1', type=float, default=1e-5)
+parser.add_argument('--lr1', type=float, default=1e-3)
 parser.add_argument('--wd1', type=float, default=1e-5)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
@@ -31,7 +31,7 @@ parser.add_argument('--edr1', type=float, default=0.5)
 parser.add_argument('--edr2', type=float, default=0.4)
 parser.add_argument('--fmr1', type=float, default=0.2)
 parser.add_argument('--fmr2', type=float, default=0.1)
-parser.add_argument('--result_file', type=str, default="/results/Final_accuracy")
+parser.add_argument('--result_file', type=str, default="/BGRL/results/Final_accuracy")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
@@ -91,6 +91,7 @@ for exp in range(args.n_experiments):
     test_feat = feat[test_idx] 
     ''' Linear Evaluation '''
     logreg = LogReg(train_embs.shape[1], num_class)
+    logreg = logreg.to(device)
     opt = torch.optim.Adam(logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
     loss_fn = nn.CrossEntropyLoss()
     best_val_acc = 0
