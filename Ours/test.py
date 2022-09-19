@@ -96,12 +96,12 @@ for exp in range(args.n_experiments):
 
     if args.dataset in ['ogbn-arxiv']:
         dataset = PygNodePropPredDataset(name="ogbn-arxiv", root = "/scratch/midway3/ilgee/SelfGCon/dataset", transform=transform)
-        pdb.set_trace()
         data = dataset[0]
         split_idx = dataset.get_idx_split()
         train_idx = split_idx["train"]
         val_idx = split_idx["valid"]
         test_idx = split_idx["test"]
+        pdb.set_trace()
          
     in_dim = data.num_features
     hid_dim = args.channels
