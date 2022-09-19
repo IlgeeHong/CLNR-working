@@ -24,11 +24,11 @@ parser.add_argument('--lr1', type=float, default=1e-3)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--lr2', type=float, default=5e-3)
 parser.add_argument('--wd2', type=float, default=1e-2)
-parser.add_argument('--channels', type=int, default=256) 
+parser.add_argument('--channels', type=int, default=128) 
 parser.add_argument('--fmr', type=float, default=0.3)
 parser.add_argument('--edr', type=float, default=0.1)
 parser.add_argument('--mlp_use', type=bool, default=True)
-parser.add_argument('--result_file', type=str, default="/Ours/experiments/results/Final_accuracy2")
+parser.add_argument('--result_file', type=str, default="/Ours/experiments/results/Final_accuracy3")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
