@@ -2,6 +2,7 @@ import os
 import os.path as osp
 import argparse
 import sys
+# sys.path.append('/Users/ilgeehong/Desktop/SemGCon/')
 sys.path.append('/scratch/midway3/ilgee/SelfGCon')
 import torch
 import torch.nn as nn
@@ -9,29 +10,29 @@ import torch.nn.functional as F
 import pandas as pd
 from statistics import mean, stdev
 
-from dataset import *
+from dataset_cpu import *
 from model import *
 from aug import *
-# from cluster import *
+from cluster import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='BGRL')
 parser.add_argument('--dataset', type=str, default='Computers')
-parser.add_argument('--epochs', type=int, default=20)
+parser.add_argument('--epochs', type=int, default=10000)
 parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--n_layers', type=int, default=2)
-parser.add_argument('--hid_dim', type=int, default=256)
 parser.add_argument('--out_dim', type=int, default=128)
+parser.add_argument('--hid_dim', type=int, default=256)
 parser.add_argument('--pred_hid', type=int, default=512)
-parser.add_argument('--lr1', type=float, default=1e-3)
+parser.add_argument('--lr1', type=float, default=5e-4)
 parser.add_argument('--wd1', type=float, default=1e-5)
 parser.add_argument('--lr2', type=float, default=1e-2)
-parser.add_argument('--wd2', type=float, default=1e-4)
-parser.add_argument('--edr1', type=float, default=0.5)
-parser.add_argument('--edr2', type=float, default=0.4)
+parser.add_argument('--wd2', type=float, default=0.0)
 parser.add_argument('--fmr1', type=float, default=0.2)
 parser.add_argument('--fmr2', type=float, default=0.1)
-parser.add_argument('--result_file', type=str, default="/BGRL/results/Final_accuracy")
+parser.add_argument('--edr1', type=float, default=0.5)
+parser.add_argument('--edr2', type=float, default=0.4)
+parser.add_argument('--result_file', type=str, default="/BGRL/results/Final_accuracy") 
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
@@ -66,11 +67,10 @@ for exp in range(args.n_experiments):
     N = data.num_nodes
     ##### Train the BGRL model #####
     print("=== train BGRL model ===")
-    model = BGRL(layer_config, args.pred_hid)
+    model = BGRL(layer_config, args.pred_hid, args.epochs)
     model = model.to(device)
     optimizer = torch.optim.AdamW(params=model.parameters(), lr=args.lr1, weight_decay= args.wd1)
-    s = lambda epoch: epoch / 1000 if epoch < 1000 \
-                    else ( 1 + np.cos((epoch-1000) * np.pi / (args.epochs - 1000))) * 0.5
+    s = lambda epoch: epoch / 1000 if epoch < 1000 else ( 1 + np.cos((epoch-1000) * np.pi / (args.epochs - 1000))) * 0.5
     scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=s)
     for epoch in range(args.epochs):
         loss = train(model, data)
@@ -127,19 +127,20 @@ for exp in range(args.n_experiments):
     res1 = pd.DataFrame(results, columns=['model', 'dataset', 'lr', 'hid_dim', 'epoch', 'edr1', 'fmr1', 'edr2', 'fmr2', 'accuracy'])
     res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + ".csv", index=False)
 
+visualize_pca(test_embs, test_labels.numpy(), 1, 2)
+visualize_pca(test_embs, test_labels.numpy(), 1, 3)
+visualize_pca(test_embs, test_labels.numpy(), 2, 3)
 
-# def visualize_umap(out, color, size=30, epoch=None, loss = None):
-#     umap_2d = umap.UMAP(n_components=2, init="random", random_state=0)
-#     z = umap_2d.fit_transform(out.detach().cpu().numpy())
-#     plt.figure(figsize=(7,7))
-#     plt.xticks([])
-#     plt.yticks([])
-#     scatter = plt.scatter(z[:, 0], z[:, 1], s=size, c=color, cmap="Set2")
-#     # produce a legend with the unique colors from the scatter
-#     legend1 = plt.legend(*scatter.legend_elements(),
-#                     loc="lower left", title="Classes")
-#     if epoch is not None and loss is not None:
-#         plt.xlabel(f'Epoch: {epoch}, Loss: {loss:.4f}', fontsize=16)
-#     plt.show()
+from sklearn.metrics import silhouette_score
+from sklearn.metrics import davies_bouldin_score
+from sklearn.metrics import calinski_harabasz_score
 
-# visualize_umap(test_embs, test_labels.numpy())    
+results2 = []
+
+sil = silhouette_score(test_embs,test_labels.numpy())
+dav = davies_bouldin_score(test_embs,test_labels.numpy())
+cal =calinski_harabasz_score(test_embs,test_labels.numpy())
+print(sil, dav, cal)
+results2 += [[args.model, args.dataset, sil, dav, cal]]
+res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
+res2.to_csv(file_path + "_" + args.dataset +  ".csv", index=False) 
