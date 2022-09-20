@@ -70,7 +70,7 @@ def set_requires_grad(model, val):
         p.requires_grad = val
 
 class BGRL(nn.Module):
-    def __init__(self, layer_config, pred_hid, dropout=0.0, moving_average_decay=0.99, epochs=1000):
+    def __init__(self, layer_config, pred_hid, epochs, dropout=0.0, moving_average_decay=0.99):
         super().__init__()
         self.student_encoder = Encoder(layer_config=layer_config, dropout=dropout)
         self.teacher_encoder = copy.deepcopy(self.student_encoder)
@@ -78,7 +78,7 @@ class BGRL(nn.Module):
         self.teacher_ema_updater = EMA(moving_average_decay, epochs)
         rep_dim = layer_config[-1]
         self.student_predictor = nn.Sequential(nn.Linear(rep_dim, pred_hid), nn.PReLU(), nn.Linear(pred_hid, rep_dim))
-        self.student_predictor.apply(init_weights) 
+        # self.student_predictor.apply(init_weights) 
     def reset_moving_average(self):
         del self.teacher_encoder
         self.teacher_encoder = None
