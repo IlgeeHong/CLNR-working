@@ -126,11 +126,12 @@ for exp in range(args.n_experiments):
         print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
     results += [['BGRL', args.dataset, args.lr1, args.hid_dim, args.epochs, args.edr1, args.fmr1, args.edr2, args.fmr2, eval_acc.item()]]
     res1 = pd.DataFrame(results, columns=['model', 'dataset', 'lr', 'hid_dim', 'epoch', 'edr1', 'fmr1', 'edr2', 'fmr2', 'accuracy'])
-    res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + ".csv", index=False)
+    res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + '_' + args.out_dim + ".csv", index=False)
 
-visualize_pca(test_embs, test_labels.numpy(), file_path, args.dataset, 1, 2)
-visualize_pca(test_embs, test_labels.numpy(), file_path, args.dataset, 1, 3)
-visualize_pca(test_embs, test_labels.numpy(), file_path, args.dataset, 2, 3)
+Y = torch.Tensor.cpu(test_labels).numpy()
+visualize_pca(test_embs, Y, file_path, args.dataset, 1, 2)
+visualize_pca(test_embs, Y, file_path, args.dataset, 1, 3)
+visualize_pca(test_embs, Y, file_path, args.dataset, 2, 3)
 
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import davies_bouldin_score
@@ -138,11 +139,10 @@ from sklearn.metrics import calinski_harabasz_score
 
 file_path = os.getcwd() + args.result_file1
 results2 = []
-Y = torch.Tensor.cpu(test_labels).numpy()
 sil = silhouette_score(test_embs,Y)
 dav = davies_bouldin_score(test_embs,Y)
 cal =calinski_harabasz_score(test_embs,Y)
 print(sil, dav, cal)
 results2 += [[args.model, args.dataset, sil, dav, cal]]
 res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
-res2.to_csv(file_path + "_" + args.dataset +  ".csv", index=False) 
+res2.to_csv(file_path + "_" + args.dataset + '_' + args.out_dim + ".csv", index=False) 
