@@ -30,6 +30,7 @@ parser.add_argument('--fmr', type=float, default=0.0)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ablation/results/Final_accuracy")
+parser.add_argument('--result_file1', type=str, default="/Ours/ablation/results/Clustering_score") 
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
