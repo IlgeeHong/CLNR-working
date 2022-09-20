@@ -2,7 +2,6 @@ import os
 import os.path as osp
 import argparse
 import sys
-# sys.path.append('/Users/ilgeehong/Desktop/SemGCon/') ###
 sys.path.append('/scratch/midway3/ilgee/SelfGCon')
 import torch
 import torch.nn as nn
@@ -16,77 +15,90 @@ from aug import *
 from cluster import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='BGRL')
+parser.add_argument('--model', type=str, default='CLGR') 
 parser.add_argument('--dataset', type=str, default='Photo')
-parser.add_argument('--epochs', type=int, default=10000)
 parser.add_argument('--n_experiments', type=int, default=1)
+parser.add_argument('--epochs', type=int, default=100)
 parser.add_argument('--n_layers', type=int, default=2)
-parser.add_argument('--out_dim', type=int, default=1024)
-parser.add_argument('--hid_dim', type=int, default=2048)
-parser.add_argument('--pred_hid', type=int, default=2048)
-parser.add_argument('--lr1', type=float, default=1e-4)
-parser.add_argument('--wd1', type=float, default=1e-5)
+parser.add_argument('--tau', type=float, default=0.5) 
+parser.add_argument('--lr1', type=float, default=1e-3)
+parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
-parser.add_argument('--fmr1', type=float, default=0.1)
-parser.add_argument('--fmr2', type=float, default=0.2)
-parser.add_argument('--edr1', type=float, default=0.4)
-parser.add_argument('--edr2', type=float, default=0.1)
-parser.add_argument('--result_file', type=str, default="/BGRL/results/Final_accuracy") ###/BGRL
-parser.add_argument('--result_file1', type=str, default="/BGRL/results/Clustering_score") ###/BGRL
+parser.add_argument('--channels', type=int, default=512) 
+parser.add_argument('--fmr', type=float, default=0.0)
+parser.add_argument('--edr', type=float, default=0.5)
+parser.add_argument('--mlp_use', type=bool, default=False)
+parser.add_argument('--result_file', type=str, default="/Ours/ablation/results/Final_accuracy")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data):
+def train(model, data, k=None):
     model.train()
     optimizer.zero_grad()
-    new_data1 = random_aug(data, args.fmr1, args.edr1)
-    new_data2 = random_aug(data, args.fmr2, args.edr2)
+    new_data1 = random_aug(data, args.fmr, args.edr)
+    new_data2 = random_aug(data, args.fmr, args.edr)
     new_data1 = new_data1.to(device)
     new_data2 = new_data2.to(device)
-    _, _, loss = model(new_data1, new_data2)
+    z1, z2 = model(new_data1, new_data2)   
+    loss = model.loss(z1, z2)
     loss.backward()
     optimizer.step()
-    scheduler.step()
-    model.update_moving_average()
+    return loss.item()
+
+def train_semi(model, data, num_class, train_idx, k=None):
+    model.train()
+    optimizer.zero_grad()
+    new_data1 = random_aug(data, args.fmr, args.edr)
+    new_data2 = random_aug(data, args.fmr, args.edr)
+    new_data1 = new_data1.to(device)
+    new_data2 = new_data2.to(device)
+    z1, z2 = model(new_data1, new_data2) 
+    train_idx = train_idx.to(device)
+    loss = model.loss(data, z1, z2, num_class, train_idx)
+    loss.backward()
+    optimizer.step()
     return loss.item()
 
 results =[]
-for exp in range(args.n_experiments): 
-    data, train_idx, val_idx, test_idx = load(args.dataset, device)  
+for exp in range(args.n_experiments):      
+    data, train_idx, val_idx, test_idx = load(args.dataset, device)
     in_dim = data.num_features
-    hid_dim = args.hid_dim
-    out_dim = args.out_dim
-    layer_config = [in_dim, hid_dim, out_dim]  
+    hid_dim = args.channels
+    out_dim = args.channels
     n_layers = args.n_layers
-    num_class = int(data.y.max().item()) + 1
+    tau = args.tau
+    num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
-    ##### Train the BGRL model #####
-    print("=== train BGRL model ===")
-    model = BGRL(layer_config, args.pred_hid, args.epochs)
+    ##### Train CLGR model #####
+    print("=== train CLGR model ===")
+    model = SupCLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use)
     model = model.to(device)
-    optimizer = torch.optim.Adam(params=model.parameters(), lr=args.lr1, weight_decay= args.wd1) #W
-    s = lambda epoch: epoch / 1000 if epoch < 1000 else ( 1 + np.cos((epoch-1000) * np.pi / (args.epochs - 1000))) * 0.5
-    scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=s)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
     for epoch in range(args.epochs):
-        loss = train(model, data)
+        loss = train_semi(model, data, num_class, train_idx)
+        # loss = train(model, data)
         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
-                
+    
     embeds = model.get_embedding(data)
     train_embs = embeds[train_idx]
     val_embs = embeds[val_idx]
     test_embs = embeds[test_idx]
+
     label = data.y
     label = label.to(device)
     feat = data.x
+
     train_labels = label[train_idx]
     val_labels = label[val_idx]
     test_labels = label[test_idx]
+
     train_feat = feat[train_idx]
     val_feat = feat[val_idx]
     test_feat = feat[test_idx] 
+
     ''' Linear Evaluation '''
     logreg = LogReg(train_embs.shape[1], num_class)
     logreg = logreg.to(device)
@@ -119,11 +131,11 @@ for exp in range(args.n_experiments):
                 if test_acc > eval_acc:
                     eval_acc = test_acc
 
-        print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
-        print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    results += [['BGRL', args.dataset, args.lr1, args.hid_dim, args.epochs, args.edr1, args.fmr1, args.edr2, args.fmr2, eval_acc.item()]]
-    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'lr', 'hid_dim', 'epoch', 'edr1', 'fmr1', 'edr2', 'fmr2', 'accuracy'])
-    res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + '_' + str(args.out_dim) + ".csv", index=False)
+       # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
+       # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
+    results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc.item()]]
+    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy'])
+    res1.to_csv(file_path + "_" + args.model + "_" + args.dataset +  ".csv", index=False)
 
 Y = torch.Tensor.cpu(test_labels).numpy()
 visualize_pca(test_embs, Y, 1, 2, file_path, args.dataset)
