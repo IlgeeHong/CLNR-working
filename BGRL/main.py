@@ -2,7 +2,7 @@ import os
 import os.path as osp
 import argparse
 import sys
-# sys.path.append('/Users/ilgeehong/Desktop/SemGCon/')
+# sys.path.append('/Users/ilgeehong/Desktop/SemGCon/') ###
 sys.path.append('/scratch/midway3/ilgee/SelfGCon')
 import torch
 import torch.nn as nn
@@ -10,7 +10,7 @@ import torch.nn.functional as F
 import pandas as pd
 from statistics import mean, stdev
 
-from dataset_cpu import *
+from dataset import * ### dataset_cpu
 from model import *
 from aug import *
 from cluster import *
@@ -32,7 +32,7 @@ parser.add_argument('--fmr1', type=float, default=0.2)
 parser.add_argument('--fmr2', type=float, default=0.1)
 parser.add_argument('--edr1', type=float, default=0.5)
 parser.add_argument('--edr2', type=float, default=0.4)
-parser.add_argument('--result_file', type=str, default="/BGRL/results/Final_accuracy") 
+parser.add_argument('--result_file', type=str, default="/BGRL/results/Final_accuracy") ###/BGRL
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
