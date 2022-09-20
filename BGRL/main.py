@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='BGRL')
 parser.add_argument('--dataset', type=str, default='Computers')
 parser.add_argument('--epochs', type=int, default=10000)
-parser.add_argument('--n_experiments', type=int, default=1)
+parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--out_dim', type=int, default=128)
 parser.add_argument('--hid_dim', type=int, default=256)
@@ -33,6 +33,7 @@ parser.add_argument('--fmr2', type=float, default=0.1)
 parser.add_argument('--edr1', type=float, default=0.5)
 parser.add_argument('--edr2', type=float, default=0.4)
 parser.add_argument('--result_file', type=str, default="/BGRL/results/Final_accuracy") ###/BGRL
+parser.add_argument('--result_file1', type=str, default="/BGRL/results/Clustering_score") ###/BGRL
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
@@ -69,7 +70,7 @@ for exp in range(args.n_experiments):
     print("=== train BGRL model ===")
     model = BGRL(layer_config, args.pred_hid, args.epochs)
     model = model.to(device)
-    optimizer = torch.optim.AdamW(params=model.parameters(), lr=args.lr1, weight_decay= args.wd1)
+    optimizer = torch.optim.Adam(params=model.parameters(), lr=args.lr1, weight_decay= args.wd1) #W
     s = lambda epoch: epoch / 1000 if epoch < 1000 else ( 1 + np.cos((epoch-1000) * np.pi / (args.epochs - 1000))) * 0.5
     scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=s)
     for epoch in range(args.epochs):
@@ -135,6 +136,7 @@ from sklearn.metrics import silhouette_score
 from sklearn.metrics import davies_bouldin_score
 from sklearn.metrics import calinski_harabasz_score
 
+file_path = os.getcwd() + args.result_file1
 results2 = []
 
 sil = silhouette_score(test_embs,test_labels.numpy())
