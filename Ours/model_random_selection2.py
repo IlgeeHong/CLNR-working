@@ -132,26 +132,26 @@ class SupCLGR(nn.Module):
         z2 = (h2 - h2.mean(0)) / h2.std(0)
         return z1, z2
     
-    def sim(self, z1, z2, pos_idx):
+    def sim(self, z1, z2, pos_idx, indices):
         z1 = F.normalize(z1)
         z2 = F.normalize(z2)
         f = lambda x: torch.exp(x / self.tau) 
-        # if indices is not None:
-        #     z2_new = z2[indices,:]
-        #     sim = f(torch.mm(z1, z2_new.t()))
-        #     diag = f(torch.mm(z1,z2.t()).diag())
-        #     sim_pos_temp1 = f(torch.mm(z1, z2.t()))
-        #     sim_pos_temp2 = sim_pos_temp1.clone()
-        #     sim_pos_temp2[~pos_idx] = 0
-        #     sim_pos = sim_pos_temp2.clone()
-        #     sim_pos_sum = sim_pos.sum(1)
-        # else:
-        sim = f(torch.mm(z1, z2.t()))
-        diag = f(torch.mm(z1, z2.t()).diag())
-        sim_pos_temp1 = sim.clone()
-        sim_pos_temp1[~pos_idx] = 0
-        sim_pos = sim_pos_temp1.clone()
-        sim_pos_sum = sim_pos.sum(1)
+        if indices is not None:
+            z2_new = z2[indices,:]
+            sim = f(torch.mm(z1, z2_new.t()))
+            diag = f(torch.mm(z1,z2.t()).diag())
+            sim_pos_temp1 = f(torch.mm(z1, z2.t()))
+            sim_pos_temp2 = sim_pos_temp1.clone()
+            sim_pos_temp2[~pos_idx] = 0
+            sim_pos = sim_pos_temp2.clone()
+            sim_pos_sum = sim_pos.sum(1)
+        else:
+            sim = f(torch.mm(z1, z2.t()))
+            diag = f(torch.mm(z1, z2.t()).diag())
+            sim_pos_temp1 = sim.clone()
+            sim_pos_temp1[~pos_idx] = 0
+            sim_pos = sim_pos_temp1.clone()
+            sim_pos_sum = sim_pos.sum(1)
         return sim, diag, sim_pos_sum
 
     def semi_loss(self, data, z1, z2, num_class, train_idx, indices):
@@ -168,13 +168,13 @@ class SupCLGR(nn.Module):
         between_sim, _, between_pos_sum = self.sim(z1, z2, pos_idx, indices)
         num_per_class = pos_idx.sum(1)
 
-        # if indices is not None:
-        #     refl_diag_temp = refl_diag.clone()
-        #     refl_diag_temp[~indices] = 0.0
-        #     refl_diag_neg = refl_diag_temp.clone()
-        # else:
-        refl_diag_temp = refl_diag.clone()
-        refl_diag_neg = refl_diag_temp.clone()
+        if indices is not None:
+            refl_diag_temp = refl_diag.clone()
+            refl_diag_temp[~indices] = 0.0
+            refl_diag_neg = refl_diag_temp.clone()
+        else:
+            refl_diag_temp = refl_diag.clone()
+            refl_diag_neg = refl_diag_temp.clone()
         
         semi_loss = -torch.log(
             (1/(2*num_per_class-1))*(between_pos_sum + refl_pos_sum - refl_diag) / (between_sim.sum(1) + refl_sim.sum(1) - refl_diag_neg)
