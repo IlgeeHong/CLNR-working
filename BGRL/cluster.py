@@ -32,8 +32,8 @@ def visualize_pca(out, color, pc1, pc2, file_path, dataset, size=30, epoch = Non
     plt.xlabel("-".join(["PC",str(pc1)]))
     plt.ylabel("-".join(["PC",str(pc2)]))
     # produce a legend with the unique colors from the scatter
-    legend1 = plt.legend(*scatter.legend_elements(),
-                    loc="lower left", title="Classes")
+    # legend1 = plt.legend(*scatter.legend_elements(),
+    #                loc="lower left", title="Classes")
     plt.title("EVR:"+  str(round(evr[pc1],4)) + " " + "vs" + " " + str(round(evr[pc2],4)), fontsize = 20)
     if epoch is not None and loss is not None:
         plt.xlabel(f'Epoch: {epoch}, Loss: {loss:.4f}', fontsize=16)
