@@ -30,9 +30,9 @@ class Encoder(nn.Module):
         self.prelu2 = nn.PReLU()
     def forward(self, x, edge_index, edge_weight=None):
         x = self.conv1(x, edge_index, edge_weight=edge_weight)
-        x = self.prelu1(self.bn1(x))
+        x = self.prelu1(x) # self.bn1(x)
         x = self.conv2(x, edge_index, edge_weight=edge_weight)
-        x = self.prelu2(self.bn2(x))
+        x = self.prelu2(x) #self.bn2(x)
 
         return x
 
