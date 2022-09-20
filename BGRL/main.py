@@ -139,9 +139,10 @@ from sklearn.metrics import calinski_harabasz_score
 
 file_path = os.getcwd() + args.result_file1
 results2 = []
-sil = silhouette_score(test_embs,Y)
-dav = davies_bouldin_score(test_embs,Y)
-cal =calinski_harabasz_score(test_embs,Y)
+embs = torch.Tensor.cpu(test_embs).numpy()
+sil = silhouette_score(embs,Y)
+dav = davies_bouldin_score(embs,Y)
+cal =calinski_harabasz_score(embs,Y)
 print(sil, dav, cal)
 results2 += [[args.model, args.dataset, sil, dav, cal]]
 res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
