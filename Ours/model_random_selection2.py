@@ -176,8 +176,8 @@ class SupCLGR(nn.Module):
             refl_diag_temp = refl_diag.clone()
             refl_diag_neg = refl_diag_temp.clone()
         
-        semi_loss = -torch.log(
-            (1/(2*num_per_class-1))*(between_pos_sum + refl_pos_sum - refl_diag) / (between_sim.sum(1) + refl_sim.sum(1) - refl_diag_neg)
+        semi_loss = -(1/(2*num_per_class-1))*torch.log(
+            (between_pos_sum + refl_pos_sum - refl_diag) / (between_sim.sum(1) + refl_sim.sum(1) - refl_diag_neg)
             )
         return semi_loss
         
