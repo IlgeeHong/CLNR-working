@@ -14,22 +14,22 @@ import torch_geometric.transforms as T
 
 from model_random_selection2 import * 
 from aug import *
+from dataset import *
 # from cluster import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='CLGR') #SemiGCon
-parser.add_argument('--dataset', type=str, default='ogbn-arxiv')
-parser.add_argument('--split', type=str, default='OGB') #PublicSplit
+parser.add_argument('--model', type=str, default='SupCLGR') 
+parser.add_argument('--dataset', type=str, default='Computers')
 parser.add_argument('--n_experiments', type=int, default=1)
-parser.add_argument('--epochs', type=int, default=10)
-parser.add_argument('--n_layers', type=int, default=3)
+parser.add_argument('--epochs', type=int, default=200)
+parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--channels', type=int, default=512) 
-parser.add_argument('--fmr', type=float, default=0.5)
+parser.add_argument('--fmr', type=float, default=0.0)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/results/Final_accuracy")
@@ -67,58 +67,22 @@ def train_semi(model, data, num_class, train_idx, k=None):
 
 results =[]
 for exp in range(args.n_experiments):      
-    if args.split == "PublicSplit":
-        transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
-    if args.split == "RandomSplit":
-        transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
-    if args.split == "OGB":
-        transform = T.Compose([T.ToDevice(device), T.ToUndirected()])
-
-    if args.dataset in ['Cora', 'CiteSeer', 'PubMed']:
-        dataset = Planetoid(root='Planetoid', name=args.dataset, transform=transform)
-        data = dataset[0]
-        train_idx = data.train_mask 
-        val_idx = data.val_mask 
-        test_idx = data.test_mask  
-
-    if args.dataset in ['CS', 'Physics']:
-        dataset = Coauthor("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
-        data = dataset[0]
-        train_idx = data.train_mask 
-        val_idx = data.val_mask 
-        test_idx = data.test_mask  
-
-    if args.dataset in ['Computers', 'Photo']:
-        dataset = Amazon("/scratch/midway3/ilgee/SelfGCon", args.dataset, transform=transform)
-        data = dataset[0]
-        train_idx = data.train_mask 
-        val_idx = data.val_mask 
-        test_idx = data.test_mask  
-
-    if args.dataset in ['ogbn-arxiv']:
-        dataset = PygNodePropPredDataset(name="ogbn-arxiv", root = '/scratch/midway3/ilgee/SelfGCon/dataset/', transform=transform)
-        data = dataset[0]
-        split_idx = dataset.get_idx_split()
-        train_idx = split_idx["train"]
-        val_idx = split_idx["valid"]
-        test_idx = split_idx["test"] 
-
+    data, train_idx, val_idx, test_idx = load(args.dataset, device)
     in_dim = data.num_features
     hid_dim = args.channels
     out_dim = args.channels
     n_layers = args.n_layers
     tau = args.tau
-
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
-
     ##### Train CLGR model #####
     print("=== train CLGR model ===")
-    model = CLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use) #
+    model = SupCLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use)
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
     for epoch in range(args.epochs):
-        loss = train(model, data, k=2)
+        loss = train_semi(model, data, num_class, train_idx)
+        # loss = train(model, data)
         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
