@@ -126,7 +126,7 @@ for exp in range(args.n_experiments):
         print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
     results += [['BGRL', args.dataset, args.lr1, args.hid_dim, args.epochs, args.edr1, args.fmr1, args.edr2, args.fmr2, eval_acc.item()]]
     res1 = pd.DataFrame(results, columns=['model', 'dataset', 'lr', 'hid_dim', 'epoch', 'edr1', 'fmr1', 'edr2', 'fmr2', 'accuracy'])
-    res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + '_' + args.out_dim + ".csv", index=False)
+    res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + '_' + str(args.out_dim) + ".csv", index=False)
 
 Y = torch.Tensor.cpu(test_labels).numpy()
 visualize_pca(test_embs, Y, file_path, args.dataset, 1, 2)
@@ -145,4 +145,4 @@ cal =calinski_harabasz_score(test_embs,Y)
 print(sil, dav, cal)
 results2 += [[args.model, args.dataset, sil, dav, cal]]
 res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
-res2.to_csv(file_path + "_" + args.dataset + '_' + args.out_dim + ".csv", index=False) 
+res2.to_csv(file_path + "_" + args.dataset + '_' + str(args.out_dim) + ".csv", index=False) 
