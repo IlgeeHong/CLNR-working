@@ -2,7 +2,7 @@ import torch
 import numpy as np
 
 from matplotlib import pyplot as plt
-import umap.umap_ as umap
+# import umap.umap_ as umap
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 import pdb
