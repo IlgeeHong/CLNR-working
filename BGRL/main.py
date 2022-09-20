@@ -129,9 +129,9 @@ for exp in range(args.n_experiments):
     res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + '_' + str(args.out_dim) + ".csv", index=False)
 
 Y = torch.Tensor.cpu(test_labels).numpy()
-visualize_pca(test_embs, Y, file_path, args.dataset, 1, 2)
-visualize_pca(test_embs, Y, file_path, args.dataset, 1, 3)
-visualize_pca(test_embs, Y, file_path, args.dataset, 2, 3)
+visualize_pca(test_embs, Y, 1, 2, file_path, args.dataset)
+visualize_pca(test_embs, Y, 1, 3, file_path, args.dataset)
+visualize_pca(test_embs, Y, 2, 3, file_path, args.dataset)
 
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import davies_bouldin_score
