@@ -75,12 +75,12 @@ for exp in range(args.n_experiments):
     N = data.num_nodes
     ##### Train CLGR model #####
     print("=== train CLGR model ===")
-    model = SupCLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use)
+    model = CLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use)
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
     for epoch in range(args.epochs):
-        loss = train_semi(model, data, num_class, train_idx)
-        # loss = train(model, data)
+        # loss = train_semi(model, data, num_class, train_idx)
+        loss = train(model, data)
         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
