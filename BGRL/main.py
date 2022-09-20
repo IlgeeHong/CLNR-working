@@ -128,9 +128,9 @@ for exp in range(args.n_experiments):
     res1 = pd.DataFrame(results, columns=['model', 'dataset', 'lr', 'hid_dim', 'epoch', 'edr1', 'fmr1', 'edr2', 'fmr2', 'accuracy'])
     res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + ".csv", index=False)
 
-visualize_pca(test_embs, test_labels.numpy(), 1, 2)
-visualize_pca(test_embs, test_labels.numpy(), 1, 3)
-visualize_pca(test_embs, test_labels.numpy(), 2, 3)
+visualize_pca(test_embs, test_labels.numpy(), args.dataset, 1, 2)
+visualize_pca(test_embs, test_labels.numpy(), args.dataset, 1, 3)
+visualize_pca(test_embs, test_labels.numpy(), args.dataset, 2, 3)
 
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import davies_bouldin_score
