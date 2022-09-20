@@ -17,21 +17,21 @@ from cluster import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='BGRL')
-parser.add_argument('--dataset', type=str, default='Computers')
+parser.add_argument('--dataset', type=str, default='Photo')
 parser.add_argument('--epochs', type=int, default=10000)
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--n_layers', type=int, default=2)
-parser.add_argument('--out_dim', type=int, default=128)
-parser.add_argument('--hid_dim', type=int, default=256)
+parser.add_argument('--out_dim', type=int, default=256)
+parser.add_argument('--hid_dim', type=int, default=512)
 parser.add_argument('--pred_hid', type=int, default=512)
 parser.add_argument('--lr1', type=float, default=5e-4)
 parser.add_argument('--wd1', type=float, default=1e-5)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
-parser.add_argument('--fmr1', type=float, default=0.2)
-parser.add_argument('--fmr2', type=float, default=0.1)
-parser.add_argument('--edr1', type=float, default=0.5)
-parser.add_argument('--edr2', type=float, default=0.4)
+parser.add_argument('--fmr1', type=float, default=0.1)
+parser.add_argument('--fmr2', type=float, default=0.2)
+parser.add_argument('--edr1', type=float, default=0.4)
+parser.add_argument('--edr2', type=float, default=0.1)
 parser.add_argument('--result_file', type=str, default="/BGRL/results/Final_accuracy") ###/BGRL
 parser.add_argument('--result_file1', type=str, default="/BGRL/results/Clustering_score") ###/BGRL
 args = parser.parse_args()
@@ -128,9 +128,9 @@ for exp in range(args.n_experiments):
     res1 = pd.DataFrame(results, columns=['model', 'dataset', 'lr', 'hid_dim', 'epoch', 'edr1', 'fmr1', 'edr2', 'fmr2', 'accuracy'])
     res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + ".csv", index=False)
 
-visualize_pca(test_embs, test_labels.numpy(), args.dataset, 1, 2)
-visualize_pca(test_embs, test_labels.numpy(), args.dataset, 1, 3)
-visualize_pca(test_embs, test_labels.numpy(), args.dataset, 2, 3)
+visualize_pca(test_embs, test_labels.numpy(), file_path, args.dataset, 1, 2)
+visualize_pca(test_embs, test_labels.numpy(), file_path, args.dataset, 1, 3)
+visualize_pca(test_embs, test_labels.numpy(), file_path, args.dataset, 2, 3)
 
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import davies_bouldin_score
@@ -138,10 +138,10 @@ from sklearn.metrics import calinski_harabasz_score
 
 file_path = os.getcwd() + args.result_file1
 results2 = []
-
-sil = silhouette_score(test_embs,test_labels.numpy())
-dav = davies_bouldin_score(test_embs,test_labels.numpy())
-cal =calinski_harabasz_score(test_embs,test_labels.numpy())
+Y = torch.Tensor.cpu(test_labels).numpy()
+sil = silhouette_score(test_embs,Y)
+dav = davies_bouldin_score(test_embs,Y)
+cal =calinski_harabasz_score(test_embs,Y)
 print(sil, dav, cal)
 results2 += [[args.model, args.dataset, sil, dav, cal]]
 res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
