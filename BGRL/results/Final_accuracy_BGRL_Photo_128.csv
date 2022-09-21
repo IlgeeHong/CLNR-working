@@ -1,0 +1,2 @@
+model,dataset,lr,hid_dim,epoch,edr1,fmr1,edr2,fmr2,accuracy
+BGRL,Photo,0.0001,256,10000,0.4,0.1,0.1,0.2,0.9246732592582703
