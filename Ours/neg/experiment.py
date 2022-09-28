@@ -16,9 +16,9 @@ from aug import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLGR')
-parser.add_argument('--dataset', type=str, default='Computers')
+parser.add_argument('--dataset', type=str, default='Photo')
 parser.add_argument('--split', type=str, default='RandomSplit')
-parser.add_argument('--epochs', type=int, default=200) 
+parser.add_argument('--epochs', type=int, default=100) 
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--n_layers', type=int, default=2) 
 parser.add_argument('--channels', type=int, default=512) 
