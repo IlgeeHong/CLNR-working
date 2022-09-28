@@ -21,9 +21,9 @@ parser.add_argument('--dataset', type=str, default='Photo')
 parser.add_argument('--epochs', type=int, default=10000)
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--n_layers', type=int, default=2)
-parser.add_argument('--out_dim', type=int, default=64)
-parser.add_argument('--hid_dim', type=int, default=128)
-parser.add_argument('--pred_hid', type=int, default=128)
+parser.add_argument('--out_dim', type=int, default=128)
+parser.add_argument('--hid_dim', type=int, default=256)
+parser.add_argument('--pred_hid', type=int, default=256)
 parser.add_argument('--lr1', type=float, default=1e-4)
 parser.add_argument('--wd1', type=float, default=1e-5)
 parser.add_argument('--lr2', type=float, default=1e-2)
@@ -87,7 +87,7 @@ for exp in range(args.n_experiments):
     train_feat = feat[train_idx]
     val_feat = feat[val_idx]
     test_feat = feat[test_idx] 
-    
+
     ''' Linear Evaluation '''
     logreg = LogReg(train_embs.shape[1], num_class)
     logreg = logreg.to(device)
