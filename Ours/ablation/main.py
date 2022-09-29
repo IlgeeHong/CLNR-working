@@ -26,7 +26,7 @@ parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--lambd', type=float, default=1e-3)
-parser.add_argument('--channels', type=int, default=512) 
+parser.add_argument('--channels', type=int, default=1024) 
 parser.add_argument('--fmr', type=float, default=0.2)
 parser.add_argument('--edr', type=float, default=0.3)
 parser.add_argument('--mlp_use', type=bool, default=False)
@@ -68,16 +68,12 @@ results =[]
 for exp in range(args.n_experiments):      
     data, train_idx, val_idx, test_idx = load(args.dataset, device)
     in_dim = data.num_features
-    hid_dim = args.channels
-    out_dim = args.channels
-    n_layers = args.n_layers
-    tau = args.tau
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
     ##### Train the model #####
     print("=== train CLGR model ===")
-    model = CCA_SSG(in_dim, hid_dim, out_dim, n_layers, args.lambd, N, use_mlp=args.mlp_use)
-    # CLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use)
+    model = CCA_SSG(in_dim, args.channels, args.channels, args.n_layers, args.lambd, N, use_mlp=args.mlp_use)
+    # CLGR(in_dim, args.channels, args.channels, args.n_layers, args.tau, use_mlp = args.mlp_use)
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
     for epoch in range(args.epochs):
