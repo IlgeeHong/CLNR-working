@@ -15,19 +15,20 @@ from aug import *
 from cluster import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='CLGR') 
+parser.add_argument('--model', type=str, default='CCA-SSG') 
 parser.add_argument('--dataset', type=str, default='Photo')
 parser.add_argument('--n_experiments', type=int, default=20)
-parser.add_argument('--epochs', type=int, default=100)
+parser.add_argument('--epochs', type=int, default=50)
 parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
-parser.add_argument('--channels', type=int, default=1024) 
-parser.add_argument('--fmr', type=float, default=0.0)
-parser.add_argument('--edr', type=float, default=0.5)
+parser.add_argument('--lambd', type=float, default=1e-3)
+parser.add_argument('--channels', type=int, default=512) 
+parser.add_argument('--fmr', type=float, default=0.2)
+parser.add_argument('--edr', type=float, default=0.3)
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ablation/results/Final_accuracy")
 parser.add_argument('--result_file1', type=str, default="/Ours/ablation/results/Clustering_score") 
@@ -73,9 +74,10 @@ for exp in range(args.n_experiments):
     tau = args.tau
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
-    ##### Train CLGR model #####
+    ##### Train the model #####
     print("=== train CLGR model ===")
-    model = CLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use)
+    model = CCA_SSG(in_dim, hid_dim, out_dim, n_layers, args.lambd, N, use_mlp=args.mlp_use)
+    # CLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use)
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
     for epoch in range(args.epochs):
