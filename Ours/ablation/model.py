@@ -151,7 +151,6 @@ class CCA_SSG(nn.Module):
         ret = loss_inv + lambd * (loss_dec1 + loss_dec2)
         return ret
 
-
 class GRACE(nn.Module):
     def __init__(self, in_dim, hid_dim, proj_hid_dim, n_layers, tau = 0.5, use_mlp = False):
         super().__init__()
