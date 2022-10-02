@@ -1,0 +1,2 @@
+model,Time,dataset,epochs,layers,tau,lr1,lr2,wd1,wd2,channels,edge_drop_rate,feat_mask_rate,accuracy
+GRACE,104588.515625,Computers,1500,2,0.5,0.001,0.01,1e-05,0.0001,128,0.5,0.0,0.8864752054214478

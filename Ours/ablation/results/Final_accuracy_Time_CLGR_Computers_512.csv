@@ -1,0 +1,2 @@
+model,Time,dataset,epochs,layers,tau,lr1,lr2,wd1,wd2,channels,edge_drop_rate,feat_mask_rate,accuracy
+CLGR,25622.884765625,Computers,200,2,0.5,0.001,0.01,0.0,0.0001,512,0.5,0.0,0.8915651440620422
