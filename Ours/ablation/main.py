@@ -9,7 +9,7 @@ import torch.nn.functional as F
 import pandas as pd
 from statistics import mean, stdev
 
-from dataset import * ### dataset_cpu
+from dataset_perturbed import * ### dataset dataset_cpu
 from model import *
 from aug import *
 from cluster import *
@@ -33,7 +33,7 @@ parser.add_argument('--proj_hid_dim', type=int, default=512)
 parser.add_argument('--fmr', type=float, default=0.0)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/ablation/results/Final_accuracy_Time")
+parser.add_argument('--result_file', type=str, default="/Ours/ablation/results/perturbation_study")
 parser.add_argument('--result_file1', type=str, default="/Ours/ablation/results/Clustering_score") 
 args = parser.parse_args()
 
@@ -69,7 +69,7 @@ def train_semi(model, data, num_class, train_idx, k=None):
 
 results =[]
 for exp in range(args.n_experiments):      
-    data, train_idx, val_idx, test_idx = load(args.dataset, device)
+    data, train_idx, val_idx, test_idx = load(args.dataset, device, 1)
     in_dim = data.num_features
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
