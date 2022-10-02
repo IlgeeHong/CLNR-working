@@ -43,4 +43,4 @@ def load(name, device, perturb):
     #     val_idx = split_idx["valid"]
     #     test_idx = split_idx["test"] 
 
-    return data, train_idx, val_idx, test_idx
+    return data, temp, train_idx, val_idx, test_idx
