@@ -17,8 +17,8 @@ from cluster import *
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='GRACE') 
 parser.add_argument('--dataset', type=str, default='Photo')
-parser.add_argument('--n_experiments', type=int, default=20)
-parser.add_argument('--epochs', type=int, default=1500)
+parser.add_argument('--n_experiments', type=int, default=1)
+parser.add_argument('--epochs', type=int, default=2000)
 parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3)
@@ -26,8 +26,8 @@ parser.add_argument('--wd1', type=float, default=1e-5)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--lambd', type=float, default=1e-3)
-parser.add_argument('--channels', type=int, default=1024) 
-parser.add_argument('--proj_hid_dim', type=int, default=1024)
+parser.add_argument('--channels', type=int, default=256) 
+parser.add_argument('--proj_hid_dim', type=int, default=256)
 parser.add_argument('--fmr', type=float, default=0.3)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--mlp_use', type=bool, default=False)
@@ -71,6 +71,10 @@ for exp in range(args.n_experiments):
     in_dim = data.num_features
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
+    # Start Time
+    start = torch.cuda.Event(enable_timing=True)
+    end = torch.cuda.Event(enable_timing=True)
+    start.record()      
     ##### Train the model #####
     print("=== train CLGR model ===")
     model = GRACE(in_dim, args.channels, args.proj_hid_dim, args.n_layers, args.tau)
@@ -82,6 +86,10 @@ for exp in range(args.n_experiments):
         # loss = train_semi(model, data, num_class, train_idx)
         loss = train(model, data)
         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
+    # End Time
+    end.record()
+    torch.cuda.synchronize()
+    recored_time = start.elapsed_time(end)
     
     embeds = model.get_embedding(data)
     train_embs = embeds[train_idx]
@@ -134,8 +142,8 @@ for exp in range(args.n_experiments):
 
        # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
        # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc.item()]]
-    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy'])
+    results += [[args.model, recored_time, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc.item()]]
+    res1 = pd.DataFrame(results, columns=['model', 'Time', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy'])
     res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + '_' + str(args.channels) + ".csv", index=False)
 
 Y = torch.Tensor.cpu(test_labels).numpy()

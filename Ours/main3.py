@@ -67,10 +67,6 @@ def train_semi(model, data, num_class, train_idx, k=None):
 
 results =[]
 for exp in range(args.n_experiments):
-    start = torch.cuda.Event(enable_timing=True)
-    end = torch.cuda.Event(enable_timing=True)
-    start.record()      
-
     data, train_idx, val_idx, test_idx = load(args.dataset, device)
     in_dim = data.num_features
     hid_dim = args.channels
@@ -79,6 +75,10 @@ for exp in range(args.n_experiments):
     tau = args.tau
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
+    # Time
+    start = torch.cuda.Event(enable_timing=True)
+    end = torch.cuda.Event(enable_timing=True)
+    start.record()      
     ##### Train CLGR model #####
     print("=== train CLGR model ===")
     model = SupCLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use)
