@@ -18,9 +18,9 @@ from dataset import *
 # from cluster import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='SupCLGR') 
+parser.add_argument('--model', type=str, default='CLGR') 
 parser.add_argument('--dataset', type=str, default='Photo')
-parser.add_argument('--n_experiments', type=int, default=20)
+parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--epochs', type=int, default=100)
 parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
@@ -66,7 +66,11 @@ def train_semi(model, data, num_class, train_idx, k=None):
     return loss.item()
 
 results =[]
-for exp in range(args.n_experiments):      
+for exp in range(args.n_experiments):
+    start = torch.cuda.Event(enable_timing=True)
+    end = torch.cuda.Event(enable_timing=True)
+    start.record()      
+
     data, train_idx, val_idx, test_idx = load(args.dataset, device)
     in_dim = data.num_features
     hid_dim = args.channels
@@ -84,7 +88,10 @@ for exp in range(args.n_experiments):
         loss = train_semi(model, data, num_class, train_idx)
         # loss = train(model, data)
         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
-    
+    end.record()
+    torch.cuda.synchronize()
+    recored_time = start.elapsed_time(end)
+
     embeds = model.get_embedding(data)
     train_embs = embeds[train_idx]
     val_embs = embeds[val_idx]
@@ -140,6 +147,6 @@ for exp in range(args.n_experiments):
        # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
        # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
     print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc.item()]]
-    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy'])
+    results += [[args.model, recored_time, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc.item()]]
+    res1 = pd.DataFrame(results, columns=['model', 'Time', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy'])
     res1.to_csv(file_path + "_" + args.model + "_" + args.dataset +  ".csv", index=False)
