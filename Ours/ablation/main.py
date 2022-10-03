@@ -133,7 +133,7 @@ for sigma in [0.01, 0.1, 1, 10, 100]:
     eval_acc_mean = mean(eval_acc_list)
     # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
     # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    results += [[args.model, sigma, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc.item()]]
+    results += [[args.model, sigma, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc_mean]]
     res1 = pd.DataFrame(results, columns=['model', 'sigma', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy'])
     res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + '_' + str(args.channels) + ".csv", index=False)
 
