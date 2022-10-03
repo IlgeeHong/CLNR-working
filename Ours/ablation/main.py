@@ -68,8 +68,8 @@ for sigma in [0.01, 0.1, 1, 10, 100]:
         start.record()      
         ##### Train the model #####
         print("=== train CLGR model ===")
-        # model = GRACE(in_dim, args.channels, args.proj_hid_dim, args.n_layers, args.tau)
-        model = CCA_SSG(in_dim, args.channels, args.channels, args.n_layers, args.lambd, N, use_mlp=args.mlp_use)
+        model = GRACE(in_dim, args.channels, args.proj_hid_dim, args.n_layers, args.tau)
+        # model = CCA_SSG(in_dim, args.channels, args.channels, args.n_layers, args.lambd, N, use_mlp=args.mlp_use)
         # model = CLGR(in_dim, args.channels, args.channels, args.n_layers, args.tau, use_mlp = args.mlp_use)
         model = model.to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
