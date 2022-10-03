@@ -54,7 +54,7 @@ def train(model, fmr, edr, data, k=None):
     return loss.item()
 
 results =[]
-for sigma in [0.0001, 0.001, 0.01, 0.1, 1, 10]:
+for sigma in [0.01, 0.1, 1, 10, 100]:
     eval_acc_list = []
     for exp in range(args.n_experiments):      
         perturbed_data, data, train_idx, val_idx, test_idx = load(args.dataset, device, sigma)
