@@ -34,7 +34,7 @@ parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--fmr', type=float, default=0.0)
 parser.add_argument('--proj', type=str, default="nonlinear-hid")
-parser.add_argument('--result_file', type=str, default="/GRACE/results/epochs_study")
+parser.add_argument('--result_file', type=str, default="/GRACE/results/epochs_study_extreme")
 # parser.add_argument('--embeddings', type=str, default="/results/GRACE_node_classification_embeddings")
 args = parser.parse_args()
 
@@ -55,7 +55,8 @@ def train(model, data, fmr, edr, proj):
     return loss.item()
 
 results =[]
-for epochs in [50, 100, 200, 400, 600, 800, 1000, 1500, 2000]:
+# for epochs in [50, 100, 200, 400, 600, 800, 1000, 1500, 2000]:
+for epochs in [2500, 3000]:
     eval_acc_list = []
     for exp in range(args.n_experiments):      
         data, train_idx, val_idx, test_idx = load(args.dataset, device)
