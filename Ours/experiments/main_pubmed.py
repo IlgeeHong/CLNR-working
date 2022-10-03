@@ -24,21 +24,21 @@ parser.add_argument('--lr1', type=float, default=1e-3)
 parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
-parser.add_argument('--channels', type=int, default=128) 
+parser.add_argument('--channels', type=int, default=512) 
 parser.add_argument('--fmr', type=float, default=0.3)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/experiments/results/Final_accuracy3")
+parser.add_argument('--result_file', type=str, default="/Ours/experiments/results/epochs_study")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data, k=None):
+def train(model, fmr, edr, data, k=None):
     model.train()
     optimizer.zero_grad()
-    new_data1 = random_aug(data, args.fmr, args.edr)
-    new_data2 = random_aug(data, args.fmr, args.edr)
+    new_data1 = random_aug(data, fmr, edr)
+    new_data2 = random_aug(data, fmr, edr)
     new_data1 = new_data1.to(device)
     new_data2 = new_data2.to(device)
     z1, z2 = model(new_data1, new_data2)   
@@ -62,7 +62,7 @@ def train_semi(model, data, num_class, train_idx, k=None):
     return loss.item()
 
 results =[]
-for epochs in [50, 100, 200, 400, 600, 800, 1000, 1500, 2000]:
+for epochs in [2500, 3000]:
     eval_acc_list = []
     for exp in range(args.n_experiments):      
         data, train_idx, val_idx, test_idx = load(args.dataset, device)
@@ -79,7 +79,7 @@ for epochs in [50, 100, 200, 400, 600, 800, 1000, 1500, 2000]:
         model = model.to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
         for epoch in range(epochs):
-            loss = train(model, data)
+            loss = train(model, args.fmr, args.edr, data)
             # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
         embeds = model.get_embedding(data)
         train_embs = embeds[train_idx]
