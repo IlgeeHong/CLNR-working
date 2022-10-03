@@ -57,7 +57,7 @@ results =[]
 for sigma in [0.0001, 0.001, 0.01, 0.1, 1, 10]:
     eval_acc_list = []
     for exp in range(args.n_experiments):      
-        perturbed_data, data, train_idx, val_idx, test_idx = load(args.dataset, device, 1)
+        perturbed_data, data, train_idx, val_idx, test_idx = load(args.dataset, device, sigma)
         in_dim = data.num_features
         num_class = int(data.y.max().item()) + 1 
         N = data.num_nodes
