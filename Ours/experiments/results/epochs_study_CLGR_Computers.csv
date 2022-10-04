@@ -1,0 +1,2 @@
+model,dataset,epochs,lr1,lr2,wd1,wd2,channels,edge_drop_rate,feat_mask_rate,accuracy
+CLGR,Computers,2500,0.001,0.01,0.0,0.0001,512,0.5,0.0,0.8847391337156296
