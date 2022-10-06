@@ -68,7 +68,7 @@ for out_dim in [256, 512]:
                         s = lambda epoch: epoch / 1000 if epoch < 1000 else ( 1 + np.cos((epoch-1000) * np.pi / (args.epochs - 1000))) * 0.5
                         scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=s)
                         for epoch in range(args.epochs):
-                            loss = train(model, data)
+                            loss = train(model, data, fmr1, edr1, fmr2, edr2)
                             print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
                                     
                         embeds = model.get_embedding(data)
