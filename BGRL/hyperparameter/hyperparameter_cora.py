@@ -120,5 +120,5 @@ for out_dim in [256, 512]:
                         best_val_acc_list.append(best_val_acc.item())
                     best_val_acc_mean = mean(best_val_acc_list)
                     results += [[args.model, args.dataset, lr1, out_dim, hid_dim, pred_hid, edr1, fmr1, best_val_acc_mean]]
-                    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'lr1', 'out_dim', 'pred_hid', 'edge_drop_rate', 'feat_mask_rate', 'val_acc'])
+                    res1 = pd.DataFrame(results, columns=['model', 'dataset', 'lr1', 'out_dim', 'hid_dim', 'pred_hid', 'edge_drop_rate', 'feat_mask_rate', 'val_acc'])
                     res1.to_csv(file_path + "_" + args.model + "_" + args.dataset +  ".csv", index=False)
