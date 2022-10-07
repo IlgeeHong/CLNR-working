@@ -26,7 +26,7 @@ def load(name, device, perturb):
         transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Amazon(name=name, root = '/scratch/midway3/ilgee/SelfGCon', transform=transform)
         temp = dataset[0]
-        new_edge_index, _ = add_random_edge(temp.edge_index, perturb)
+        new_edge_index, _ = add_random_edge(temp.edge_index, perturb, force_undirected=True)
         # noise = torch.normal(0, perturb, size=(temp.num_nodes, temp.num_features))
         # noise = noise.to(device)
         data = deepcopy(temp)
