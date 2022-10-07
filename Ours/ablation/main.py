@@ -34,7 +34,8 @@ parser.add_argument('--proj_hid_dim', type=int, default=512)
 parser.add_argument('--fmr', type=float, default=0.1) #0.1
 parser.add_argument('--edr', type=float, default=0.3) #0.3
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/ablation/results/perturbation_study")
+# parser.add_argument('--result_file', type=str, default="/Ours/ablation/results/perturbation_study")
+parser.add_argument('--result_file', type=str, default="/Ours/ablation/results/perturbation_study2")
 parser.add_argument('--result_file1', type=str, default="/Ours/ablation/results/Clustering_score") 
 args = parser.parse_args()
 
