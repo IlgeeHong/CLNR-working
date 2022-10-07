@@ -10,7 +10,7 @@ import torch.nn.functional as F
 import pandas as pd
 from statistics import mean, stdev
 
-from dataset_perturbed  import * ### dataset_cpu, dataset
+from dataset_perturbed2  import * ### dataset_cpu, dataset
 from model import *
 from aug import *
 from cluster import *
@@ -33,7 +33,7 @@ parser.add_argument('--fmr2', type=float, default=0.1)
 parser.add_argument('--edr1', type=float, default=0.5)
 parser.add_argument('--edr2', type=float, default=0.4)
 # parser.add_argument('--result_file', type=str, default="/BGRL/results/Final_accuracy") ###/BGRL
-parser.add_argument('--result_file', type=str, default="/BGRL/results/perturbation_study") ###/BGRL
+parser.add_argument('--result_file', type=str, default="/BGRL/results/perturbation_study2") ###/BGRL
 parser.add_argument('--result_file1', type=str, default="/BGRL/results/Clustering_score") ###/BGRL
 args = parser.parse_args()
 
@@ -55,10 +55,11 @@ def train(model, fmr1, edr1, fmr2, edr2, data):
     return loss.item()
 
 results =[]
-for sigma in [0.01, 0.1, 1, 10, 100]:
+# for perturbed in [0.01, 0.1, 1, 10, 100]:
+for perturbed in [0.1,0.3,0.5,0.7,0.9]:    
     eval_acc_list = []
     for exp in range(args.n_experiments): 
-        perturbed_data, data, train_idx, val_idx, test_idx = load(args.dataset, device, sigma)
+        perturbed_data, data, train_idx, val_idx, test_idx = load(args.dataset, device, perturbed)
         in_dim = data.num_features
         hid_dim = args.hid_dim
         out_dim = args.out_dim
@@ -122,13 +123,13 @@ for sigma in [0.01, 0.1, 1, 10, 100]:
                     best_val_acc = val_acc
                     if test_acc > eval_acc:
                         eval_acc = test_acc
-            eval_acc_list.append(eval_acc.item())
-        eval_acc_mean = mean(eval_acc_list)
+        eval_acc_list.append(eval_acc.item())
+    eval_acc_mean = mean(eval_acc_list)
         # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
         # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-        results += [['BGRL', sigma, args.dataset, args.lr1, args.hid_dim, args.epochs, args.edr1, args.fmr1, args.edr2, args.fmr2, eval_acc_mean]]
-        res1 = pd.DataFrame(results, columns=['model', 'sigma', 'dataset', 'lr', 'hid_dim', 'epoch', 'edr1', 'fmr1', 'edr2', 'fmr2', 'accuracy'])
-        res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + '_' + str(args.out_dim) + ".csv", index=False)
+    results += [['BGRL', perturbed, args.dataset, args.lr1, args.hid_dim, args.epochs, args.edr1, args.fmr1, args.edr2, args.fmr2, eval_acc_mean]]
+    res1 = pd.DataFrame(results, columns=['model', 'perturbed', 'dataset', 'lr', 'hid_dim', 'epoch', 'edr1', 'fmr1', 'edr2', 'fmr2', 'accuracy'])
+    res1.to_csv(file_path + "_" +  args.model + "_"  + args.dataset + '_' + str(args.out_dim) + ".csv", index=False)
 
 Y = torch.Tensor.cpu(test_labels).numpy()
 visualize_pca(test_embs, Y, 1, 2, file_path, args.dataset)
