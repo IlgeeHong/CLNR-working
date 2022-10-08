@@ -21,7 +21,7 @@ parser.add_argument('--wd1', type=float, default=1e-5)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--n_experiments', type=int, default=3)
-parser.add_argument('--result_file', type=str, default="/BGRL/hyperparameter/results/Hyperparameter")
+parser.add_argument('--result_file', type=str, default="/BGRL/hyperparameter/results/Hyperparameter2")
 
 args = parser.parse_args()
 
@@ -46,7 +46,7 @@ results =[]
 for out_dim in [256, 512]:
     hid_dim = 2*out_dim
     pred_hid = 2*out_dim
-    for edr1 in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]:
+    for edr1 in [0.3, 0.4, 0.5]: #0.0, 0.1, 0.2, 
         edr2 = edr1
         for fmr1 in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]: 
             fmr2 = fmr1
