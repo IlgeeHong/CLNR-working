@@ -4,7 +4,7 @@ from torch.nn import Parameter
 
 
 class DBN(nn.Module):
-    def __init__(self, num_features, num_groups=32, num_channels=0, dim=4, eps=1e-5, momentum=0.1, affine=True, mode=0,
+    def __init__(self, device, num_features, num_groups=32, num_channels=0, dim=4, eps=1e-5, momentum=0.1, affine=True, mode=0,
                  *args, **kwargs):
         super(DBN, self).__init__()
         if num_channels > 0:
@@ -28,8 +28,8 @@ class DBN(nn.Module):
             self.register_parameter('weight', None)
             self.register_parameter('bias', None)
 
-        self.register_buffer('running_mean', torch.zeros(num_groups, 1))
-        self.register_buffer('running_projection', torch.eye(num_groups))
+        self.register_buffer('running_mean', torch.zeros(num_groups, 1, device=device))
+        self.register_buffer('running_projection', torch.eye(num_groups, device=device))
         self.reset_parameters()
 
     # def reset_running_stats(self):
@@ -52,7 +52,7 @@ class DBN(nn.Module):
         if training:
             mean = x.mean(1, keepdim=True)
             self.running_mean = (1. - self.momentum) * self.running_mean + self.momentum * mean
-            self.running_mean = self.running_mean.to(device)
+            # self.running_mean = self.running_mean.to(device)
             x_mean = x - mean
             sigma = x_mean.matmul(x_mean.t()) / x.size(1) + self.eps * torch.eye(self.num_groups, device=device)
             # print('sigma size {}'.format(sigma.size()))
