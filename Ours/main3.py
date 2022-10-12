@@ -88,7 +88,7 @@ for exp in range(args.n_experiments):
     val_embs = embeds[val_idx]
     test_embs = embeds[test_idx]
 
-    label = data.y
+    label = data.y.squeeze()
     label = label.to(device)
     feat = data.x
 
@@ -117,7 +117,7 @@ for exp in range(args.n_experiments):
         # train_acc = torch.sum(preds == train_labels).float() / train_labels.shape[0]
         print(logits.shape)
         print(train_labels.shape)
-        loss = loss_fn(logits, train_labels.squeeze())
+        loss = loss_fn(logits, train_labels)
         loss.backward()
         opt.step()
 
