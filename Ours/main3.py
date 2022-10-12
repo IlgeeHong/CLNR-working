@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLGR') 
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #ogbn-arxiv
 parser.add_argument('--n_experiments', type=int, default=1)
-parser.add_argument('--epochs', type=int, default=50)
+parser.add_argument('--epochs', type=int, default=100)
 parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-2)
