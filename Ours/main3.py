@@ -54,23 +54,10 @@ def train(model, fmr, edr, data, k=None):
     optimizer.step()
     return loss.item()
 
-# def train_semi(model, data, num_class, train_idx, k=None):
-#     model.train()
-#     optimizer.zero_grad()
-#     new_data1 = random_aug(data, args.fmr, args.edr)
-#     new_data2 = random_aug(data, args.fmr, args.edr)
-#     new_data1 = new_data1.to(device)
-#     new_data2 = new_data2.to(device)
-#     z1, z2 = model(new_data1, new_data2) 
-#     train_idx = train_idx.to(device)
-#     loss = model.loss(data, z1, z2, num_class, train_idx)
-#     loss.backward()
-#     optimizer.step()
-#     return loss.item()
-
 results =[]
 for exp in range(args.n_experiments):
     data, train_idx, val_idx, test_idx = load(args.dataset, device)
+    print(data)
     in_dim = data.num_features
     hid_dim = args.channels
     out_dim = args.channels
@@ -96,14 +83,10 @@ for exp in range(args.n_experiments):
     torch.cuda.synchronize()
     recored_time = start.elapsed_time(end)
 
-    #embeds = model.get_embedding(data)
-    #train_embs = embeds[train_idx]
-    #val_embs = embeds[val_idx]
-    #test_embs = embeds[test_idx]
-    #embeds = 
-    train_embs = model.get_embedding(data)[train_idx]
-    val_embs = model.get_embedding(data)[val_idx]
-    test_embs = model.get_embedding(data)[test_idx]
+    embeds = model.get_embedding(data)
+    train_embs = embeds[train_idx]
+    val_embs = embeds[val_idx]
+    test_embs = embeds[test_idx]
 
     label = data.y
     label = label.to(device)
@@ -131,7 +114,7 @@ for exp in range(args.n_experiments):
         opt.zero_grad()
         logits = logreg(train_embs)
         preds = torch.argmax(logits, dim=1)
-        train_acc = torch.sum(preds == train_labels).float() / train_labels.shape[0]
+        # train_acc = torch.sum(preds == train_labels).float() / train_labels.shape[0]
         loss = loss_fn(logits, train_labels)
         loss.backward()
         opt.step()
