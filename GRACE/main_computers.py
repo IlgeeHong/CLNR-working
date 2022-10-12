@@ -20,21 +20,21 @@ from aug import *
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='GRACE')
 parser.add_argument('--dataset', type=str, default='Computers')
-# parser.add_argument('--split', type=str, default='RandomSplit')
 # parser.add_argument('--epochs', type=int, default=1500)
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--n_layers', type=int, default=2) 
-parser.add_argument('--channels', type=int, default=128)
-parser.add_argument('--proj_hid_dim', type=int, default=128)
+parser.add_argument('--channels', type=int, default=512)
+parser.add_argument('--proj_hid_dim', type=int, default=512)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3)
-parser.add_argument('--wd1', type=float, default=1e-5)
+parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--fmr', type=float, default=0.0)
-parser.add_argument('--proj', type=str, default="nonlinear-hid")
-parser.add_argument('--result_file', type=str, default="/GRACE/results/epochs_study_extreme")
+parser.add_argument('--proj', type=str, default="dbn")
+parser.add_argument('--result_file', type=str, default="/GRACE/results/new")
+# parser.add_argument('--result_file', type=str, default="/GRACE/results/epochs_study")
 # parser.add_argument('--embeddings', type=str, default="/results/GRACE_node_classification_embeddings")
 args = parser.parse_args()
 
@@ -55,8 +55,7 @@ def train(model, data, fmr, edr, proj):
     return loss.item()
 
 results =[]
-# for epochs in [50, 100, 200, 400, 600, 800, 1000, 1500, 2000]:
-for epochs in [2500, 3000]:
+for epochs in [50, 100, 200, 400, 600]: #, 800, 1000, 1500, 2000
     eval_acc_list = []
     for exp in range(args.n_experiments):      
         data, train_idx, val_idx, test_idx = load(args.dataset, device)
