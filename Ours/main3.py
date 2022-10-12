@@ -21,7 +21,7 @@ import pdb
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLGR') 
-parser.add_argument('--dataset', type=str, default='Cora') #ogbn-arxiv
+parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #ogbn-arxiv
 parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--epochs', type=int, default=50)
 parser.add_argument('--n_layers', type=int, default=2)
@@ -117,7 +117,7 @@ for exp in range(args.n_experiments):
         # train_acc = torch.sum(preds == train_labels).float() / train_labels.shape[0]
         print(logits.shape)
         print(train_labels.shape)
-        loss = loss_fn(logits, train_labels)
+        loss = loss_fn(logits, train_labels.squeeze())
         loss.backward()
         opt.step()
 
