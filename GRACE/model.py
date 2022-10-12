@@ -83,7 +83,7 @@ class GRACE(nn.Module):
         elif layer == "standard":
             h = (z - z.mean(0)) / z.std(0)
         elif layer == 'dbn':
-            dbn = DBN(num_features=z.shape[1],
+            dbn = DBN(device=z.device, num_features=z.shape[1],
                           num_groups=1,
                           dim=2,
                           affine=False, momentum=1.)
