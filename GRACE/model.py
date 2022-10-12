@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
+from dbn import *
 
 
 class LogReg(nn.Module):
@@ -81,6 +82,12 @@ class GRACE(nn.Module):
             h = self.fc3(z)
         elif layer == "standard":
             h = (z - z.mean(0)) / z.std(0)
+        elif layer == 'dbn':
+            dbn = DBN(num_features=z.shape[1],
+                          num_groups=1,
+                          dim=2,
+                          affine=False, momentum=1.)
+            h = dbn(z)          
         return h
     
     def sim(self, z1, z2):
