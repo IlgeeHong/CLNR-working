@@ -12,7 +12,8 @@ from ogb.nodeproppred import PygNodePropPredDataset
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 
-from model_random_selection2 import * 
+# from model_random_selection2 import * 
+from model_ogb import * 
 from aug import *
 from dataset import *
 # from cluster import *
@@ -40,11 +41,11 @@ args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data, k=None):
+def train(model, fmr, edr, data, k=None):
     model.train()
     optimizer.zero_grad()
-    new_data1 = random_aug(data, args.fmr, args.edr)
-    new_data2 = random_aug(data, args.fmr, args.edr)
+    new_data1 = random_aug(data, fmr, edr)
+    new_data2 = random_aug(data, fmr, edr)
     new_data1 = new_data1.to(device)
     new_data2 = new_data2.to(device)
     z1, z2 = model(new_data1, new_data2)   
@@ -53,19 +54,19 @@ def train(model, data, k=None):
     optimizer.step()
     return loss.item()
 
-def train_semi(model, data, num_class, train_idx, k=None):
-    model.train()
-    optimizer.zero_grad()
-    new_data1 = random_aug(data, args.fmr, args.edr)
-    new_data2 = random_aug(data, args.fmr, args.edr)
-    new_data1 = new_data1.to(device)
-    new_data2 = new_data2.to(device)
-    z1, z2 = model(new_data1, new_data2) 
-    train_idx = train_idx.to(device)
-    loss = model.loss(data, z1, z2, num_class, train_idx)
-    loss.backward()
-    optimizer.step()
-    return loss.item()
+# def train_semi(model, data, num_class, train_idx, k=None):
+#     model.train()
+#     optimizer.zero_grad()
+#     new_data1 = random_aug(data, args.fmr, args.edr)
+#     new_data2 = random_aug(data, args.fmr, args.edr)
+#     new_data1 = new_data1.to(device)
+#     new_data2 = new_data2.to(device)
+#     z1, z2 = model(new_data1, new_data2) 
+#     train_idx = train_idx.to(device)
+#     loss = model.loss(data, z1, z2, num_class, train_idx)
+#     loss.backward()
+#     optimizer.step()
+#     return loss.item()
 
 results =[]
 for exp in range(args.n_experiments):
@@ -77,18 +78,18 @@ for exp in range(args.n_experiments):
     tau = args.tau
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
-    pdb.set_trace()
+    # pdb.set_trace()
     # Time
     start = torch.cuda.Event(enable_timing=True)
     end = torch.cuda.Event(enable_timing=True)
     start.record()      
     ##### Train CLGR model #####
     print("=== train CLGR model ===")
-    model = SupCLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use)
+    model = CLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use)
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
     for epoch in range(args.epochs):
-        loss = train_semi(model, data, num_class, train_idx)
+        loss = train(model, args.fmr, args.edr, data, k=64)
         # loss = train(model, data)
         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     end.record()
