@@ -16,12 +16,13 @@ from model_random_selection2 import *
 from aug import *
 from dataset import *
 # from cluster import *
+import pdb
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLGR') 
-parser.add_argument('--dataset', type=str, default='Photo')
+parser.add_argument('--dataset', type=str, default='ogbn-arxiv')
 parser.add_argument('--n_experiments', type=int, default=1)
-parser.add_argument('--epochs', type=int, default=100)
+parser.add_argument('--epochs', type=int, default=50)
 parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr1', type=float, default=1e-3)
@@ -29,10 +30,11 @@ parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--channels', type=int, default=512) 
-parser.add_argument('--fmr', type=float, default=0.0)
+parser.add_argument('--fmr', type=float, default=0.3)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/results/Final_accuracy")
+parser.add_argument('--result_file', type=str, default="/Ours/results/New")
+# parser.add_argument('--result_file', type=str, default="/Ours/results/Final_accuracy")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
@@ -75,6 +77,7 @@ for exp in range(args.n_experiments):
     tau = args.tau
     num_class = int(data.y.max().item()) + 1 
     N = data.num_nodes
+    pdb.set_trace()
     # Time
     start = torch.cuda.Event(enable_timing=True)
     end = torch.cuda.Event(enable_timing=True)
