@@ -78,7 +78,7 @@ class GRACE(nn.Module):
             h = self.fc2(z)
         elif layer == "nonlinear":
             h = F.elu(self.fc3(z))
-        elif layer is "linear":
+        elif layer == "linear":
             h = self.fc3(z)
         elif layer == "standard":
             h = (z - z.mean(0)) / z.std(0)
