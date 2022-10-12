@@ -9,7 +9,6 @@
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1 
 #SBATCH --account=pi-cdonnat
-#SBATCH --mem=20G
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ilgee@uchicago.edu
 
