@@ -115,6 +115,8 @@ for exp in range(args.n_experiments):
         logits = logreg(train_embs)
         preds = torch.argmax(logits, dim=1)
         # train_acc = torch.sum(preds == train_labels).float() / train_labels.shape[0]
+        print(logits.shape)
+        print(train_labels.shape)
         loss = loss_fn(logits, train_labels)
         loss.backward()
         opt.step()
