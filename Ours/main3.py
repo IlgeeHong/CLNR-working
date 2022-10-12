@@ -96,10 +96,14 @@ for exp in range(args.n_experiments):
     torch.cuda.synchronize()
     recored_time = start.elapsed_time(end)
 
-    embeds = model.get_embedding(data)
-    train_embs = embeds[train_idx]
-    val_embs = embeds[val_idx]
-    test_embs = embeds[test_idx]
+    #embeds = model.get_embedding(data)
+    #train_embs = embeds[train_idx]
+    #val_embs = embeds[val_idx]
+    #test_embs = embeds[test_idx]
+    #embeds = 
+    train_embs = model.get_embedding(data)[train_idx]
+    val_embs = model.get_embedding(data)[val_idx]
+    test_embs = model.get_embedding(data)[test_idx]
 
     label = data.y
     label = label.to(device)
