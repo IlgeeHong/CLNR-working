@@ -43,6 +43,7 @@ class DBN(nn.Module):
             nn.init.zeros_(self.bias)
 
     def forward(self, input: torch.Tensor):
+        device = input.device
         size = input.size()
         assert input.dim() == self.dim and size[1] == self.num_features
         x = input.view(size[0] * size[1] // self.num_groups, self.num_groups, *size[2:])
@@ -51,8 +52,9 @@ class DBN(nn.Module):
         if training:
             mean = x.mean(1, keepdim=True)
             self.running_mean = (1. - self.momentum) * self.running_mean + self.momentum * mean
+            self.running_mean = self.running_mean.to(device)
             x_mean = x - mean
-            sigma = x_mean.matmul(x_mean.t()) / x.size(1) + self.eps * torch.eye(self.num_groups, device=input.device)
+            sigma = x_mean.matmul(x_mean.t()) / x.size(1) + self.eps * torch.eye(self.num_groups, device=device)
             # print('sigma size {}'.format(sigma.size()))
             u, eig, _ = sigma.svd()
             scale = eig.rsqrt()
