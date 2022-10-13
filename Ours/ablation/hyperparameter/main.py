@@ -67,8 +67,8 @@ for edr in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]:
             model = model.to(device)
             optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
             for epoch in range(args.epochs):
-                loss = train(model, fmr, edr, data)
-                # loss = train(model, fmr, edr, data, k=2048) 
+                # loss = train(model, fmr, edr, data)
+                loss = train(model, fmr, edr, data, k=2048) 
                 # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
             embeds = model.get_embedding(data)
             train_embs = embeds[train_idx]
