@@ -23,7 +23,7 @@ import pdb
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLGR') 
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #ogbn-arxiv
-parser.add_argument('--n_experiments', type=int, default=1)
+parser.add_argument('--n_experiments', type=int, default=10)
 parser.add_argument('--epochs', type=int, default=10000)
 parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--tau', type=float, default=0.5) 
@@ -79,7 +79,7 @@ for exp in range(args.n_experiments):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
     for epoch in range(args.epochs):
-        loss = train(model, args.fmr, args.edr, data, k=2048)
+        loss = train(model, args.fmr, args.edr, data, k=1024)
         # loss = train(model, data)
         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     end.record()
