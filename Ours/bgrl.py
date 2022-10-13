@@ -59,8 +59,8 @@ results =[]
 for exp in range(args.n_experiments):
     data, train_idx, val_idx, test_idx = load(args.dataset, device)
     in_dim = data.num_features
-    hid_dim = args.channels
-    out_dim = args.channels
+    hid_dim = args.hid_dim
+    out_dim = args.out_dim
     layer_config = [in_dim, hid_dim, hid_dim, out_dim]  
     n_layers = args.n_layers
     num_class = int(data.y.max().item()) + 1 
