@@ -22,7 +22,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='BGRL')
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv')
 parser.add_argument('--epochs', type=int, default=10000)
-parser.add_argument('--n_experiments', type=int, default=20)
+parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--out_dim', type=int, default=256)
 parser.add_argument('--hid_dim', type=int, default=256)
@@ -95,7 +95,7 @@ for exp in range(args.n_experiments):
     logreg = LogReg(train_embs.shape[1], num_class)
     logreg = logreg.to(device)
     opt = torch.optim.Adam(logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
-    lossfn = nn.CrossEntropyLoss()
+    loss_fn = nn.CrossEntropyLoss()
 
     best_val_acc = 0
     eval_acc = 0
@@ -108,7 +108,7 @@ for exp in range(args.n_experiments):
         # train_acc = torch.sum(preds == train_labels).float() / train_labels.shape[0]
         print(logits.shape)
         print(train_labels.shape)
-        loss = lossfn(logits, train_labels)
+        loss = loss_fn(logits, train_labels)
         loss.backward()
         opt.step()
 
