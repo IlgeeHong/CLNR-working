@@ -21,7 +21,7 @@ from dataset import *
 import pdb
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='dCLGR') 
+parser.add_argument('--model', type=str, default='grace') 
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #ogbn-arxiv
 parser.add_argument('--n_experiments', type=int, default=10)
 parser.add_argument('--epochs', type=int, default=10000)
