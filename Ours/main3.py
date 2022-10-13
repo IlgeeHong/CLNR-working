@@ -23,7 +23,7 @@ import pdb
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLGR') 
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #ogbn-arxiv
-parser.add_argument('--n_experiments', type=int, default=1)
+parser.add_argument('--n_experiments', type=int, default=20)
 # parser.add_argument('--epochs', type=int, default=50)
 parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--tau', type=float, default=0.5) 
@@ -141,11 +141,10 @@ for epochs in [2000, 4000, 6000, 8000, 10000]:
                         eval_acc = test_acc
         eval_acc_list.append(eval_acc.item())
     eval_acc_mean = mean(eval_acc_list)
-    eval_acc_std = stdev(eval_acc_list)
-
+    # eval_acc_std = stdev(eval_acc_list)
     # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
     # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    results += [[args.model, recored_time, args.dataset, epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc_mean, eval_acc_std]]
-    res1 = pd.DataFrame(results, columns=['model', 'Time', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy', 'stdev'])
+    # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
+    results += [[args.model, recored_time, args.dataset, epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc_mean]]
+    res1 = pd.DataFrame(results, columns=['model', 'Time', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy'])
     res1.to_csv(file_path + "_" + args.model + "_" + args.dataset +  ".csv", index=False)
