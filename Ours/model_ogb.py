@@ -148,7 +148,7 @@ class EMA:
         self.step += 1
         return old * beta + (1 - beta) * new
     
-def lossfn(x, y):
+def lossfunc(x, y):
     x = F.normalize(x, dim=-1, p=2)
     y = F.normalize(y, dim=-1, p=2)
     return 2 - 2 * (x * y).sum(dim=-1)
@@ -171,7 +171,7 @@ class BGRL(nn.Module):
         self.teacher_ema_updater = EMA(moving_average_decay, epochs)
         rep_dim = layer_config[-1]
         self.student_predictor = nn.Sequential(nn.Linear(rep_dim, pred_hid), nn.PReLU(), nn.Linear(pred_hid, rep_dim))
-        # self.student_predictor.apply(init_weights) 
+        self.student_predictor.apply(init_weights) 
     def reset_moving_average(self):
         del self.teacher_encoder
         self.teacher_encoder = None
@@ -198,8 +198,8 @@ class BGRL(nn.Module):
             v1_teacher = self.teacher_encoder(x=x1, edge_index=edge_index_v1, edge_weight=edge_weight_v1)
             v2_teacher = self.teacher_encoder(x=x2, edge_index=edge_index_v2, edge_weight=edge_weight_v2)
             
-        loss1 = lossfn(v1_pred, v2_teacher.detach())
-        loss2 = lossfn(v2_pred, v1_teacher.detach())
+        loss1 = lossfunc(v1_pred, v2_teacher.detach())
+        loss2 = lossfunc(v2_pred, v1_teacher.detach())
 
         loss = loss1 + loss2
         return v1_student, v2_student, loss.mean()
