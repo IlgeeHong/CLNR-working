@@ -23,7 +23,7 @@ import pdb
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLGR') 
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #ogbn-arxiv
-parser.add_argument('--n_experiments', type=int, default=20)
+parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--epochs', type=int, default=10000)
 parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--tau', type=float, default=0.5) 
