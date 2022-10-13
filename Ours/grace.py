@@ -21,7 +21,7 @@ from dataset import *
 import pdb
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='dCLNR') 
+parser.add_argument('--model', type=str, default='grace') 
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #ogbn-arxiv
 parser.add_argument('--n_experiments', type=int, default=10)
 parser.add_argument('--epochs', type=int, default=10000)
@@ -35,7 +35,7 @@ parser.add_argument('--channels', type=int, default=256)
 parser.add_argument('--proj_hid_dim', type=int, default=512)
 parser.add_argument('--fmr', type=float, default=0.0)
 parser.add_argument('--edr', type=float, default=0.6)
-parser.add_argument('--proj', type=str, default="dbn")
+parser.add_argument('--proj', type=str, default="nonlinear-hid")
 parser.add_argument('--result_file', type=str, default="/Ours/results/LAST")
 # parser.add_argument('--result_file', type=str, default="/Ours/results/Final_accuracy")
 args = parser.parse_args()
