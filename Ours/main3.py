@@ -78,8 +78,8 @@ for epochs in [2000, 4000, 6000, 8000, 10000]:
         model = CLGR(in_dim, hid_dim, out_dim, n_layers, tau, use_mlp = args.mlp_use)
         model = model.to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=args.wd1)
-        for epoch in range(args.epochs):
-            loss = train(model, args.fmr, args.edr, data, k=2048)
+        for epoch in range(epochs):
+            loss = train(model, args.fmr, args.edr, data, k=64)
             # loss = train(model, data)
             print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
         end.record()
@@ -146,6 +146,6 @@ for epochs in [2000, 4000, 6000, 8000, 10000]:
     # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
     # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
     print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-    results += [[args.model, recored_time, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc_mean, eval_acc_std]]
+    results += [[args.model, recored_time, args.dataset, epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc_mean, eval_acc_std]]
     res1 = pd.DataFrame(results, columns=['model', 'Time', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy', 'stdev'])
     res1.to_csv(file_path + "_" + args.model + "_" + args.dataset +  ".csv", index=False)
