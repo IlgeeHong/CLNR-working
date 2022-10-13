@@ -50,7 +50,7 @@ def train(model, data, fmr, edr, proj, k=None):
     new_data1 = new_data1.to(device)
     new_data2 = new_data2.to(device)
     z1, z2 = model(new_data1, new_data2)   
-    loss = model.loss(z1, z2, layer=proj, k)
+    loss = model.loss(z1, z2, layer=proj, k=k)
     loss.backward()
     optimizer.step()
     return loss.item()
