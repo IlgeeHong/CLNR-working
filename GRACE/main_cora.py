@@ -15,7 +15,7 @@ import torch_geometric.transforms as T
 from dataset import *
 from model import * 
 from aug import *
-# from cluster import *
+from cluster import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CLNR')
