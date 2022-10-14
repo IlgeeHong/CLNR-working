@@ -18,9 +18,9 @@ from aug import *
 from cluster import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='dCLNR')
+parser.add_argument('--model', type=str, default='CLNR')
 parser.add_argument('--dataset', type=str, default='Cora')
-parser.add_argument('--epochs', type=int, default=100)
+parser.add_argument('--epochs', type=int, default=50)
 parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--n_layers', type=int, default=2) 
 parser.add_argument('--channels', type=int, default=512)
@@ -32,7 +32,7 @@ parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--fmr', type=float, default=0.2)
-parser.add_argument('--proj', type=str, default="dbn") # dbn
+parser.add_argument('--proj', type=str, default="standard") # dbn
 parser.add_argument('--result_file', type=str, default="/GRACE/results/final")
 # parser.add_argument('--result_file', type=str, default="/GRACE/results/new")
 # parser.add_argument('--result_file', type=str, default="/GRACE/results/epochs_study")
