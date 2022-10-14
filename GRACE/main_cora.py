@@ -137,7 +137,7 @@ results2 = []
 
 sil = silhouette_score(test_embs.cpu(),test_labels.cpu().numpy())
 dav = davies_bouldin_score(test_embs.cpu(),test_labels.cpu().numpy())
-cal =calinski_harabasz_score(test_embs.cpu(),test_labels.cpu().numpy())
+cal = calinski_harabasz_score(test_embs.cpu(),test_labels.cpu().numpy())
 print(sil, dav, cal)
 
 file_path2 = os.getcwd() + args.embeddings
