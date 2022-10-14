@@ -13,14 +13,14 @@ import torch_geometric.transforms as T
 
 from model import * 
 from aug import *
-# from cluster import *
+from cluster import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', type=str, default='CCA-SSG') #SemiGCon
-parser.add_argument('--dataset', type=str, default='PubMed')
+parser.add_argument('--dataset', type=str, default='Cora')
 parser.add_argument('--split', type=str, default='PublicSplit') #PublicSplit
 parser.add_argument('--epochs', type=int, default=50)
-parser.add_argument('--n_experiments', type=int, default=20)
+parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--n_layers', type=int, default=2) 
 parser.add_argument('--channels', type=int, default=512) 
 parser.add_argument('--lambd', type=float, default=5e-4) 
@@ -31,16 +31,17 @@ parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--edr', type=float, default=0.3)
 parser.add_argument('--fmr', type=float, default=0.2)
 parser.add_argument('--result_file', type=str, default="/CCA-SSG/results/Final_accuracy")
+parser.add_argument('--embeddings', type=str, default="/CCA-SSG/results/embeddings")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-def train(model, data):
+def train(model, fmr, edr, data):
     model.train()
     optimizer.zero_grad()
-    new_data1 = random_aug(data, args.fmr, args.edr)
-    new_data2 = random_aug(data, args.fmr, args.edr)
+    new_data1 = random_aug(data, fmr, edr)
+    new_data2 = random_aug(data, fmr, edr)
     new_data1 = new_data1.to(device)
     new_data2 = new_data2.to(device)
     z1, z2 = model(new_data1, new_data2)   
@@ -96,7 +97,7 @@ for exp in range(args.n_experiments):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr1, weight_decay=0)
     for epoch in range(args.epochs):
-        loss = train(model, data) #train_semi(model, data, num_per_class, pos_idx)
+        loss = train(model, args.fmr, args.edr, data) #train_semi(model, data, num_per_class, pos_idx)
         # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
     
     embeds = model.get_embedding(data)
@@ -158,3 +159,23 @@ for exp in range(args.n_experiments):
     results += [[args.model, args.dataset, args.epochs, args.n_layers, args.lambd, args.lr1, args.lr2, args.wd2, args.channels, args.edr, args.fmr, eval_acc.item()]]
     res1 = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'lambd', 'lr1', 'lr2', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate', 'accuracy'])
     res1.to_csv(file_path + "_" + args.model + "_" + args.dataset +  ".csv", index=False)
+
+visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 1, 2, path=file_path, model=args.model)
+visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 1, 3, path=file_path, model=args.model)
+visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 2, 3, path=file_path, model=args.model)
+
+from sklearn.metrics import silhouette_score
+from sklearn.metrics import davies_bouldin_score
+from sklearn.metrics import calinski_harabasz_score
+
+results2 = []
+
+sil = silhouette_score(test_embs.cpu(),test_labels.cpu().numpy())
+dav = davies_bouldin_score(test_embs.cpu(),test_labels.cpu().numpy())
+cal = calinski_harabasz_score(test_embs.cpu(),test_labels.cpu().numpy())
+print(sil, dav, cal)
+
+file_path2 = os.getcwd() + args.embeddings
+results2 += [[args.model, args.dataset, sil, dav, cal]]
+res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
+res2.to_csv(file_path2 + "_" + args.dataset + "_" + args.model +  ".csv", index=False)
