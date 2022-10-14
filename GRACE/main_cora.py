@@ -123,7 +123,7 @@ for exp in range(args.n_experiments):
     res1.to_csv(file_path + "_" + args.model + "_" + args.dataset + "_" + str(args.channels) + ".csv", index=False)
 
 
-visualize_umap(test_embs, test_labels.numpy())    
+# visualize_umap(test_embs, test_labels.numpy())    
 visualize_tsne(test_embs, test_labels.numpy())
 visualize_pca(test_embs, test_labels.numpy(), 1, 2)
 visualize_pca(test_embs, test_labels.numpy(), 1, 3)
