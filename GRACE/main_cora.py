@@ -18,10 +18,10 @@ from aug import *
 # from cluster import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='dCLNR')
+parser.add_argument('--model', type=str, default='CLNR')
 parser.add_argument('--dataset', type=str, default='Cora')
-parser.add_argument('--epochs', type=int, default=100)
-parser.add_argument('--n_experiments', type=int, default=20)
+parser.add_argument('--epochs', type=int, default=50)
+parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--n_layers', type=int, default=2) 
 parser.add_argument('--channels', type=int, default=512)
 parser.add_argument('--proj_hid_dim', type=int, default=512)
@@ -32,11 +32,11 @@ parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--fmr', type=float, default=0.2)
-parser.add_argument('--proj', type=str, default="dbn")
+parser.add_argument('--proj', type=str, default="standard") # dbn
 parser.add_argument('--result_file', type=str, default="/GRACE/results/final")
 # parser.add_argument('--result_file', type=str, default="/GRACE/results/new")
 # parser.add_argument('--result_file', type=str, default="/GRACE/results/epochs_study")
-# parser.add_argument('--embeddings', type=str, default="/results/GRACE_node_classification_embeddings")
+parser.add_argument('--embeddings', type=str, default="/results/GRACE_node_classification_embeddings")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
@@ -123,26 +123,24 @@ for exp in range(args.n_experiments):
     res1.to_csv(file_path + "_" + args.model + "_" + args.dataset + "_" + str(args.channels) + ".csv", index=False)
 
 
-    # visualize_umap(test_embs, test_labels.numpy())    
-    # visualize_tsne(test_embs, test_labels.numpy())
-    # visualize_pca(test_embs, test_labels.numpy(), 1, 2)
-    # visualize_pca(test_embs, test_labels.numpy(), 1, 3)
-    # visualize_pca(test_embs, test_labels.numpy(), 2, 3)
+visualize_umap(test_embs, test_labels.numpy())    
+visualize_tsne(test_embs, test_labels.numpy())
+visualize_pca(test_embs, test_labels.numpy(), 1, 2)
+visualize_pca(test_embs, test_labels.numpy(), 1, 3)
+visualize_pca(test_embs, test_labels.numpy(), 2, 3)
 
-    # from sklearn.metrics import silhouette_score
-    # from sklearn.metrics import davies_bouldin_score
-    # from sklearn.metrics import calinski_harabasz_score
+from sklearn.metrics import silhouette_score
+from sklearn.metrics import davies_bouldin_score
+from sklearn.metrics import calinski_harabasz_score
 
-    # results2 = []
+results2 = []
 
-    # sil = silhouette_score(test_embs,test_labels.numpy())
-    # dav = davies_bouldin_score(test_embs,test_labels.numpy())
-    # cal =calinski_harabasz_score(test_embs,test_labels.numpy())
-    # print(sil, dav, cal)
-    # # print(silhouette_score(test_logits,test_labels.numpy()))
-    # # print(davies_bouldin_score(test_logits,test_labels.numpy()))
-    # # print(calinski_harabasz_score(test_logits,test_labels.numpy()))
-    # file_path2 = os.getcwd() + args.embeddings
-    # results2 += [[args.model, args.dataset, sil, dav, cal]]
-    # res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
-    # res2.to_csv(file_path2 + "_" + args.dataset +  ".csv", index=False)
+sil = silhouette_score(test_embs,test_labels.numpy())
+dav = davies_bouldin_score(test_embs,test_labels.numpy())
+cal =calinski_harabasz_score(test_embs,test_labels.numpy())
+print(sil, dav, cal)
+
+file_path2 = os.getcwd() + args.embeddings
+results2 += [[args.model, args.dataset, sil, dav, cal]]
+res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
+res2.to_csv(file_path2 + "_" + args.dataset +  ".csv", index=False)
