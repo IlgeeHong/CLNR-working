@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/scratch/midway3/ilgee/SelfGCon/Ours/grace.py", line 90, in <module>
+    embeds = model.get_embedding(data)
+  File "/scratch/midway3/ilgee/SelfGCon/Ours/model_ogb.py", line 121, in get_embedding
+    out = self.backbone(data.x, data.edge_index)
+  File "/home/ilgee/.conda/envs/pytorch_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/scratch/midway3/ilgee/SelfGCon/Ours/model_ogb.py", line 51, in forward
+    x = F.relu(self.convs[i](x, edge_index))
+  File "/home/ilgee/.conda/envs/pytorch_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1110, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/ilgee/.local/lib/python3.10/site-packages/torch_geometric/nn/conv/gcn_conv.py", line 194, in forward
+    out = self.propagate(edge_index, x=x, edge_weight=edge_weight,
+  File "/home/ilgee/.local/lib/python3.10/site-packages/torch_geometric/nn/conv/message_passing.py", line 317, in propagate
+    out = self.message(**msg_kwargs)
+  File "/home/ilgee/.local/lib/python3.10/site-packages/torch_geometric/nn/conv/gcn_conv.py", line 203, in message
+    return x_j if edge_weight is None else edge_weight.view(-1, 1) * x_j
+RuntimeError: CUDA out of memory. Tried to allocate 4.74 GiB (GPU 0; 15.78 GiB total capacity; 5.61 GiB already allocated; 4.11 GiB free; 10.38 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+/var/spool/slurm/d/job4665152/slurm_script: line 28: /home/ilgee: Is a directory
+/var/spool/slurm/d/job4665152/slurm_script: line 29: /home/ilgee: Is a directory
