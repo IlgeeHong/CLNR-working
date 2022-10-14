@@ -125,9 +125,9 @@ for exp in range(args.n_experiments):
 
 # visualize_umap(test_embs, test_labels.numpy())    
 # visualize_tsne(test_embs, test_labels.numpy())
-visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 1, 2, path=file_path)
-visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 1, 3, path=file_path)
-visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 2, 3, path=file_path)
+visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 1, 2, path=file_path, model=args.model)
+visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 1, 3, path=file_path, model=args.model)
+visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 2, 3, path=file_path, model=args.model)
 
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import davies_bouldin_score
