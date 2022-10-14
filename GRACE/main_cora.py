@@ -32,7 +32,7 @@ parser.add_argument('--wd1', type=float, default=0.0)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--fmr', type=float, default=0.2)
-parser.add_argument('--proj', type=str, default="standard") # dbn
+parser.add_argument('--proj', type=str, default="nonlinear-hid") # dbn
 parser.add_argument('--result_file', type=str, default="/GRACE/results/final")
 # parser.add_argument('--result_file', type=str, default="/GRACE/results/new")
 # parser.add_argument('--result_file', type=str, default="/GRACE/results/epochs_study")
