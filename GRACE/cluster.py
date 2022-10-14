@@ -36,7 +36,7 @@ def visualize_pca(out, color, pc1, pc2, path, model, size=30, epoch = None, loss
     plt.title("EVR:"+  str(round(evr[pc1],4)) + " " + "vs" + " " + str(round(evr[pc2],4)), fontsize = 20)
     if epoch is not None and loss is not None:
         plt.xlabel(f'Epoch: {epoch}, Loss: {loss:.4f}', fontsize=20)
-    plt.savefig(path + "_" + model + "_" + 'cora_pc' + str(pc1) + str(pc2) + '.png')    
+    plt.savefig(path + "_" + model + "_" + 'cora_pc' + str(pc1) + str(pc2) + '.png',bbox_inches='tight')    
     # plt.show()
 
 # def visualize_tsne(out, color, size=30, epoch=None, loss = None):
