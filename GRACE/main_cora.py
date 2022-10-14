@@ -36,7 +36,7 @@ parser.add_argument('--proj', type=str, default="standard") # dbn
 parser.add_argument('--result_file', type=str, default="/GRACE/results/final")
 # parser.add_argument('--result_file', type=str, default="/GRACE/results/new")
 # parser.add_argument('--result_file', type=str, default="/GRACE/results/epochs_study")
-parser.add_argument('--embeddings', type=str, default="/results/GRACE_node_classification_embeddings")
+parser.add_argument('--embeddings', type=str, default="/GRACE/results/embeddings")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
@@ -125,9 +125,9 @@ for exp in range(args.n_experiments):
 
 # visualize_umap(test_embs, test_labels.numpy())    
 # visualize_tsne(test_embs, test_labels.numpy())
-visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 1, 2)
-visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 1, 3)
-visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 2, 3)
+visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 1, 2, path=file_path)
+visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 1, 3, path=file_path)
+visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 2, 3, path=file_path)
 
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import davies_bouldin_score
@@ -143,4 +143,4 @@ print(sil, dav, cal)
 file_path2 = os.getcwd() + args.embeddings
 results2 += [[args.model, args.dataset, sil, dav, cal]]
 res2 = pd.DataFrame(results2, columns=['model', 'dataset', 'silhouette', 'davies', 'c-h'])
-res2.to_csv(file_path2 + "_" + args.dataset +  ".csv", index=False)
+res2.to_csv(file_path2 + "_" + args.dataset + "_" + args.model +  ".csv", index=False)
