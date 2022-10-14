@@ -125,9 +125,9 @@ for exp in range(args.n_experiments):
 
 # visualize_umap(test_embs, test_labels.numpy())    
 # visualize_tsne(test_embs, test_labels.numpy())
-visualize_pca(test_embs.to('cpu'), test_labels.numpy(), 1, 2)
-visualize_pca(test_embs.to('cpu'), test_labels.numpy(), 1, 3)
-visualize_pca(test_embs.to('cpu'), test_labels.numpy(), 2, 3)
+visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 1, 2)
+visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 1, 3)
+visualize_pca(test_embs.cpu(), test_labels.cpu().numpy(), 2, 3)
 
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import davies_bouldin_score
@@ -135,9 +135,9 @@ from sklearn.metrics import calinski_harabasz_score
 
 results2 = []
 
-sil = silhouette_score(test_embs,test_labels.numpy())
-dav = davies_bouldin_score(test_embs,test_labels.numpy())
-cal =calinski_harabasz_score(test_embs,test_labels.numpy())
+sil = silhouette_score(test_embs.cpu(),test_labels.cpu().numpy())
+dav = davies_bouldin_score(test_embs.cpu(),test_labels.cpu().numpy())
+cal =calinski_harabasz_score(test_embs.cpu(),test_labels.cpu().numpy())
 print(sil, dav, cal)
 
 file_path2 = os.getcwd() + args.embeddings
