@@ -30,7 +30,7 @@ parser.add_argument('--fmr', type=float, default=0.3)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--batch', type=int, default=256) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/results/")
+parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/")
 args = parser.parse_args()
 
 file_path = os.getcwd() + args.result_file
