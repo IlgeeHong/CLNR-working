@@ -7,10 +7,10 @@ from dbn import *
 from aug import *
 
 # CUDA support
-if torch.cuda.is_available():
-    device = torch.device('cuda')
-else:
-    device = torch.device('cpu')
+# if torch.cuda.is_available():
+#     device = torch.device('cuda')
+# else:
+#     device = torch.device('cpu')
 
 class LogReg(nn.Module):
     def __init__(self, hid_dim, out_dim):
@@ -129,7 +129,7 @@ class Model(nn.Module):
         return ret
 
 class ContrastiveLearning(nn.Module):
-    def __init__(self, args, data):
+    def __init__(self, args, data, device):
         super().__init__()
         self.model = args.model
         self.epochs = args.epochs
@@ -137,12 +137,13 @@ class ContrastiveLearning(nn.Module):
         self.edr = args.edr
         self.batch = args.batch
         self.data = data
+        self.device = device
         self.num_class = int(self.data.y.max().item()) + 1 
         self.model = Model(self.data.num_features, args.channels, args.channels, args.n_layers, args.tau, type=self.model, use_mlp = args.mlp_use)
-        self.model = self.model.to(device)
+        self.model = self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=args.lr1, weight_decay=args.wd1)
         self.logreg = LogReg(args.channels, self.num_class)
-        self.logreg = self.logreg.to(device)
+        self.logreg = self.logreg.to(self.device)
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
 
     def train(self):
@@ -151,23 +152,22 @@ class ContrastiveLearning(nn.Module):
             self.optimizer.zero_grad()
             new_data1 = random_aug(self.data, self.fmr, self.edr)
             new_data2 = random_aug(self.data, self.fmr, self.edr)
-            new_data1 = new_data1.to(device)
-            new_data2 = new_data2.to(device)
+            new_data1 = new_data1.to(self.device)
+            new_data2 = new_data2.to(self.device)
             z1, z2 = self.model(new_data1, new_data2)   
-            loss = self.model.loss(z1, z2, self.batch) #, "CLNR"
+            loss = self.model.loss(z1, z2, self.batch)
             loss.backward()
             self.optimizer.step()
             print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
 
-    def LinearEvaluation(self,train_idx, val_idx, test_idx):
-        
+    def LinearEvaluation(self, train_idx, val_idx, test_idx):
         embeds = self.model.get_embedding(self.data)
         train_embs = embeds[train_idx]
         val_embs = embeds[val_idx]
         test_embs = embeds[test_idx]
 
         label = self.data.y
-        label = label.to(device)
+        label = label.to(self.device)
 
         train_labels = label[train_idx]
         val_labels = label[val_idx]
