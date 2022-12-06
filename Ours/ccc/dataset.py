@@ -4,9 +4,9 @@ from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 
 def load(name, device):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
-        Data = os.getcwd()+'/Planetoid'
+        # Data = os.getcwd()+'/Planetoid'
         transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
-        dataset = Planetoid(root = 'Data', name=name, transform=transform)
+        dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Ours/ccc/Planetoid', name=name, transform=transform)
         data = dataset[0]
         train_idx = data.train_mask 
         val_idx = data.val_mask 
