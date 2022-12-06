@@ -39,7 +39,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 #for exp in range(args.n_experiments):
 data, train_idx, val_idx, test_idx = load(args.dataset, device)
-model = ContrastiveLearning(args, data)
+model = ContrastiveLearning(args, data, device)
 model.train()
 eval_acc = model.LinearEvaluation(train_idx, val_idx, test_idx)
 results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.channels, args.edr, args.fmr, eval_acc.item()]]
