@@ -21,7 +21,7 @@ source activate pytorch_env
 cd $SCRATCH/$USER/SelfGCon
 echo $1
 echo $2
-python3 Ours/main3.py
+python3 Ours/ccc/main.py
 conda deactivate
 ~
 ~
