@@ -5,7 +5,7 @@ from ogb.nodeproppred import PygNodePropPredDataset
 
 def load(name, device):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
-        Data = os.getcwd()+'/Planetoid'
+        # Data = os.getcwd()+'/Planetoid'
         transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
         dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name, transform=transform)
         data = dataset[0]
@@ -14,7 +14,7 @@ def load(name, device):
         test_idx = data.test_mask  
 
     elif name in ['CS', 'Physics']:
-        Data = os.getcwd()+'/Coauthor'
+        # Data = os.getcwd()+'/Coauthor'
         transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Coauthor(name=name, root = '/scratch/midway3/ilgee/SelfGCon', transform=transform)
         data = dataset[0]
@@ -23,7 +23,7 @@ def load(name, device):
         test_idx = data.test_mask  
 
     elif name in ['Computers', 'Photo']:
-        Data = os.getcwd()+'/Amazon'
+        # Data = os.getcwd()+'/Amazon'
         transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Amazon(name=name, root = '/scratch/midway3/ilgee/SelfGCon', transform=transform)
         data = dataset[0]
