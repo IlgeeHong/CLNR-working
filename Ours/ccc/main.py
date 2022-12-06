@@ -2,6 +2,7 @@ import os
 import os.path as osp
 import argparse
 import sys
+sys.path.append('/scratch/midway3/ilgee/SelfGCon')
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
