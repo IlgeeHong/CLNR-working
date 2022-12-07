@@ -15,7 +15,7 @@ from model import *
 from dataset import *
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='bCLNR') 
+parser.add_argument('--model', type=str, default='bGRACE') 
 parser.add_argument('--dataset', type=str, default='Cora') 
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--epochs', type=int, default=100)
