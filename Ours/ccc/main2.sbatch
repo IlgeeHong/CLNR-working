@@ -17,7 +17,7 @@ echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 
 # Add lines here to run your computations.
 module load python
-module load cuda
+module load cuda/11.1
 source activate pytorch_env  
 
 cd $SCRATCH/$USER/SelfGCon
