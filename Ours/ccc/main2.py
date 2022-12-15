@@ -17,7 +17,7 @@ from cluster import *
 from statistics import mean, stdev
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='dCLNR') 
+parser.add_argument('--model', type=str, default='GRACE') 
 parser.add_argument('--dataset', type=str, default='PubMed') 
 parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--epochs', type=int, default=600)
