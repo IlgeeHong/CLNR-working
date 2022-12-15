@@ -1,0 +1,2 @@
+model,dataset,epochs,layers,tau,lr1,lr2,wd1,wd2,channels,edge_drop_rate,feat_mask_rate,mean,std,loss_type
+dCLNR,Cora,50,2,0.5,0.001,0.005,0.0,0.0001,512,0.5,0.2,0.557800030708313,0.02937042839495861,align
