@@ -30,8 +30,8 @@ parser.add_argument('--hid_dim', type=int, default=512)
 parser.add_argument('--out_dim', type=int, default=512) 
 parser.add_argument('--fmr', type=float, default=0.2)
 parser.add_argument('--edr', type=float, default=0.5)
-parser.add_argument('--batch', type=int, default=512) #None
-parser.add_argument('--loss_type', type=str, default='ntxent') #None
+parser.add_argument('--batch', type=int, default=Nonde) #None
+parser.add_argument('--loss_type', type=str, default='uniform') #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/")
 args = parser.parse_args()

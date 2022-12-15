@@ -125,6 +125,11 @@ class Model(nn.Module):
             z1 = F.normalize(z1)
             z2 = F.normalize(z2)
             loss = (z1-z2).norm(dim=1).pow(2).mean()
+        elif loss_type == "uniform":
+            z1 = F.normalize(z1)
+            z2 = F.normalize(z2)
+            sq_pdist = torch.pdist(z1, p=2).pow(2)
+            loss = sq_pdist.mul(-2).exp().mean().log()
         return loss
 
     def loss(self, z1, z2, k=None, loss_type='ntxent', mean = True):
@@ -142,6 +147,10 @@ class Model(nn.Module):
             ret = ret.mean() if mean else ret.sum()
         elif loss_type == "align":
             ret = self.semi_loss(h1, h2, indices, loss_type)
+        elif loss_type == "uniform":
+            l1 = self.semi_loss(h1, h2, indices, loss_type)    
+            l2 = self.semi_loss(h1, h2, indices, loss_type)    
+            ret = (l1 + l2) * 0.5
         return ret
 
 class ContrastiveLearning(nn.Module):
