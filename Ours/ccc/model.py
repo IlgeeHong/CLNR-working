@@ -112,16 +112,20 @@ class Model(nn.Module):
         z2 = F.normalize(z2)
         return torch.mm(z1, z2.t())
 
-    def semi_loss(self, z1, z2, indices):
-        f = lambda x: torch.exp(x / self.tau)
-        if indices is not None:
-            z1 = z1[indices,:]
-            z2 = z2[indices,:]
-        refl_sim = f(self.sim(z1, z1))
-        between_sim = f(self.sim(z1, z2))
-        return -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
+    def semi_loss(self, z1, z2, indices, loss_type='ntxent'):
+        if loss_type == "ntxent":
+            f = lambda x: torch.exp(x / self.tau)
+            if indices is not None:
+                z1 = z1[indices,:]
+                z2 = z2[indices,:]
+            refl_sim = f(self.sim(z1, z1))
+            between_sim = f(self.sim(z1, z2))
+            loss = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
+        if loss_type == "align":
+            loss = (z1-z2).norm(dim=1).pow(2).mean()
+        return loss
 
-    def loss(self, z1, z2, k=None, mean = True):
+    def loss(self, z1, z2, k=None, loss_type='ntxent', mean = True):
         if k is not None:
             N = z1.shape[0]
             indices = torch.LongTensor(random.sample(range(N), k))
@@ -129,8 +133,8 @@ class Model(nn.Module):
             indices = None
         h1 = self.projection(z1)
         h2 = self.projection(z2)
-        l1 = self.semi_loss(h1, h2, indices)
-        l2 = self.semi_loss(h2, h1, indices)
+        l1 = self.semi_loss(h1, h2, indices, loss_type)
+        l2 = self.semi_loss(h2, h1, indices, loss_type)
         ret = (l1 + l2) * 0.5
         ret = ret.mean() if mean else ret.sum()
         return ret
@@ -143,6 +147,7 @@ class ContrastiveLearning(nn.Module):
         self.fmr = args.fmr
         self.edr = args.edr
         self.batch = args.batch
+        self.loss_type = args.loss_type
         self.data = data
         self.device = device
         self.num_class = int(self.data.y.max().item()) + 1 
@@ -162,7 +167,7 @@ class ContrastiveLearning(nn.Module):
             new_data1 = new_data1.to(self.device)
             new_data2 = new_data2.to(self.device)
             z1, z2 = self.model(new_data1, new_data2)   
-            loss = self.model.loss(z1, z2, self.batch)
+            loss = self.model.loss(z1, z2, self.batch, self.loss_type)
             loss.backward()
             self.optimizer.step()
             print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
