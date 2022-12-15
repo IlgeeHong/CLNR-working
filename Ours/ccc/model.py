@@ -149,7 +149,7 @@ class Model(nn.Module):
             ret = self.semi_loss(h1, h2, indices, loss_type)
         elif loss_type == "uniform":
             l1 = self.semi_loss(h1, h2, indices, loss_type)    
-            l2 = self.semi_loss(h1, h2, indices, loss_type)    
+            l2 = self.semi_loss(h2, h1, indices, loss_type)    
             ret = (l1 + l2) * 0.5
         return ret
 
