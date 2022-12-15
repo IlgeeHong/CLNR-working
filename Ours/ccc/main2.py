@@ -47,6 +47,7 @@ for exp in range(args.n_experiments):
     embs, labels, eval_acc = model.LinearEvaluation(train_idx, val_idx, test_idx)
 
 print(embs)
+print(labels)
 #   eval_acc_list.append(eval_acc.item())
 #eval_acc_mean = mean(eval_acc_list)
 #eval_acc_std = stdev(eval_acc_list)
