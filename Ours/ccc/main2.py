@@ -48,7 +48,7 @@ for args.model in ['GRACE','bCLNR','dCLNR','CLNR']:
         model.train()
         embs, labels, eval_acc = model.LinearEvaluation(train_idx, val_idx, test_idx)
 
-    visualize_uniformity(embs, labels, args, eval_acc)
+    visualize_uniformity(embs, labels, args, eval_acc.item())
 #   eval_acc_list.append(eval_acc.item())
 #eval_acc_mean = mean(eval_acc_list)
 #eval_acc_std = stdev(eval_acc_list)
