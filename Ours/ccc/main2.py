@@ -11,7 +11,7 @@ import pandas as pd
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 
-from model import * 
+from model2 import * 
 from dataset import *
 from statistics import mean, stdev
 
