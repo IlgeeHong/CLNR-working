@@ -119,7 +119,7 @@ class Model(nn.Module):
             z2 = z2[indices,:]
         refl_sim = f(self.sim(z1, z1))
         between_sim = f(self.sim(z1, z2))
-        return -torch.log(between_sim.diag() / between_sim.sum(1)) # (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
+        return -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
 
     def loss(self, z1, z2, k=None, mean = True):
         if k is not None:
@@ -146,10 +146,10 @@ class ContrastiveLearning(nn.Module):
         self.data = data
         self.device = device
         self.num_class = int(self.data.y.max().item()) + 1 
-        self.model = Model(self.data.num_features, args.channels, args.channels, args.n_layers, args.tau, type=self.model, use_mlp = args.mlp_use)
+        self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, type=self.model, use_mlp = args.mlp_use)
         self.model = self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=args.lr1, weight_decay=args.wd1)
-        self.logreg = LogReg(args.channels, self.num_class)
+        self.logreg = LogReg(args.out_dim, self.num_class)
         self.logreg = self.logreg.to(self.device)
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
 
@@ -212,5 +212,5 @@ class ContrastiveLearning(nn.Module):
                         eval_acc = test_acc
             print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
         print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-        return eval_acc
+        return test_embs, test_labels, eval_acc
     
