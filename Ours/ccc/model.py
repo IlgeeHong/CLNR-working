@@ -122,6 +122,8 @@ class Model(nn.Module):
             between_sim = f(self.sim(z1, z2))
             loss = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
         if loss_type == "align":
+            z1 = F.normalize(z1)
+            z2 = F.normalize(z2)
             loss = (z1-z2).norm(dim=1).pow(2).mean()
         return loss
 
