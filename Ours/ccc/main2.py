@@ -13,6 +13,7 @@ import torch_geometric.transforms as T
 
 from model2 import * 
 from dataset import *
+from cluster import *
 from statistics import mean, stdev
 
 parser = argparse.ArgumentParser()
@@ -46,8 +47,7 @@ for exp in range(args.n_experiments):
     model.train()
     embs, labels, eval_acc = model.LinearEvaluation(train_idx, val_idx, test_idx)
 
-print(embs)
-print(labels)
+visualize_uniformity(embs, labels)
 #   eval_acc_list.append(eval_acc.item())
 #eval_acc_mean = mean(eval_acc_list)
 #eval_acc_std = stdev(eval_acc_list)
