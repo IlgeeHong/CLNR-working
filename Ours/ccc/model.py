@@ -89,7 +89,7 @@ class Model(nn.Module):
         if self.type == "GRACE":
             z = F.elu(self.fc1(z))
             h = self.fc2(z)
-        if self.type == "bGRACE":
+        elif self.type == "bGRACE":
             z = F.relu(self.bnh(self.fc4(z)))
             h = self.bn(self.fc5(z))
         elif self.type == "nonlinear":
@@ -121,7 +121,7 @@ class Model(nn.Module):
             refl_sim = f(self.sim(z1, z1))
             between_sim = f(self.sim(z1, z2))
             loss = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
-        if loss_type == "align":
+        elif loss_type == "align":
             z1 = F.normalize(z1)
             z2 = F.normalize(z2)
             loss = (z1-z2).norm(dim=1).pow(2).mean()
@@ -135,10 +135,13 @@ class Model(nn.Module):
             indices = None
         h1 = self.projection(z1)
         h2 = self.projection(z2)
-        l1 = self.semi_loss(h1, h2, indices, loss_type)
-        l2 = self.semi_loss(h2, h1, indices, loss_type)
-        ret = (l1 + l2) * 0.5
-        ret = ret.mean() if mean else ret.sum()
+        if loss_type == "ntxent":
+            l1 = self.semi_loss(h1, h2, indices, loss_type)
+            l2 = self.semi_loss(h2, h1, indices, loss_type)
+            ret = (l1 + l2) * 0.5
+            ret = ret.mean() if mean else ret.sum()
+        elif loss_type == "align":
+            ret = self.semi_loss(h1, h2, indices, loss_type)
         return ret
 
 class ContrastiveLearning(nn.Module):
