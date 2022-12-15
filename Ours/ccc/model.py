@@ -146,10 +146,10 @@ class ContrastiveLearning(nn.Module):
         self.data = data
         self.device = device
         self.num_class = int(self.data.y.max().item()) + 1 
-        self.model = Model(self.data.num_features, args.channels, args.channels, args.n_layers, args.tau, type=self.model, use_mlp = args.mlp_use)
+        self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, type=self.model, use_mlp = args.mlp_use)
         self.model = self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=args.lr1, weight_decay=args.wd1)
-        self.logreg = LogReg(args.channels, self.num_class)
+        self.logreg = LogReg(args.out_dim, self.num_class)
         self.logreg = self.logreg.to(self.device)
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
 
