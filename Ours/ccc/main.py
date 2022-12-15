@@ -31,7 +31,7 @@ parser.add_argument('--out_dim', type=int, default=512)
 parser.add_argument('--fmr', type=float, default=0.2)
 parser.add_argument('--edr', type=float, default=0.5)
 parser.add_argument('--batch', type=int, default=None) #None
-parser.add_argument('--loss_type', type=str, default='align') #None
+parser.add_argument('--loss_type', type=str, default='ntxent') #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/")
 args = parser.parse_args()
@@ -39,16 +39,18 @@ args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-results =[]
-eval_acc_list = []
-for exp in range(args.n_experiments):
-    data, train_idx, val_idx, test_idx = load(args.dataset, device)
-    model = ContrastiveLearning(args, data, device)
-    model.train()
-    eval_acc = model.LinearEvaluation(train_idx, val_idx, test_idx)
-    eval_acc_list.append(eval_acc.item())
-eval_acc_mean = mean(eval_acc_list)
-eval_acc_std = stdev(eval_acc_list)
-results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
-res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate','mean', 'std','loss_type'])#, 
-res.to_csv(file_path + args.model + "_" + str(args.batch) + "_" + args.loss_type + "_" + args.dataset +  ".csv", index=False) #str(args.epochs)
+# newly added
+for args.model in ['CLNR','nCLNR','bCLNR','dCLNR','GRACE']:
+    results =[]
+    eval_acc_list = []
+    for exp in range(args.n_experiments):
+        data, train_idx, val_idx, test_idx = load(args.dataset, device)
+        model = ContrastiveLearning(args, data, device)
+        model.train()
+        eval_acc = model.LinearEvaluation(train_idx, val_idx, test_idx)
+        eval_acc_list.append(eval_acc.item())
+    eval_acc_mean = mean(eval_acc_list)
+    eval_acc_std = stdev(eval_acc_list)
+    results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
+    res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate','mean', 'std','loss_type'])#, 
+    res.to_csv(file_path + args.model + "_" + str(args.batch) + "_" + args.loss_type + "_" + args.dataset +  ".csv", index=False) #str(args.epochs)
