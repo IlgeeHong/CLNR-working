@@ -17,7 +17,7 @@ from cluster import *
 from statistics import mean, stdev
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='CLNR') 
+parser.add_argument('--model', type=str, default='bCLNR') 
 parser.add_argument('--dataset', type=str, default='PubMed') 
 parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--epochs', type=int, default=600)
@@ -47,7 +47,7 @@ for exp in range(args.n_experiments):
     model.train()
     embs, labels, eval_acc = model.LinearEvaluation(train_idx, val_idx, test_idx)
 
-visualize_uniformity(embs, labels)
+visualize_uniformity(embs, labels, args)
 #   eval_acc_list.append(eval_acc.item())
 #eval_acc_mean = mean(eval_acc_list)
 #eval_acc_std = stdev(eval_acc_list)
