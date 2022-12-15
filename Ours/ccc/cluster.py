@@ -8,5 +8,5 @@ def visualize_uniformity(embs, labels):
     plt.xticks([])
     plt.yticks([])
     scatter = plt.scatter(X[:,0],X[:,1],c=y)
-    # plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/uniformity.png')    
-    plt.show()
+    plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/uniformity.png')    
+    # plt.show()
