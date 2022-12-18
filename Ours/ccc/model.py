@@ -191,11 +191,11 @@ class ContrastiveLearning(nn.Module):
         sq_pdist = torch.pdist(z, p=2).pow(2)
         return sq_pdist.mul(-2).exp().mean()
 
-    def alignment(self):
+    def alignment(self, val_idx):
         new_data1 = random_aug(self.data,self.fmr,self.edr)
         new_data2 = random_aug(self.data,self.fmr,self.edr)
-        z1 = F.normalize(self.model.get_embedding(new_data1))
-        z2 = F.normalize(self.model.get_embedding(new_data2))
+        z1 = F.normalize(self.model.get_embedding(new_data1)[val_idx])
+        z2 = F.normalize(self.model.get_embedding(new_data2)[val_idx])
         return (z1-z2).norm(dim=1).pow(2).mean()
 
     def LinearEvaluation(self, train_idx, val_idx, test_idx):
@@ -213,7 +213,7 @@ class ContrastiveLearning(nn.Module):
 
         # calculate metric
         Lu = self.uniformity(val_embs)
-        La = self.alignment()
+        La = self.alignment(val_idx)
  
         loss_fn = nn.CrossEntropyLoss()
 
