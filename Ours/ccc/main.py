@@ -40,8 +40,8 @@ file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # newly added
+results =[]
 for args.model in ['CLNR','bCLNR','dCLNR','GRACE']:
-    results =[]
     eval_acc_list = []
     for exp in range(args.n_experiments):
         data, train_idx, val_idx, test_idx = load(args.dataset, device)
@@ -53,4 +53,4 @@ for args.model in ['CLNR','bCLNR','dCLNR','GRACE']:
     eval_acc_std = stdev(eval_acc_list)
     results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
 res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'layers', 'tau', 'lr1', 'lr2', 'wd1', 'wd2', 'channels', 'edge_drop_rate', 'feat_mask_rate','mean', 'std','loss_type'])#, 
-res.to_csv(file_path + args.model + "_" + str(args.batch) + "_" + args.loss_type + "_" + args.dataset +  ".csv", index=False) #str(args.epochs)
+res.to_csv(file_path + str(args.batch) + "_" + args.loss_type + "_" + args.dataset +  ".csv", index=False) #str(args.epochs)args.model + "_" + 
