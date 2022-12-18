@@ -186,6 +186,18 @@ class ContrastiveLearning(nn.Module):
             self.optimizer.step()
             print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
 
+    def uniformity(self, val_embed):
+        z = F.normalize(val_embed)
+        sq_pdist = torch.pdist(z, p=2).pow(2)
+        return sq_pdist.mul(-2).exp().mean()
+
+    def alignment(self):
+        new_data1 = random_aug(self.data,self.fmr,self.edr)
+        new_data2 = random_aug(self.data,self.fmr,self.edr)
+        z1 = F.normalize(self.model.get_embedding(new_data1))
+        z2 = F.normalize(self.model.get_embedding(new_data2))
+        return (z1-z2).norm(dim=1).pow(2).mean()
+
     def LinearEvaluation(self, train_idx, val_idx, test_idx):
         embeds = self.model.get_embedding(self.data)
         train_embs = embeds[train_idx]
@@ -198,6 +210,10 @@ class ContrastiveLearning(nn.Module):
         train_labels = label[train_idx]
         val_labels = label[val_idx]
         test_labels = label[test_idx]
+
+        # calculate metric
+        Lu = self.uniformity(val_embs)
+        La = self.alignment()
  
         loss_fn = nn.CrossEntropyLoss()
 
@@ -231,5 +247,5 @@ class ContrastiveLearning(nn.Module):
                         eval_acc = test_acc
             print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
         print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-        return eval_acc
+        return eval_acc, Lu, La
     
