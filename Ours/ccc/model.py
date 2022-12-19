@@ -101,6 +101,11 @@ class Model(nn.Module):
             z2 = self.backbone(data2.x, data2.edge_index)
             h1 = self.bn(z1)
             h2 = self.bn(z2)
+        elif self.model == "CLNR2":
+            z1 = self.backbone(data1.x, data1.edge_index)
+            z2 = self.backbone(data2.x, data2.edge_index)
+            h1 = (z1 - z1.mean(0)) / z1.std(0)
+            h2 = (z2 - z2.mean(0)) / z2.std(0)
         else:
             h1 = self.backbone(data1.x, data1.edge_index)
             h2 = self.backbone(data2.x, data2.edge_index)
@@ -123,7 +128,7 @@ class Model(nn.Module):
             z1 = dbn1(u)
             dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
             z2 = dbn2(v)
-        elif self.model in ["CCA-SSG","dCLNR2","bCLNR2"]:
+        elif self.model in ["CCA-SSG","CLNR2","dCLNR2","bCLNR2"]:
             z1 = u              
             z2 = v
         return z1, z2
