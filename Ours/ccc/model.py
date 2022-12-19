@@ -65,13 +65,13 @@ class Model(nn.Module):
             self.backbone = MLP(in_dim, hid_dim, out_dim)
         self.tau = tau
         self.type = type
-        self.fc1 = nn.Linear(hid_dim, hid_dim * 2)
-        self.fc2 = nn.Linear(hid_dim * 2, out_dim)
-        self.fc3 = nn.Linear(hid_dim, out_dim)
+        self.fc1 = nn.Linear(out_dim, out_dim * 2)
+        self.fc2 = nn.Linear(out_dim * 2, out_dim)
+        self.fc3 = nn.Linear(out_dim, out_dim)
         # bgrace
-        self.fc4 = nn.Linear(hid_dim, hid_dim * 2)
-        self.fc5 = nn.Linear(hid_dim * 2, out_dim)
-        self.bnh = nn.BatchNorm1d(hid_dim * 2)
+        self.fc4 = nn.Linear(out_dim, out_dim * 2)
+        self.fc5 = nn.Linear(out_dim * 2, out_dim)
+        self.bnh = nn.BatchNorm1d(out_dim * 2)
         self.bn = nn.BatchNorm1d(out_dim)
 
     def get_embedding(self, data):
