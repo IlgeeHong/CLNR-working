@@ -66,11 +66,11 @@ class Model(nn.Module):
         self.tau = tau
         self.type = type
         self.fc1 = nn.Linear(hid_dim, hid_dim * 2)
-        self.fc2 = nn.Linear(hid_dim * 2, hid_dim)
-        self.fc3 = nn.Linear(hid_dim, hid_dim)
+        self.fc2 = nn.Linear(hid_dim * 2, out_dim)
+        self.fc3 = nn.Linear(hid_dim, out_dim)
         # bgrace
-        self.fc4 = nn.Linear(hid_dim, hid_dim * 2, bias=False)
-        self.fc5 = nn.Linear(hid_dim * 2, hid_dim, bias=False)
+        self.fc4 = nn.Linear(hid_dim, hid_dim * 2)
+        self.fc5 = nn.Linear(hid_dim * 2, out_dim)
         self.bnh = nn.BatchNorm1d(hid_dim * 2)
         self.bn = nn.BatchNorm1d(out_dim)
 
