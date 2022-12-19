@@ -17,7 +17,6 @@ from dataset import *
 from statistics import mean, stdev
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--model', type=str, default='CLNR') 
 parser.add_argument('--dataset', type=str, default='Cora') 
 parser.add_argument('--n_experiments', type=int, default=10)
 parser.add_argument('--n_layers', type=int, default=2)
@@ -32,6 +31,7 @@ parser.add_argument('--batch', type=int, default=None) #None
 parser.add_argument('--loss_type', type=str, default='ntxent') #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/")
+# parser.add_argument('--model', type=str, default='CLNR') 
 # parser.add_argument('--epochs', type=int, default=50)
 # parser.add_argument('--lr1', type=float, default=1e-3)
 # parser.add_argument('--wd1', type=float, default=0.0)
@@ -48,13 +48,13 @@ for args.model in ['CLNR','bCLNR','dCLNR','GRACE']:
         args.epochs = 50
         args.lr1 = 1e-3
         args.wd1 = 0.0
-        args.hid_dim = 512
+        args.hid_dim = 256
         args.out_dim = 256
     else:
         args.epochs = 400
         args.lr1 = 5e-4
         args.wd1 = 1e-4
-        args.hid_dim = 512
+        args.hid_dim = 256
         args.out_dim = 256
 
     eval_acc_list = []
@@ -78,4 +78,4 @@ for args.model in ['CLNR','bCLNR','dCLNR','GRACE']:
     #results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
     results += [[args.model, args.dataset, args.epochs, args.out_dim, eval_acc_mean, eval_acc_std, Lu_mean, Lu_std, La_mean, La_std]]#
 res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'out_dim', 'acc_mean', 'acc_std', 'Lu_mean', 'Lu_std', 'La_mean', 'La_std'])#, 
-res.to_csv(file_path + str(args.batch) + "_" + "_" + args.dataset +  ".csv", index=False) #str(args.epochs)args.model + "_" + 
+res.to_csv(file_path + str(args.batch) + "_" + args.dataset +  ".csv", index=False) #str(args.epochs)args.model + "_" + 
