@@ -65,8 +65,8 @@ for args.model in ['CLNR','bCLNR','dCLNR','GRACE','CCA-SSG']:
         args.wd1 = 0.0
         args.hid_dim = 512
         args.out_dim = 512
-        args.edr = 0.3
-        args.fmr = 0.2
+        # args.edr = 0.3
+        # args.fmr = 0.2
         args.loss_type = 'CCA'
 
     eval_acc_list = []
