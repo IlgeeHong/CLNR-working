@@ -43,8 +43,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # newly added
 results =[]
-for args.model in ['CLNR','bCLNR','dCLNR','GRACE']:
-    if args.model in ['CLNR','bCLNR','dCLNR']:
+for args.model in ['CLNR2','CLNR','bCLNR','dCLNR','GRACE']:
+    if args.model in ['CLNR2','CLNR','bCLNR','dCLNR']:
         args.epochs = 50
         args.lr1 = 1e-3
         args.wd1 = 0.0

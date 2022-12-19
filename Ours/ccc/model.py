@@ -85,27 +85,38 @@ class Model(nn.Module):
         h2 = self.backbone(data2.x, data2.edge_index)
         return h1, h2
         
-    def projection(self, z):
+    def projection(self, z1, z2):
         if self.type == "GRACE":
-            z = F.elu(self.fc1(z))
-            h = self.fc2(z)
-        elif self.type == "bGRACE":
-            z = F.relu(self.bnh(self.fc4(z)))
-            h = self.bn(self.fc5(z))
-        elif self.type == "nonlinear":
-            h = F.elu(self.fc3(z))
-        elif self.type == "linear":
-            h = self.fc3(z)
+            z1 = F.elu(self.fc1(z1))
+            h1 = self.fc2(z1)
+            z2 = F.elu(self.fc1(z2))
+            h2 = self.fc2(z2)
+        # elif self.type == "bGRACE":
+        #     z = F.relu(self.bnh(self.fc4(z)))
+        #     h = self.bn(self.fc5(z))
+        # elif self.type == "nonlinear":
+        #     h = F.elu(self.fc3(z))
+        # elif self.type == "linear":
+        #     h = self.fc3(z)
         elif self.type == "CLNR":
+            h1 = (z1 - z1.mean(0)) / z1.std(0)
+            h2 = (z2 - z2.mean(0)) / z2.std(0)
+        elif self.type == "CLNR2":
+            z = torch.vstack((z1,z2), dim=0)
             h = (z - z.mean(0)) / z.std(0)
+            h1, h2 = torch.split(h, 2)
         elif self.type == "bCLNR":
-            h = self.bn(z)
+            h1 = self.bn(z1)
+            h2 = self.bn(z2)
         elif self.type == 'dCLNR':
-            dbn = DBN(device=z.device, num_features=z.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            h = dbn(z)
+            dbn1 = DBN(device=z1.device, num_features=z1.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            h1 = dbn1(z1)
+            dbn2 = DBN(device=z2.device, num_features=z2.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            h2 = dbn2(z1)
         elif self.type == 'nCLNR':
-            h = z              
-        return h
+            h1 = z1              
+            h2 = z2
+        return h1, h2
     
     def sim(self, z1, z2):
         z1 = F.normalize(z1)
@@ -138,8 +149,7 @@ class Model(nn.Module):
             indices = torch.LongTensor(random.sample(range(N), k))
         else:
             indices = None
-        h1 = self.projection(z1)
-        h2 = self.projection(z2)
+        h1, h2 = self.projection(z1, z2)
         if loss_type == "ntxent":
             l1 = self.semi_loss(h1, h2, indices, loss_type)
             l2 = self.semi_loss(h2, h1, indices, loss_type)
