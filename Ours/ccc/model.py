@@ -104,7 +104,7 @@ class Model(nn.Module):
         elif self.type == "CLNR2":
             z = torch.vstack((z1,z2))
             h = (z - z.mean(0)) / z.std(0)
-            h1, h2 = torch.split(h, 2)
+            h1, h2 = torch.split(h, [z1.shape[0],z1.shape[0]])
         elif self.type == "bCLNR":
             h1 = self.bn(z1)
             h2 = self.bn(z2)
@@ -199,7 +199,7 @@ class ContrastiveLearning(nn.Module):
     def uniformity(self, val_embed):
         z = F.normalize(val_embed)
         sq_pdist = torch.pdist(z, p=2).pow(2)
-        return sq_pdist.mul(-2).exp().mean()
+        return sq_pdist.mul(-2).exp().mean().log()
 
     def alignment(self, val_idx):
         new_data1 = random_aug(self.data,self.fmr,self.edr)
