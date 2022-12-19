@@ -182,7 +182,7 @@ class Model(nn.Module):
             l1 = self.semi_loss(h1, h2, indices, loss_type)    
             l2 = self.semi_loss(h2, h1, indices, loss_type)    
             ret = ((l1 + l2) * 0.5).log()
-        elif loss_type == "CCA":
+        elif loss_type == "cca":
             N = z1.shape[0]
             c = torch.mm(z1.T, z2)
             c1 = torch.mm(z1.T, z1)

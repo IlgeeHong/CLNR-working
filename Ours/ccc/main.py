@@ -65,7 +65,7 @@ for args.model in ['CLNR','bCLNR','bCLNR2','dCLNR','dCLNR2','GRACE','CCA-SSG']:
         args.wd1 = 0.0
         args.hid_dim = 512
         args.out_dim = 512
-        args.loss_type = 'CCA'
+        args.loss_type = 'cca'
 
     eval_acc_list = []
     uniformity_list = []
@@ -79,12 +79,12 @@ for args.model in ['CLNR','bCLNR','bCLNR2','dCLNR','dCLNR2','GRACE','CCA-SSG']:
         uniformity_list.append(Lu.item())
         alignment_list.append(La.item())
         
-    eval_acc_mean = round(mean(eval_acc_list),2)
-    eval_acc_std = round(stdev(eval_acc_list),2)
-    Lu_mean = round(mean(uniformity_list),2)
-    Lu_std = round(stdev(uniformity_list),2)
-    La_mean = round(mean(alignment_list),2)
-    La_std = round(stdev(alignment_list),2)
+    eval_acc_mean = round(mean(eval_acc_list),4)
+    eval_acc_std = round(stdev(eval_acc_list),4)
+    Lu_mean = round(mean(uniformity_list),4)
+    Lu_std = round(stdev(uniformity_list),4)
+    La_mean = round(mean(alignment_list),4)
+    La_std = round(stdev(alignment_list),4)
     #results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
     results += [[args.model, args.dataset, args.epochs, args.out_dim, eval_acc_mean, eval_acc_std, Lu_mean, Lu_std, La_mean, La_std]]#
 res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'out_dim', 'acc_mean', 'acc_std', 'Lu_mean', 'Lu_std', 'La_mean', 'La_std'])#, 
