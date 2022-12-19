@@ -101,7 +101,7 @@ class Model(nn.Module):
             z2 = self.backbone(data2.x, data2.edge_index)
             h1 = self.bn(z1)
             h2 = self.bn(z2)
-        elif self.model in ["CCA-SSG","dCLNR2","bCLNR2"]:
+        else:
             h1 = self.backbone(data1.x, data1.edge_index)
             h2 = self.backbone(data2.x, data2.edge_index)
         return h1, h2
