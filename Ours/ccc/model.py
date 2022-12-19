@@ -58,7 +58,7 @@ class GCN(nn.Module):
         return x
 
 class Model(nn.Module):
-    def __init__(self, in_dim, hid_dim, out_dim, n_layers, tau, lambd, device, method="CLNR", use_mlp=False):
+    def __init__(self, in_dim, hid_dim, out_dim, n_layers, tau, lambd, device, model="CLNR", use_mlp=False):
         super().__init__()
         if not use_mlp:
             self.backbone = GCN(in_dim, hid_dim, out_dim, n_layers)
@@ -66,7 +66,7 @@ class Model(nn.Module):
             self.backbone = MLP(in_dim, hid_dim, out_dim)
         self.tau = tau
         self.lambd = lambd
-        self.method = method
+        self.model = model
         self.device = device
         self.fc1 = nn.Linear(out_dim, out_dim * 2)
         self.fc2 = nn.Linear(out_dim * 2, out_dim)
@@ -84,60 +84,49 @@ class Model(nn.Module):
 
     def forward(self, data1, data2):
         # Encode the graph
-        if self.method == "CCA-SSG":
+        if self.model == "CCA-SSG":
             z1 = self.backbone(data1.x, data1.edge_index)
             z2 = self.backbone(data2.x, data2.edge_index)
             h1 = (z1 - z1.mean(0)) / z1.std(0)
             h2 = (z2 - z2.mean(0)) / z2.std(0)
-        if self.method == "dCLNR2":
+        elif self.model == "dCLNR2":
             z1 = self.backbone(data1.x, data1.edge_index)
             z2 = self.backbone(data2.x, data2.edge_index)
             dbn1 = DBN(device=z1.device, num_features=z1.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
             dbn2 = DBN(device=z2.device, num_features=z2.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
             h1 = dbn1(z1)
             h2 = dbn2(z2)
-        if self.method == "bCLNR2":
+        elif self.model == "bCLNR2":
             z1 = self.backbone(data1.x, data1.edge_index)
             z2 = self.backbone(data2.x, data2.edge_index)
             h1 = self.bn(z1)
             h2 = self.bn(z2)
-        else:
+        elif self.model in ["CCA-SSG","dCLNR2","bCLNR2"]:
             h1 = self.backbone(data1.x, data1.edge_index)
             h2 = self.backbone(data2.x, data2.edge_index)
         return h1, h2
         
-    def projection(self, z1, z2):
-        if self.method == "GRACE":
-            z1 = F.elu(self.fc1(z1))
-            h1 = self.fc2(z1)
-            z2 = F.elu(self.fc1(z2))
-            h2 = self.fc2(z2)
-        # elif self.type == "bGRACE":
-        #     z = F.relu(self.bnh(self.fc4(z)))
-        #     h = self.bn(self.fc5(z))
-        # elif self.type == "nonlinear":
-        #     h = F.elu(self.fc3(z))
-        # elif self.type == "linear":
-        #     h = self.fc3(z)
-        elif self.method == "CLNR":
-            h1 = (z1 - z1.mean(0)) / z1.std(0)
-            h2 = (z2 - z2.mean(0)) / z2.std(0)
-        # elif self.method == "CLNR2":
-        #     z = torch.vstack((z1,z2))
-        #     h = (z - z.mean(0)) / z.std(0)
-        #     h1, h2 = torch.split(h, [z1.shape[0],z1.shape[0]])
-        elif self.method == "bCLNR":
-            h1 = self.bn(z1)
-            h2 = self.bn(z2)
-        elif self.method == 'dCLNR':
-            dbn1 = DBN(device=z1.device, num_features=z1.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            h1 = dbn1(z1)
-            dbn2 = DBN(device=z2.device, num_features=z2.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            h2 = dbn2(z2)
-        elif self.method in ["CCA-SSG","dCLNR2","bCLNR2"]:
-            h1 = z1              
-            h2 = z2
-        return h1, h2
+    def projection(self, u, v):
+        if self.model == "GRACE":
+            u = F.elu(self.fc1(u))
+            v = F.elu(self.fc1(v))
+            z1 = self.fc2(u)
+            z2 = self.fc2(v)
+        elif self.model == "CLNR":
+            z1 = (u - u.mean(0)) / u.std(0)
+            z2 = (v - v.mean(0)) / v.std(0)
+        elif self.model == "bCLNR":
+            z1 = self.bn(u)
+            z2 = self.bn(v)
+        elif self.model == 'dCLNR':
+            dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            z1 = dbn1(u)
+            dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            z2 = dbn2(v)
+        elif self.model in ["CCA-SSG","dCLNR2","bCLNR2"]:
+            z1 = u              
+            z2 = v
+        return z1, z2
     
     def sim(self, z1, z2):
         z1 = F.normalize(z1)
@@ -176,14 +165,8 @@ class Model(nn.Module):
             l2 = self.semi_loss(h2, h1, indices, loss_type)
             ret = (l1 + l2) * 0.5
             ret = ret.mean() if mean else ret.sum()
-        elif loss_type == "align":
-            ret = self.semi_loss(h1, h2, indices, loss_type)
-        elif loss_type == "uniform":
-            l1 = self.semi_loss(h1, h2, indices, loss_type)    
-            l2 = self.semi_loss(h2, h1, indices, loss_type)    
-            ret = ((l1 + l2) * 0.5)
         elif loss_type == 'cca':
-            N = z1.shape[0]
+            N = h1.shape[0]
             c = torch.mm(h1.T, h2)
             c1 = torch.mm(h1.T, h1)
             c2 = torch.mm(h2.T, h2)
@@ -300,3 +283,21 @@ class ContrastiveLearning(nn.Module):
         print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
         return eval_acc, Lu, La
     
+
+ # elif self.type == "bGRACE":
+        #     z = F.relu(self.bnh(self.fc4(z)))
+        #     h = self.bn(self.fc5(z))
+        # elif self.type == "nonlinear":
+        #     h = F.elu(self.fc3(z))
+        # elif self.type == "linear":
+        #     h = self.fc3(z)
+        # elif self.method == "CLNR2":
+        #     z = torch.vstack((z1,z2))
+        #     h = (z - z.mean(0)) / z.std(0)
+        #     h1, h2 = torch.split(h, [z1.shape[0],z1.shape[0]])
+        # elif loss_type == "align":
+        #     ret = self.semi_loss(h1, h2, indices, loss_type)
+        # elif loss_type == "uniform":
+        #     l1 = self.semi_loss(h1, h2, indices, loss_type)    
+        #     l2 = self.semi_loss(h2, h1, indices, loss_type)    
+        #     ret = ((l1 + l2) * 0.5)
