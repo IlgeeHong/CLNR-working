@@ -102,7 +102,7 @@ class Model(nn.Module):
             h1 = (z1 - z1.mean(0)) / z1.std(0)
             h2 = (z2 - z2.mean(0)) / z2.std(0)
         elif self.type == "CLNR2":
-            z = torch.vstack((z1,z2), dim=0)
+            z = torch.vstack((z1,z2))
             h = (z - z.mean(0)) / z.std(0)
             h1, h2 = torch.split(h, 2)
         elif self.type == "bCLNR":
