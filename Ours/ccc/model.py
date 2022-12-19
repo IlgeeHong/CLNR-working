@@ -89,6 +89,18 @@ class Model(nn.Module):
             z2 = self.backbone(data2.x, data2.edge_index)
             h1 = (z1 - z1.mean(0)) / z1.std(0)
             h2 = (z2 - z2.mean(0)) / z2.std(0)
+        if self.method == "dCLNR2":
+            z1 = self.backbone(data1.x, data1.edge_index)
+            z2 = self.backbone(data2.x, data2.edge_index)
+            dbn1 = DBN(device=z1.device, num_features=z1.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            dbn2 = DBN(device=z2.device, num_features=z2.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            h1 = dbn1(z1)
+            h2 = dbn2(z2)
+        if self.method == "bCLNR2":
+            z1 = self.backbone(data1.x, data1.edge_index)
+            z2 = self.backbone(data2.x, data2.edge_index)
+            h1 = self.bn(z1)
+            h2 = self.bn(z2)
         else:
             h1 = self.backbone(data1.x, data1.edge_index)
             h2 = self.backbone(data2.x, data2.edge_index)
@@ -122,7 +134,7 @@ class Model(nn.Module):
             h1 = dbn1(z1)
             dbn2 = DBN(device=z2.device, num_features=z2.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
             h2 = dbn2(z2)
-        elif self.method == "CCA-SSG":
+        elif self.method in ["CCA-SSG","dCLNR2","bCLNR2"]:
             h1 = z1              
             h2 = z2
         return h1, h2

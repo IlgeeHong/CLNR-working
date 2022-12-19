@@ -25,9 +25,9 @@ parser.add_argument('--lr2', type=float, default=5e-3)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--hid_dim', type=int, default=512)
 parser.add_argument('--out_dim', type=int, default=512) 
-parser.add_argument('--fmr', type=float, default=0.2)
-parser.add_argument('--edr', type=float, default=0.5)
-parser.add_argument('--lambd', type=float, default=5e-4)
+parser.add_argument('--fmr', type=float, default=0.2) #0.1
+parser.add_argument('--edr', type=float, default=0.5) #0.4
+parser.add_argument('--lambd', type=float, default=1e-3)
 parser.add_argument('--batch', type=int, default=None) #None
 # parser.add_argument('--loss_type', type=str, default='ntxent') #None
 parser.add_argument('--mlp_use', type=bool, default=False)
@@ -44,8 +44,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # newly added
 results =[]
-for args.model in ['CLNR','bCLNR','dCLNR','GRACE','CCA-SSG']:
-    if args.model in ['CLNR','bCLNR','dCLNR']:
+for args.model in ['CLNR','bCLNR','bCLNR2','dCLNR','dCLNR2','GRACE','CCA-SSG']:
+    if args.model in ['CLNR','bCLNR','bCLNR2','dCLNR','dCLNR2']:
         args.epochs = 50
         args.lr1 = 1e-3
         args.wd1 = 0.0
@@ -65,8 +65,6 @@ for args.model in ['CLNR','bCLNR','dCLNR','GRACE','CCA-SSG']:
         args.wd1 = 0.0
         args.hid_dim = 512
         args.out_dim = 512
-        # args.edr = 0.3
-        # args.fmr = 0.2
         args.loss_type = 'CCA'
 
     eval_acc_list = []
@@ -90,4 +88,4 @@ for args.model in ['CLNR','bCLNR','dCLNR','GRACE','CCA-SSG']:
     #results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
     results += [[args.model, args.dataset, args.epochs, args.out_dim, eval_acc_mean, eval_acc_std, Lu_mean, Lu_std, La_mean, La_std]]#
 res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'out_dim', 'acc_mean', 'acc_std', 'Lu_mean', 'Lu_std', 'La_mean', 'La_std'])#, 
-res.to_csv(file_path + str(args.batch) + "_" + args.dataset +  ".csv", index=False) #str(args.epochs)args.model + "_" + 
+res.to_csv(file_path + str(args.batch) + "_" + str(args.out_dim) + "_" + str(args.hid_dim) + "_" + args.dataset +  ".csv", index=False) #str(args.epochs)args.model + "_" + 
