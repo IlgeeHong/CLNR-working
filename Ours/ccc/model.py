@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import numpy as np
 import torch.nn.functional as F
 import random
 from torch_geometric.nn import GCNConv
@@ -57,14 +58,15 @@ class GCN(nn.Module):
         return x
 
 class Model(nn.Module):
-    def __init__(self, in_dim, hid_dim, out_dim, n_layers, tau, type="CLNR", use_mlp=False):
+    def __init__(self, in_dim, hid_dim, out_dim, n_layers, tau, lambd, method="CLNR", use_mlp=False):
         super().__init__()
         if not use_mlp:
             self.backbone = GCN(in_dim, hid_dim, out_dim, n_layers)
         else:
             self.backbone = MLP(in_dim, hid_dim, out_dim)
         self.tau = tau
-        self.type = type
+        self.lambd = lambd
+        self.method = method
         self.fc1 = nn.Linear(out_dim, out_dim * 2)
         self.fc2 = nn.Linear(out_dim * 2, out_dim)
         self.fc3 = nn.Linear(out_dim, out_dim)
@@ -81,12 +83,18 @@ class Model(nn.Module):
 
     def forward(self, data1, data2):
         # Encode the graph
-        h1 = self.backbone(data1.x, data1.edge_index)
-        h2 = self.backbone(data2.x, data2.edge_index)
+        if self.method == "CCA-SSG":
+            z1 = self.backbone(data1.x, data1.edge_index)
+            z2 = self.backbone(data2.x, data2.edge_index)
+            h1 = (z1 - z1.mean(0)) / z1.std(0)
+            h2 = (z2 - z2.mean(0)) / z2.std(0)
+        else:
+            h1 = self.backbone(data1.x, data1.edge_index)
+            h2 = self.backbone(data2.x, data2.edge_index)
         return h1, h2
         
     def projection(self, z1, z2):
-        if self.type == "GRACE":
+        if self.method == "GRACE":
             z1 = F.elu(self.fc1(z1))
             h1 = self.fc2(z1)
             z2 = F.elu(self.fc1(z2))
@@ -98,22 +106,22 @@ class Model(nn.Module):
         #     h = F.elu(self.fc3(z))
         # elif self.type == "linear":
         #     h = self.fc3(z)
-        elif self.type == "CLNR":
+        elif self.method == "CLNR":
             h1 = (z1 - z1.mean(0)) / z1.std(0)
             h2 = (z2 - z2.mean(0)) / z2.std(0)
-        elif self.type == "CLNR2":
-            z = torch.vstack((z1,z2))
-            h = (z - z.mean(0)) / z.std(0)
-            h1, h2 = torch.split(h, [z1.shape[0],z1.shape[0]])
-        elif self.type == "bCLNR":
+        # elif self.method == "CLNR2":
+        #     z = torch.vstack((z1,z2))
+        #     h = (z - z.mean(0)) / z.std(0)
+        #     h1, h2 = torch.split(h, [z1.shape[0],z1.shape[0]])
+        elif self.method == "bCLNR":
             h1 = self.bn(z1)
             h2 = self.bn(z2)
-        elif self.type == 'dCLNR':
+        elif self.method == 'dCLNR':
             dbn1 = DBN(device=z1.device, num_features=z1.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
             h1 = dbn1(z1)
             dbn2 = DBN(device=z2.device, num_features=z2.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            h2 = dbn2(z1)
-        elif self.type == 'nCLNR':
+            h2 = dbn2(z2)
+        elif self.method == "CCA-SSG":
             h1 = z1              
             h2 = z2
         return h1, h2
@@ -161,6 +169,19 @@ class Model(nn.Module):
             l1 = self.semi_loss(h1, h2, indices, loss_type)    
             l2 = self.semi_loss(h2, h1, indices, loss_type)    
             ret = ((l1 + l2) * 0.5).log()
+        elif loss_type == "CCA":
+            N = z1.shape[0]
+            c = torch.mm(z1.T, z2)
+            c1 = torch.mm(z1.T, z1)
+            c2 = torch.mm(z2.T, z2)
+            c = c / N
+            c1 = c1 / N
+            c2 = c2 / N
+            loss_inv = - torch.diagonal(c).sum()
+            iden = torch.tensor(np.eye(c.shape[0])).to(self.device)
+            loss_dec1 = (iden - c1).pow(2).sum()
+            loss_dec2 = (iden - c2).pow(2).sum()
+            ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
         return ret
 
 class ContrastiveLearning(nn.Module):
@@ -170,12 +191,13 @@ class ContrastiveLearning(nn.Module):
         self.epochs = args.epochs
         self.fmr = args.fmr
         self.edr = args.edr
+        self.lambd = args.lambd
         self.batch = args.batch
         self.loss_type = args.loss_type
         self.data = data
         self.device = device
         self.num_class = int(self.data.y.max().item()) + 1 
-        self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, type=self.model, use_mlp = args.mlp_use)
+        self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, args.lambd, method=self.model, use_mlp = args.mlp_use)
         self.model = self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=args.lr1, weight_decay=args.wd1)
         self.logreg = LogReg(args.out_dim, self.num_class)

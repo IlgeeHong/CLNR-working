@@ -27,8 +27,9 @@ parser.add_argument('--hid_dim', type=int, default=512)
 parser.add_argument('--out_dim', type=int, default=512) 
 parser.add_argument('--fmr', type=float, default=0.2)
 parser.add_argument('--edr', type=float, default=0.5)
+parser.add_argument('--lambd', type=float, default=5e-4)
 parser.add_argument('--batch', type=int, default=None) #None
-parser.add_argument('--loss_type', type=str, default='ntxent') #None
+# parser.add_argument('--loss_type', type=str, default='ntxent') #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/")
 # parser.add_argument('--model', type=str, default='CLNR') 
@@ -43,19 +44,30 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # newly added
 results =[]
-for args.model in ['CLNR2','CLNR','bCLNR','dCLNR','GRACE']:
-    if args.model in ['CLNR2','CLNR','bCLNR','dCLNR']:
+for args.model in ['CLNR','bCLNR','dCLNR','GRACE','CCA-SSG']:
+    if args.model in ['CLNR','bCLNR','dCLNR']:
         args.epochs = 50
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.hid_dim = 512
         args.out_dim = 512
-    else:
+        args.loss_type = 'ntxent'
+    elif args.model in ['GRACE']:
         args.epochs = 400
         args.lr1 = 5e-4
         args.wd1 = 1e-4
         args.hid_dim = 512
         args.out_dim = 512
+        args.loss_type = 'ntxent'
+    elif args.model in ['CCA-SSG']:
+        args.epochs = 50
+        args.lr1 = 1e-3
+        args.wd1 = 0.0
+        args.hid_dim = 512
+        args.out_dim = 512
+        args.edr = 0.3
+        args.fmr = 0.2
+        args.loss_type = 'CCA'
 
     eval_acc_list = []
     uniformity_list = []
