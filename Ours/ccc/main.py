@@ -48,14 +48,14 @@ for args.model in ['CLNR','bCLNR','dCLNR','GRACE']:
         args.epochs = 50
         args.lr1 = 1e-3
         args.wd1 = 0.0
-        args.hid_dim = 256
-        args.out_dim = 256
+        args.hid_dim = 512
+        args.out_dim = 512
     else:
         args.epochs = 400
         args.lr1 = 5e-4
         args.wd1 = 1e-4
-        args.hid_dim = 256
-        args.out_dim = 256
+        args.hid_dim = 512
+        args.out_dim = 512
 
     eval_acc_list = []
     uniformity_list = []
