@@ -263,7 +263,7 @@ class ContrastiveLearning(nn.Module):
         test_labels = label[test_idx]
 
         # calculate metric
-        Lu = self.uniformity(val_embs)
+        Lu = self.uniformity(val_idx)
         La = self.alignment(val_idx)
  
         loss_fn = nn.CrossEntropyLoss()
