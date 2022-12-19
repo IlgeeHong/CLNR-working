@@ -181,12 +181,12 @@ class Model(nn.Module):
         elif loss_type == "uniform":
             l1 = self.semi_loss(h1, h2, indices, loss_type)    
             l2 = self.semi_loss(h2, h1, indices, loss_type)    
-            ret = ((l1 + l2) * 0.5).log()
-        elif loss_type == "cca":
+            ret = ((l1 + l2) * 0.5)
+        elif loss_type == 'cca':
             N = z1.shape[0]
-            c = torch.mm(z1.T, z2)
-            c1 = torch.mm(z1.T, z1)
-            c2 = torch.mm(z2.T, z2)
+            c = torch.mm(h1.T, h2)
+            c1 = torch.mm(h1.T, h1)
+            c2 = torch.mm(h2.T, h2)
             c = c / N
             c1 = c1 / N
             c2 = c2 / N
@@ -231,10 +231,16 @@ class ContrastiveLearning(nn.Module):
             self.optimizer.step()
             print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
 
-    def uniformity(self, val_embed):
-        z = F.normalize(val_embed)
-        sq_pdist = torch.pdist(z, p=2).pow(2)
-        return sq_pdist.mul(-2).exp().mean().log()
+    def uniformity(self, val_idx):
+        new_data1 = random_aug(self.data,self.fmr,self.edr)
+        new_data2 = random_aug(self.data,self.fmr,self.edr)
+        z1 = F.normalize(self.model.get_embedding(new_data1)[val_idx])
+        z2 = F.normalize(self.model.get_embedding(new_data2)[val_idx])
+        sq_pdist1 = torch.pdist(z1, p=2).pow(2)
+        sq_pdist2 = torch.pdist(z2, p=2).pow(2)
+        l1 = sq_pdist1.mul(-2).exp().mean().log()
+        l2 = sq_pdist2.mul(-2).exp().mean().log()
+        return (l1+l2)/2
 
     def alignment(self, val_idx):
         new_data1 = random_aug(self.data,self.fmr,self.edr)
