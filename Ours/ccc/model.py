@@ -58,7 +58,7 @@ class GCN(nn.Module):
         return x
 
 class Model(nn.Module):
-    def __init__(self, in_dim, hid_dim, out_dim, n_layers, tau, lambd, method="CLNR", use_mlp=False):
+    def __init__(self, in_dim, hid_dim, out_dim, n_layers, tau, lambd, device, method="CLNR", use_mlp=False):
         super().__init__()
         if not use_mlp:
             self.backbone = GCN(in_dim, hid_dim, out_dim, n_layers)
@@ -67,6 +67,7 @@ class Model(nn.Module):
         self.tau = tau
         self.lambd = lambd
         self.method = method
+        self.device = device
         self.fc1 = nn.Linear(out_dim, out_dim * 2)
         self.fc2 = nn.Linear(out_dim * 2, out_dim)
         self.fc3 = nn.Linear(out_dim, out_dim)
@@ -197,7 +198,7 @@ class ContrastiveLearning(nn.Module):
         self.data = data
         self.device = device
         self.num_class = int(self.data.y.max().item()) + 1 
-        self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, args.lambd, method=self.model, use_mlp = args.mlp_use)
+        self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, args.lambd, self.device, self.model, args.mlp_use)
         self.model = self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=args.lr1, weight_decay=args.wd1)
         self.logreg = LogReg(args.out_dim, self.num_class)
