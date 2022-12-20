@@ -181,14 +181,14 @@ class Model(nn.Module):
             l = (l1 + l2) * 0.5
             l = l.mean() if mean else ret.sum()
             l_u = self.semi_loss(h1, h2, indices, loss_type="uniform")
-            ret = l + (l_u) #* self.lambd
+            ret = l + (l_u) * self.lambd
         elif loss_type == 'ntxent-align':
             l1 = self.semi_loss(h1, h2, indices, loss_type="ntxent")
             l2 = self.semi_loss(h2, h1, indices, loss_type="ntxent")
             l = (l1 + l2) * 0.5
             l = l.mean() if mean else ret.sum()
             l_a = self.semi_loss(h1, h2, indices, loss_type="align")
-            ret = l + (l_a) #* self.lambd
+            ret = l + (l_a) * self.lambd
         return ret
 
 class ContrastiveLearning(nn.Module):
