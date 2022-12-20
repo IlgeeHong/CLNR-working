@@ -84,28 +84,23 @@ class Model(nn.Module):
 
     def forward(self, data1, data2):
         # Encode the graph
-        if self.model == "CCA-SSG":
+        if self.model in ["CCA-SSG","CLNR","CLNR-unif","CLNR-align"]:
             z1 = self.backbone(data1.x, data1.edge_index)
             z2 = self.backbone(data2.x, data2.edge_index)
             h1 = (z1 - z1.mean(0)) / z1.std(0)
             h2 = (z2 - z2.mean(0)) / z2.std(0)
-        elif self.model == "dCLNR2":
+        elif self.model == "dCLNR":
             z1 = self.backbone(data1.x, data1.edge_index)
             z2 = self.backbone(data2.x, data2.edge_index)
             dbn1 = DBN(device=z1.device, num_features=z1.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
             dbn2 = DBN(device=z2.device, num_features=z2.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
             h1 = dbn1(z1)
             h2 = dbn2(z2)
-        elif self.model == "bCLNR2":
+        elif self.model == "bCLNR":
             z1 = self.backbone(data1.x, data1.edge_index)
             z2 = self.backbone(data2.x, data2.edge_index)
             h1 = self.bn(z1)
             h2 = self.bn(z2)
-        elif self.model == "CLNR2":
-            z1 = self.backbone(data1.x, data1.edge_index)
-            z2 = self.backbone(data2.x, data2.edge_index)
-            h1 = (z1 - z1.mean(0)) / z1.std(0)
-            h2 = (z2 - z2.mean(0)) / z2.std(0)
         else:
             h1 = self.backbone(data1.x, data1.edge_index)
             h2 = self.backbone(data2.x, data2.edge_index)
@@ -117,18 +112,7 @@ class Model(nn.Module):
             v = F.elu(self.fc1(v))
             z1 = self.fc2(u)
             z2 = self.fc2(v)
-        elif self.model == "CLNR":
-            z1 = (u - u.mean(0)) / u.std(0)
-            z2 = (v - v.mean(0)) / v.std(0)
-        elif self.model == "bCLNR":
-            z1 = self.bn(u)
-            z2 = self.bn(v)
-        elif self.model == 'dCLNR':
-            dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            z1 = dbn1(u)
-            dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            z2 = dbn2(v)
-        elif self.model in ["CCA-SSG","CLNR2","dCLNR2","bCLNR2"]:
+        else:
             z1 = u              
             z2 = v
         return z1, z2
@@ -165,6 +149,7 @@ class Model(nn.Module):
         else:
             indices = None
         h1, h2 = self.projection(z1, z2)
+
         if loss_type == "ntxent":
             l1 = self.semi_loss(h1, h2, indices, loss_type)
             l2 = self.semi_loss(h2, h1, indices, loss_type)
@@ -183,6 +168,17 @@ class Model(nn.Module):
             loss_dec1 = (iden - c1).pow(2).sum()
             loss_dec2 = (iden - c2).pow(2).sum()
             ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
+        elif loss_type == 'ntxent-uniform':
+            l1 = self.semi_loss(h1, h2, indices, loss_type)
+            l2 = self.semi_loss(h2, h1, indices, loss_type)
+            l_u1 = self.semi_loss(h1, h2, indices, loss_type="uniform")
+            l_u2 = self.semi_loss(h2, h1, indices, loss_type="uniform")
+            ret = (l1 + l2) * 0.5 + (l_u1 + l_u2) * 0.5 * self.lambd
+        elif loss_type == 'ntxent-align':
+            l1 = self.semi_loss(h1, h2, indices, loss_type)
+            l2 = self.semi_loss(h2, h1, indices, loss_type)
+            l_a = self.semi_loss(h1, h2, indices, loss_type="align")
+            ret = (l1 + l2) * 0.5 + (l_a) * self.lambd
         return ret
 
 class ContrastiveLearning(nn.Module):
@@ -306,3 +302,15 @@ class ContrastiveLearning(nn.Module):
         #     l1 = self.semi_loss(h1, h2, indices, loss_type)    
         #     l2 = self.semi_loss(h2, h1, indices, loss_type)    
         #     ret = ((l1 + l2) * 0.5)
+
+# elif self.model == "CLNR":
+#             z1 = (u - u.mean(0)) / u.std(0)
+#             z2 = (v - v.mean(0)) / v.std(0)
+#         elif self.model == "bCLNR":
+#             z1 = self.bn(u)
+#             z2 = self.bn(v)
+#         elif self.model == 'dCLNR':
+#             dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+#             z1 = dbn1(u)
+#             dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+#             z2 = dbn2(v)
