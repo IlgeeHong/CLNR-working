@@ -25,8 +25,8 @@ parser.add_argument('--n_layers', type=int, default=1)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-2)
-parser.add_argument('--hid_dim', type=int, default=512)
-parser.add_argument('--out_dim', type=int, default=512) 
+parser.add_argument('--hid_dim', type=int, default=256)
+parser.add_argument('--out_dim', type=int, default=256) 
 parser.add_argument('--fmr', type=float, default=0.2) #0.1 #0.2
 parser.add_argument('--edr', type=float, default=0.5) #0.4 #0.5
 parser.add_argument('--lambd', type=float, default=1e-3)
