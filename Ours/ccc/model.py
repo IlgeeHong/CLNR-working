@@ -70,12 +70,6 @@ class Model(nn.Module):
         self.device = device
         self.fc1 = nn.Linear(out_dim, out_dim * 2)
         self.fc2 = nn.Linear(out_dim * 2, out_dim)
-        self.fc3 = nn.Linear(out_dim, out_dim)
-        # bgrace
-        self.fc4 = nn.Linear(out_dim, out_dim * 2)
-        self.fc5 = nn.Linear(out_dim * 2, out_dim)
-        self.bnh = nn.BatchNorm1d(out_dim * 2)
-        self.bn = nn.BatchNorm1d(out_dim)
 
     def get_embedding(self, data):
         out = self.backbone(data.x, data.edge_index)
@@ -84,34 +78,27 @@ class Model(nn.Module):
 
     def forward(self, data1, data2):
         # Encode the graph
-        if self.model in ["CCA-SSG","CLNR","CLNR-unif","CLNR-align"]:
-            z1 = self.backbone(data1.x, data1.edge_index)
-            z2 = self.backbone(data2.x, data2.edge_index)
-            h1 = (z1 - z1.mean(0)) / z1.std(0)
-            h2 = (z2 - z2.mean(0)) / z2.std(0)
-        elif self.model == "dCLNR":
-            z1 = self.backbone(data1.x, data1.edge_index)
-            z2 = self.backbone(data2.x, data2.edge_index)
-            dbn1 = DBN(device=z1.device, num_features=z1.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            dbn2 = DBN(device=z2.device, num_features=z2.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            h1 = dbn1(z1)
-            h2 = dbn2(z2)
-        elif self.model == "bCLNR":
-            z1 = self.backbone(data1.x, data1.edge_index)
-            z2 = self.backbone(data2.x, data2.edge_index)
-            h1 = self.bn(z1)
-            h2 = self.bn(z2)
-        else:
-            h1 = self.backbone(data1.x, data1.edge_index)
-            h2 = self.backbone(data2.x, data2.edge_index)
-        return h1, h2
+        u = self.backbone(data1.x, data1.edge_index)
+        v = self.backbone(data2.x, data2.edge_index)
+        return u, v
         
     def projection(self, u, v):
         if self.model == "GRACE":
-            u = F.elu(self.fc1(u))
-            v = F.elu(self.fc1(v))
+            u = F.relu(self.fc1(u))
+            v = F.relu(self.fc1(v))
             z1 = self.fc2(u)
             z2 = self.fc2(v)
+        elif self.model in ["CCA-SSG","CLNR","CLNR-unif","CLNR-align"]:
+            z1 = (u - u.mean(0)) / u.std(0)
+            z2 = (v - v.mean(0)) / v.std(0)
+        elif self.model == "dCLNR":
+            dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            z1 = dbn1(u)
+            z2 = dbn2(v)
+        elif self.model == "bCLNR":
+            z1 = self.bn(u)
+            z2 = self.bn(v)
         else:
             z1 = u              
             z2 = v
@@ -149,24 +136,24 @@ class Model(nn.Module):
             loss = (sq_pdist1.mul(-2).exp().mean() + sq_pdist2.mul(-2).exp().mean()) * 0.5
         return loss
 
-    def loss(self, z1, z2, k=None, loss_type='ntxent', mean = True):
+    def loss(self, u, v, k=None, loss_type='ntxent', mean = True):
         if k is not None:
-            N = z1.shape[0]
+            N = u.shape[0]
             indices = torch.LongTensor(random.sample(range(N), k))
         else:
             indices = None
-        h1, h2 = self.projection(z1, z2)
+        z1, z2 = self.projection(u, v)
 
         if loss_type == "ntxent":
-            l1 = self.semi_loss(h1, h2, indices, loss_type)
-            l2 = self.semi_loss(h2, h1, indices, loss_type)
+            l1 = self.semi_loss(z1, z2, indices, loss_type)
+            l2 = self.semi_loss(z2, z1, indices, loss_type)
             ret = (l1 + l2) * 0.5
             ret = ret.mean() if mean else ret.sum()
         elif loss_type == 'cca':
-            N = h1.shape[0]
-            c = torch.mm(h1.T, h2)
-            c1 = torch.mm(h1.T, h1)
-            c2 = torch.mm(h2.T, h2)
+            N = z1.shape[0]
+            c = torch.mm(z1.T, z2)
+            c1 = torch.mm(z1.T, z1)
+            c2 = torch.mm(z2.T, z2)
             c = c / N
             c1 = c1 / N
             c2 = c2 / N
@@ -176,18 +163,18 @@ class Model(nn.Module):
             loss_dec2 = (iden - c2).pow(2).sum()
             ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
         elif loss_type == 'ntxent-uniform':
-            l1 = self.semi_loss(h1, h2, indices, loss_type="ntxent")
-            l2 = self.semi_loss(h2, h1, indices, loss_type="ntxent")
+            l1 = self.semi_loss(z1, z2, indices, loss_type="ntxent")
+            l2 = self.semi_loss(z2, z1, indices, loss_type="ntxent")
             l = (l1 + l2) * 0.5
             l = l.mean() if mean else ret.sum()
-            l_u = self.semi_loss(h1, h2, indices, loss_type="uniform")
+            l_u = self.semi_loss(z1, z2, indices, loss_type="uniform")
             ret = l + (l_u) * self.lambd
         elif loss_type == 'ntxent-align':
-            l1 = self.semi_loss(h1, h2, indices, loss_type="ntxent")
-            l2 = self.semi_loss(h2, h1, indices, loss_type="ntxent")
+            l1 = self.semi_loss(z1, z2, indices, loss_type="ntxent")
+            l2 = self.semi_loss(z2, z1, indices, loss_type="ntxent")
             l = (l1 + l2) * 0.5
             l = l.mean() if mean else ret.sum()
-            l_a = self.semi_loss(h1, h2, indices, loss_type="align")
+            l_a = self.semi_loss(z1, z2, indices, loss_type="align")
             ret = l + (l_a) * self.lambd
         return ret
 
@@ -219,8 +206,8 @@ class ContrastiveLearning(nn.Module):
             new_data2 = random_aug(self.data, self.fmr, self.edr)
             new_data1 = new_data1.to(self.device)
             new_data2 = new_data2.to(self.device)
-            z1, z2 = self.model(new_data1, new_data2)   
-            loss = self.model.loss(z1, z2, self.batch, self.loss_type)
+            u, v = self.model(new_data1, new_data2)   
+            loss = self.model.loss(u, v, self.batch, self.loss_type)
             loss.backward()
             self.optimizer.step()
             print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
@@ -324,3 +311,9 @@ class ContrastiveLearning(nn.Module):
 #             z1 = dbn1(u)
 #             dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
 #             z2 = dbn2(v)
+        # self.fc3 = nn.Linear(out_dim, out_dim)
+        # # bgrace
+        # self.fc4 = nn.Linear(out_dim, out_dim * 2)
+        # self.fc5 = nn.Linear(out_dim * 2, out_dim)
+        # self.bnh = nn.BatchNorm1d(out_dim * 2)
+        # self.bn = nn.BatchNorm1d(out_dim)
