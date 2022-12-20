@@ -237,7 +237,7 @@ class ContrastiveLearning(nn.Module):
         val_embs = embeds[val_idx]
         test_embs = embeds[test_idx]
 
-        if self.data == "arxiv-ogbn":
+        if self.data == "ogbn-arxiv":
             label = self.data.y.squeeze()
         else:
             label = self.data.y
