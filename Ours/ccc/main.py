@@ -25,7 +25,7 @@ from statistics import mean, stdev
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default='Computers') 
+parser.add_argument('--dataset', type=str, default='Photo') 
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
@@ -54,22 +54,22 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 for args.model in ['nCLNR','CLNR','bCLNR','dCLNR','CLNR-unif','CLNR-align','nCLNR-align','GRACE','CCA-SSG']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
-        args.epochs = 200
+        args.epochs = 100
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['CLNR-unif']:
-        args.epochs = 200
+        args.epochs = 100
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent-uniform'
     elif args.model in ['CLNR-align','nCLNR-align']:
-        args.epochs = 200
+        args.epochs = 100
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent-align'
     elif args.model in ['GRACE']:
-        args.epochs = 1500
+        args.epochs = 100
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
