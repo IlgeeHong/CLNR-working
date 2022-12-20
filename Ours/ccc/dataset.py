@@ -1,7 +1,7 @@
 import os
 import torch_geometric.transforms as T
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
-from ogb.nodeproppred import PygNodePropPredDataset
+# from ogb.nodeproppred import PygNodePropPredDataset
 
 def load(name, device):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
