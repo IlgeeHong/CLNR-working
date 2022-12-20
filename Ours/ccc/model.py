@@ -138,8 +138,9 @@ class Model(nn.Module):
         elif loss_type == "uniform":
             z1 = F.normalize(z1)
             z2 = F.normalize(z2)
-            sq_pdist = torch.pdist(z1, p=2).pow(2)
-            loss = sq_pdist.mul(-2).exp().mean()
+            sq_pdist1 = torch.pdist(z1, p=2).pow(2)
+            sq_pdist2 = torch.pdist(z2, p=2).pow(2)
+            loss = (sq_pdist1.mul(-2).exp().mean() + sq_pdist2.mul(-2).exp().mean()) * 0.5
         return loss
 
     def loss(self, z1, z2, k=None, loss_type='ntxent', mean = True):
@@ -169,14 +170,13 @@ class Model(nn.Module):
             loss_dec2 = (iden - c2).pow(2).sum()
             ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
         elif loss_type == 'ntxent-uniform':
-            l1 = self.semi_loss(h1, h2, indices, loss_type)
-            l2 = self.semi_loss(h2, h1, indices, loss_type)
-            l_u1 = self.semi_loss(h1, h2, indices, loss_type="uniform")
-            l_u2 = self.semi_loss(h2, h1, indices, loss_type="uniform")
-            ret = (l1 + l2) * 0.5 + (l_u1 + l_u2) * 0.5 * self.lambd
+            l1 = self.semi_loss(h1, h2, indices, loss_type="ntxent")
+            l2 = self.semi_loss(h2, h1, indices, loss_type="ntxent")
+            l_u = self.semi_loss(h1, h2, indices, loss_type="uniform")
+            ret = (l1 + l2) * 0.5 + (l_u) * self.lambd
         elif loss_type == 'ntxent-align':
-            l1 = self.semi_loss(h1, h2, indices, loss_type)
-            l2 = self.semi_loss(h2, h1, indices, loss_type)
+            l1 = self.semi_loss(h1, h2, indices, loss_type="ntxent")
+            l2 = self.semi_loss(h2, h1, indices, loss_type="ntxent")
             l_a = self.semi_loss(h1, h2, indices, loss_type="align")
             ret = (l1 + l2) * 0.5 + (l_a) * self.lambd
         return ret
