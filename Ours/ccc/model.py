@@ -70,6 +70,7 @@ class Model(nn.Module):
         self.device = device
         self.fc1 = nn.Linear(out_dim, out_dim * 2)
         self.fc2 = nn.Linear(out_dim * 2, out_dim)
+        self.bn = nn.BatchNorm1d(out_dim)
 
     def get_embedding(self, data):
         out = self.backbone(data.x, data.edge_index)
@@ -315,5 +316,4 @@ class ContrastiveLearning(nn.Module):
         # # bgrace
         # self.fc4 = nn.Linear(out_dim, out_dim * 2)
         # self.fc5 = nn.Linear(out_dim * 2, out_dim)
-        # self.bnh = nn.BatchNorm1d(out_dim * 2)
-        # self.bn = nn.BatchNorm1d(out_dim)
+        #self.bnh = nn.BatchNorm1d(out_dim * 2)
