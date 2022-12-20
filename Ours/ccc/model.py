@@ -132,10 +132,16 @@ class Model(nn.Module):
             between_sim = f(self.sim(z1, z2))
             loss = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
         elif loss_type == "align":
+            if indices is not None:
+                z1 = z1[indices,:]
+                z2 = z2[indices,:]
             z1 = F.normalize(z1)
             z2 = F.normalize(z2)
             loss = (z1-z2).norm(dim=1).pow(2).mean()
         elif loss_type == "uniform":
+            if indices is not None:
+                z1 = z1[indices,:]
+                z2 = z2[indices,:]
             z1 = F.normalize(z1)
             z2 = F.normalize(z2)
             sq_pdist1 = torch.pdist(z1, p=2).pow(2)
