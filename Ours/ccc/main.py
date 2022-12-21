@@ -36,7 +36,7 @@ parser.add_argument('--out_dim', type=int, default=256)
 parser.add_argument('--fmr', type=float, default=0.2) #0.1 #0.2
 parser.add_argument('--edr', type=float, default=0.5) #0.4 #0.5
 parser.add_argument('--lambd', type=float, default=1e-3)
-parser.add_argument('--batch', type=int, default=512) #None
+parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/")
 # parser.add_argument('--model', type=str, default='CLNR')
@@ -55,7 +55,7 @@ results =[]
 # for args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GRACE','CLNR-unif','CLNR-align','nCLNR-align','CCA-SSG']:#
 for args.model in ['CLNR']:#
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
-        args.epochs = 100
+        args.epochs = 10
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
