@@ -6,7 +6,7 @@
 #SBATCH --time=35:00:00
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1 
-#SBATCH --constraint=v100
+#SBATCH --constraint=rtx6000
 #SBATCH --ntasks-per-node=1 # num cores to drive each gpu
 #SBATCH --cpus-per-task=1   # set this to the desired number of threads
 #SBATCH --account=pi-cdonnat
