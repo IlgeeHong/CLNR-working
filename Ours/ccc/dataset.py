@@ -8,7 +8,7 @@ def load(name, device):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
         # Data = os.getcwd()+'/Planetoid'
         transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
-        dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name, transform=transform)
+        dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Ours/ccc/Planetoid', name=name, transform=transform)
         data = dataset[0]
         train_idx = data.train_mask 
         val_idx = data.val_mask 
@@ -17,7 +17,7 @@ def load(name, device):
     elif name in ['CS', 'Physics']:
         # Data = os.getcwd()+'/Coauthor'
         transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
-        dataset = Coauthor(name=name, root = '/scratch/midway3/ilgee/SelfGCon', transform=transform)
+        dataset = Coauthor(name=name, root = '/scratch/midway3/ilgee/SelfGCon/Ours/ccc', transform=transform)
         data = dataset[0]
         train_idx = data.train_mask 
         val_idx = data.val_mask 
@@ -26,7 +26,7 @@ def load(name, device):
     elif name in ['Computers', 'Photo']:
         # Data = os.getcwd()+'/Amazon'
         transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
-        dataset = Amazon(name=name, root = '/scratch/midway3/ilgee/SelfGCon', transform=transform)
+        dataset = Amazon(name=name, root = '/scratch/midway3/ilgee/SelfGCon/Ours/ccc', transform=transform)
         data = dataset[0]
         train_idx = data.train_mask 
         val_idx = data.val_mask 
