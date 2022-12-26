@@ -22,7 +22,6 @@ from statistics import mean, stdev
 # cs : 1000 / 1e-3 / 0.0 /
 # photo : 2000 / 1e-3 / 1e-5 /
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='Cora') 
 parser.add_argument('--n_experiments', type=int, default=20)
@@ -51,7 +50,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # newly added
 results =[]
-for args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GRACE','CLNR-unif','CLNR-align','CCA-SSG']:#
+for args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GRACE','CLNR-align','CCA-SSG']:#'CLNR-unif',
 # for args.model in ['CLNR']:#
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
         args.epochs = 50
@@ -83,7 +82,7 @@ for args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GRACE','CLNR-unif','CLNR-alig
     uniformity_list = []
     alignment_list = [] 
     for exp in range(args.n_experiments):
-        torch.cuda.empty_cache()
+        # torch.cuda.empty_cache()
         data, loader, train_idx, val_idx, test_idx = load(args.dataset, args.batch)
         model = ContrastiveLearning(args, data, loader, device)
         model.train()
