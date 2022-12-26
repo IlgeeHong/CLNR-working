@@ -74,6 +74,7 @@ class Model(nn.Module):
 
     def get_embedding(self, data):
         out = self.backbone(data.x, data.edge_index)
+        out = (out - out.mean(0)) / out.std(0)        
         # No projection head here
         return out.detach()
 
