@@ -52,7 +52,6 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # newly added
 results =[]
 for args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GRACE','CLNR-unif','CLNR-align','CCA-SSG']:#
-    torch.cuda.empty_cache()
 # for args.model in ['CLNR']:#
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
         args.epochs = 50

@@ -207,6 +207,7 @@ class ContrastiveLearning(nn.Module):
         for epoch in range(self.epochs):
             self.model.train()
             for batch in loader:
+                batch = batch.to(self.device)
                 self.optimizer.zero_grad()
                 new_data1 = random_aug(batch, self.fmr, self.edr)
                 new_data2 = random_aug(batch, self.fmr, self.edr)
@@ -237,7 +238,7 @@ class ContrastiveLearning(nn.Module):
         return (z1-z2).norm(dim=1).pow(2).mean()
 
     def LinearEvaluation(self, train_idx, val_idx, test_idx):
-        embeds = self.model.get_embedding(self.data)
+        embeds = self.model.get_embedding(self.data.to(self.device))
         train_embs = embeds[train_idx]
         val_embs = embeds[val_idx]
         test_embs = embeds[test_idx]

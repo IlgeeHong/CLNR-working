@@ -1,6 +1,8 @@
 import os
+import torch
 import torch_geometric.transforms as T
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
+from torch_geometric.data import Data
 # from torch_geometric.loader import DataLoader
 from torch_geometric.utils import from_scipy_sparse_matrix, to_undirected
 from sklearn.neighbors import kneighbors_graph
@@ -10,7 +12,7 @@ from sklearn.datasets import make_moons, make_circles, make_swiss_roll
 def load(name, device):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
         # Data = os.getcwd()+'/Planetoid'
-        transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
+        transform = T.Compose([T.NormalizeFeatures()]) #,T.ToDevice(device)
         dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name, transform=transform)
         # loader = DataLoader(dataset, batch, shuffle=True)
         data = dataset[0]
@@ -20,7 +22,7 @@ def load(name, device):
 
     elif name in ['CS', 'Physics']:
         # Data = os.getcwd()+'/Coauthor'
-        transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
+        transform = T.Compose([T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)]) #T.ToDevice(device), 
         dataset = Coauthor(name=name, root = '/scratch/midway3/ilgee/SelfGCon', transform=transform)
         # loader = DataLoader(dataset, batch, shuffle=True)
         data = dataset[0]
@@ -30,7 +32,7 @@ def load(name, device):
 
     elif name in ['Computers', 'Photo']:
         # Data = os.getcwd()+'/Amazon'
-        transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
+        transform = T.Compose([T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)]) #T.ToDevice(device), 
         dataset = Amazon(name=name, root = '/scratch/midway3/ilgee/SelfGCon', transform=transform)
         # loader = DataLoader(dataset, batch, shuffle=True)
         data = dataset[0]
@@ -38,7 +40,18 @@ def load(name, device):
         val_idx = data.val_mask 
         test_idx = data.test_mask  
     
-    # elif name in ['Swissroll','Moon','Circles']
+    # elif name in ['Swissroll','Moon','Circles']:
+    #     if name == 'Moon':
+    #         XX, y = make_moons(n_samples=10000) #, noise=args.noise
+    #     elif name == 'Swissroll':
+    #         XX, y = make_swiss_roll(n_samples=10000)
+    #     elif name == 'Circles':
+    #         XX, y = make_circles(n_samples=10000, factor=0.4)
+        
+    #     A = kneighbors_graph(XX, 15, mode='distance', include_self=False)
+    #     edge_index, edge_weights = from_scipy_sparse_matrix(A)
+    #     edge_index, edge_weights = to_undirected(edge_index, edge_weights)
+    #     data = Data(x=torch.eye(1000), edge_index=edge_index, edge_weight=edge_weights)
 
     # elif name in ['ogbn-arxiv']:
     #     transform = T.Compose([T.ToDevice(device), T.ToUndirected()])
