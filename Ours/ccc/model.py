@@ -182,7 +182,7 @@ class Model(nn.Module):
         return ret
 
 class ContrastiveLearning(nn.Module):
-    def __init__(self, args, data, device):
+    def __init__(self, args, dataset, device):
         super().__init__()
         self.model = args.model
         self.epochs = args.epochs
@@ -191,7 +191,8 @@ class ContrastiveLearning(nn.Module):
         self.lambd = args.lambd
         self.batch = args.batch
         self.loss_type = args.loss_type
-        self.data = data
+        self.data = dataset[0]
+        self.dataset = dataset
         self.device = device
         self.num_class = int(self.data.y.max().item()) + 1 
         self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, args.lambd, self.device, self.model, args.mlp_use)
@@ -204,10 +205,8 @@ class ContrastiveLearning(nn.Module):
     def train(self):
         for epoch in range(self.epochs):
             self.model.train()
-            loader = DataLoader(self.data, batch_size=self.batch, shuffle=True)
+            loader = DataLoader(self.dataset, self.batch, shuffle=True)
             for batch in loader:
-                print(batch)
-                pdb.set_trace()
                 self.optimizer.zero_grad()
                 new_data1 = random_aug(batch, self.fmr, self.edr)
                 new_data2 = random_aug(batch, self.fmr, self.edr)

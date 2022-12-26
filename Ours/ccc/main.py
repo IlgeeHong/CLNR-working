@@ -83,8 +83,8 @@ for args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GRACE','CLNR-unif','CLNR-alig
     alignment_list = [] 
     for exp in range(args.n_experiments):
         print(args.epochs)
-        data, train_idx, val_idx, test_idx = load(args.dataset, device)
-        model = ContrastiveLearning(args, data, device)
+        dataset, train_idx, val_idx, test_idx = load(args.dataset, device)
+        model = ContrastiveLearning(args, dataset, device)
         model.train()
         eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx)
         eval_acc_list.append(eval_acc.item())
