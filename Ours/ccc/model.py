@@ -205,8 +205,9 @@ class ContrastiveLearning(nn.Module):
         for epoch in range(self.epochs):
             self.model.train()
             loader = DataLoader(self.data, batch_size=self.batch, shuffle=True)
-            pdb.set_trace()
             for batch in loader:
+                print(batch)
+                pdb.set_trace()
                 self.optimizer.zero_grad()
                 new_data1 = random_aug(batch, self.fmr, self.edr)
                 new_data2 = random_aug(batch, self.fmr, self.edr)
