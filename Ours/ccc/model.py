@@ -204,7 +204,7 @@ class ContrastiveLearning(nn.Module):
 
     def train(self):
         for epoch in range(self.epochs):
-            loader = DataLoader(self.dataset, self.batch, shuffle=True)
+            loader = DataLoader(self.dataset, self.batch, pin_memory=self.device, shuffle=True)
             self.model.train()
             for batch in loader:
                 self.optimizer.zero_grad()
