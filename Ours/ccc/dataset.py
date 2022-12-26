@@ -4,11 +4,12 @@ from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 from torch_geometric.data import DataLoader
 #from ogb.nodeproppred import PygNodePropPredDataset
 
-def load(name, device):
+def load(name, batch, device):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
         # Data = os.getcwd()+'/Planetoid'
         transform = T.Compose([T.NormalizeFeatures(),T.ToDevice(device)])                                                                                                          
         dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name, transform=transform)
+        loader = DataLoader(dataset, batch, shuffle=True)
         data = dataset[0]
         train_idx = data.train_mask 
         val_idx = data.val_mask 
@@ -18,6 +19,7 @@ def load(name, device):
         # Data = os.getcwd()+'/Coauthor'
         transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Coauthor(name=name, root = '/scratch/midway3/ilgee/SelfGCon', transform=transform)
+        loader = DataLoader(dataset, batch, shuffle=True)
         data = dataset[0]
         train_idx = data.train_mask 
         val_idx = data.val_mask 
@@ -27,6 +29,7 @@ def load(name, device):
         # Data = os.getcwd()+'/Amazon'
         transform = T.Compose([T.ToDevice(device), T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Amazon(name=name, root = '/scratch/midway3/ilgee/SelfGCon', transform=transform)
+        loader = DataLoader(dataset, batch, shuffle=True)
         data = dataset[0]
         train_idx = data.train_mask 
         val_idx = data.val_mask 
@@ -41,4 +44,4 @@ def load(name, device):
     #     val_idx = split_idx["valid"]
     #     test_idx = split_idx["test"]
 
-    return dataset, train_idx, val_idx, test_idx
+    return data, loader, train_idx, val_idx, test_idx
