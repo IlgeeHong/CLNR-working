@@ -1,7 +1,7 @@
 import os
 import torch_geometric.transforms as T
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
-from torch_geometric.data import DataLoader
+from torch_geometric.loader import DataLoader
 #from ogb.nodeproppred import PygNodePropPredDataset
 
 def load(name, batch, device):
