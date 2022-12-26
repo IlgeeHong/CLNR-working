@@ -53,7 +53,6 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 for args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GRACE','CLNR-unif','CLNR-align','CCA-SSG']:#
 # for args.model in ['CLNR']:#
-    torch.cuda.empty_cache()
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
         args.epochs = 50
         args.lr1 = 1e-3
@@ -84,8 +83,9 @@ for args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GRACE','CLNR-unif','CLNR-alig
     uniformity_list = []
     alignment_list = [] 
     for exp in range(args.n_experiments):
-        data, dataset, train_idx, val_idx, test_idx = load(args.dataset,device)
-        model = ContrastiveLearning(args, data, dataset, device)
+        torch.cuda.empty_cache()
+        data, loader, train_idx, val_idx, test_idx = load(args.dataset, args.batch)
+        model = ContrastiveLearning(args, data, loader, device)
         model.train()
         eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx)
         eval_acc_list.append(eval_acc.item())
@@ -98,7 +98,7 @@ for args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GRACE','CLNR-unif','CLNR-alig
     Lu_std = round(stdev(uniformity_list),4)
     La_mean = round(mean(alignment_list),4)
     La_std = round(stdev(alignment_list),4)
-    
+
     print('model: ' + args.model + 'done')
     #results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
     results += [[args.model, args.dataset, args.epochs, args.out_dim, eval_acc_mean, eval_acc_std, Lu_mean, Lu_std, La_mean, La_std]]#

@@ -182,7 +182,7 @@ class Model(nn.Module):
         return ret
 
 class ContrastiveLearning(nn.Module):
-    def __init__(self, args, data, dataset, device):
+    def __init__(self, args, data, loader, device):
         super().__init__()
         self.model = args.model
         self.epochs = args.epochs
@@ -192,7 +192,7 @@ class ContrastiveLearning(nn.Module):
         self.batch = args.batch
         self.loss_type = args.loss_type
         self.data = data
-        self.dataset = dataset
+        self.loader = loader
         self.device = device
         self.num_class = int(self.data.y.max().item()) + 1 
         self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, args.lambd, self.device, self.model, args.mlp_use)
@@ -203,10 +203,9 @@ class ContrastiveLearning(nn.Module):
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
 
     def train(self):
-        loader = DataLoader(self.dataset, self.batch, shuffle=True)
         for epoch in range(self.epochs):
             self.model.train()
-            for batch in loader:
+            for batch in self.loader:
                 batch = batch.to(self.device)
                 self.optimizer.zero_grad()
                 new_data1 = random_aug(batch, self.fmr, self.edr)
@@ -217,7 +216,7 @@ class ContrastiveLearning(nn.Module):
                 loss = self.model.loss(u, v, None, self.loss_type)
                 loss.backward()
                 self.optimizer.step()
-                print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
+                # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
 
     def uniformity(self, val_idx):
         new_data1 = random_aug(self.data,self.fmr,self.edr)
@@ -247,6 +246,7 @@ class ContrastiveLearning(nn.Module):
             label = self.data.y.squeeze()
         else:
             label = self.data.y
+            
         label = label.to(self.device)
 
         train_labels = label[train_idx]
@@ -287,8 +287,8 @@ class ContrastiveLearning(nn.Module):
                     best_val_acc = val_acc
                     if test_acc > eval_acc:
                         eval_acc = test_acc
-            print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
-        print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
+            # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
+        # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
         return eval_acc, Lu, La
     
 
