@@ -203,8 +203,8 @@ class ContrastiveLearning(nn.Module):
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
 
     def train(self):
+        loader = DataLoader(self.dataset, self.batch, shuffle=True)
         for epoch in range(self.epochs):
-            loader = DataLoader(self.dataset, self.batch, pin_memory=self.device, shuffle=True)
             self.model.train()
             for batch in loader:
                 self.optimizer.zero_grad()
