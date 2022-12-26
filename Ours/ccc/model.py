@@ -6,6 +6,7 @@ import random
 from torch_geometric.nn import GCNConv
 from dbn import *
 from aug import *
+from torch_geometric.loader import DataLoader
 
 # CUDA support
 # if torch.cuda.is_available():
@@ -73,8 +74,7 @@ class Model(nn.Module):
         self.bn = nn.BatchNorm1d(out_dim)
 
     def get_embedding(self, data):
-        out = self.backbone(data.x, data.edge_index)
-        out = (out - out.mean(0)) / out.std(0)        
+        out = self.backbone(data.x, data.edge_index)    
         # No projection head here
         return out.detach()
 
@@ -203,16 +203,18 @@ class ContrastiveLearning(nn.Module):
     def train(self):
         for epoch in range(self.epochs):
             self.model.train()
-            self.optimizer.zero_grad()
-            new_data1 = random_aug(self.data, self.fmr, self.edr)
-            new_data2 = random_aug(self.data, self.fmr, self.edr)
-            new_data1 = new_data1.to(self.device)
-            new_data2 = new_data2.to(self.device)
-            u, v = self.model(new_data1, new_data2)   
-            loss = self.model.loss(u, v, self.batch, self.loss_type)
-            loss.backward()
-            self.optimizer.step()
-            print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
+            loader = DataLoader(self.data, batch_size=self.batch, shuffle=True)
+            for batch in loader:
+                self.optimizer.zero_grad()
+                new_data1 = random_aug(batch, self.fmr, self.edr)
+                new_data2 = random_aug(batch, self.fmr, self.edr)
+                new_data1 = new_data1.to(self.device)
+                new_data2 = new_data2.to(self.device)
+                u, v = self.model(new_data1, new_data2)   
+                loss = self.model.loss(u, v, None, self.loss_type)
+                loss.backward()
+                self.optimizer.step()
+                print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
 
     def uniformity(self, val_idx):
         new_data1 = random_aug(self.data,self.fmr,self.edr)
@@ -321,3 +323,13 @@ class ContrastiveLearning(nn.Module):
         # self.fc4 = nn.Linear(out_dim, out_dim * 2)
         # self.fc5 = nn.Linear(out_dim * 2, out_dim)
         #self.bnh = nn.BatchNorm1d(out_dim * 2)
+        # self.optimizer.zero_grad()
+        #         new_data1 = random_aug(self.data, self.fmr, self.edr)
+        #         new_data2 = random_aug(self.data, self.fmr, self.edr)
+        #         new_data1 = new_data1.to(self.device)
+        #         new_data2 = new_data2.to(self.device)
+        #         u, v = self.model(new_data1, new_data2)   
+        #         loss = self.model.loss(u, v, self.batch, self.loss_type)
+        #         loss.backward()
+        #         self.optimizer.step()
+        #         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))

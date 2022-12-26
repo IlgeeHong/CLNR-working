@@ -13,7 +13,6 @@ import torch_geometric.transforms as T
 
 from model import * 
 from dataset import *
-# from metric import *
 from statistics import mean, stdev
 
 # cora : 400 / 5e-4 / 1e-5 /
@@ -26,7 +25,7 @@ from statistics import mean, stdev
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='Cora') 
-parser.add_argument('--n_experiments', type=int, default=20)
+parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=5e-3)
@@ -36,7 +35,7 @@ parser.add_argument('--out_dim', type=int, default=512)
 parser.add_argument('--fmr', type=float, default=0.2) #0.1 #0.2
 parser.add_argument('--edr', type=float, default=0.5) #0.4 #0.5
 parser.add_argument('--lambd', type=float, default=1e-3)
-parser.add_argument('--batch', type=int, default=512) #None
+parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/")
 # parser.add_argument('--model', type=str, default='CLNR')
