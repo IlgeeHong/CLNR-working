@@ -49,63 +49,33 @@ class GCN(nn.Module):
                 self.convs.append(GCNConv(hid_dim, hid_dim))
             self.convs.append(GCNConv(hid_dim, out_dim))
 
-    def forward(self, x, edge_index):
+    def forward(self, x, edge_index, p):
         for i in range(self.n_layers - 1):
             x = F.relu(self.convs[i](x, edge_index))
+            x = F.dropout(x, p, training=self.training)
+            
         x = self.convs[-1](x, edge_index)
-        # x = (x - x.mean(0)) / x.std(0)
         return x
 
 class Model(nn.Module):
-    def __init__(self, in_dim, hid_dim, out_dim, n_layers, tau, type="CLNR", use_mlp=False):
+    def __init__(self, in_dim, hid_dim, out_dim, n_layers, tau, use_mlp=False):
         super().__init__()
         if not use_mlp:
             self.backbone = GCN(in_dim, hid_dim, out_dim, n_layers)
         else:
             self.backbone = MLP(in_dim, hid_dim, out_dim)
         self.tau = tau
-        self.type = type
-        self.fc1 = nn.Linear(out_dim, out_dim * 2)
-        self.fc2 = nn.Linear(out_dim * 2, out_dim)
-        self.fc3 = nn.Linear(out_dim, out_dim)
-        # bgrace
-        self.fc4 = nn.Linear(out_dim, out_dim * 2, bias=False)
-        self.fc5 = nn.Linear(out_dim * 2, out_dim, bias=False)
-        self.bnh = nn.BatchNorm1d(out_dim * 2)
-        self.bn = nn.BatchNorm1d(out_dim)
 
     def get_embedding(self, data):
         out = self.backbone(data.x, data.edge_index)
         # No projection head here
         return out.detach()
 
-    def forward(self, data1, data2):
+    def forward(self, data1, data2, p1, p2):
         # Encode the graph
-        h1 = self.backbone(data1.x, data1.edge_index)
-        h2 = self.backbone(data2.x, data2.edge_index)
+        h1 = self.backbone(data1.x, data1.edge_index, p1)
+        h2 = self.backbone(data2.x, data2.edge_index, p2)
         return h1, h2
-        
-    def projection(self, z):
-        if self.type == "GRACE":
-            z = F.elu(self.fc1(z))
-            h = self.fc2(z)
-        if self.type == "bGRACE":
-            z = F.relu(self.bnh(self.fc4(z)))
-            h = self.bn(self.fc5(z))
-        elif self.type == "nonlinear":
-            h = F.elu(self.fc3(z))
-        elif self.type == "linear":
-            h = self.fc3(z)
-        elif self.type == "CLNR":
-            h = (z - z.mean(0)) / z.std(0)
-        elif self.type == "bCLNR":
-            h = self.bn(z)
-        elif self.type == 'dCLNR':
-            dbn = DBN(device=z.device, num_features=z.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            h = dbn(z)
-        elif self.type == 'nCLNR':
-            h = z              
-        return h
     
     def sim(self, z1, z2):
         z1 = F.normalize(z1)
@@ -127,10 +97,8 @@ class Model(nn.Module):
             indices = torch.LongTensor(random.sample(range(N), k))
         else:
             indices = None
-        h1 = self.projection(z1)
-        h2 = self.projection(z2)
-        l1 = self.semi_loss(h1, h2, indices)
-        l2 = self.semi_loss(h2, h1, indices)
+        l1 = self.semi_loss(z1, z2, indices)
+        l2 = self.semi_loss(z2, z1, indices)
         ret = (l1 + l2) * 0.5
         ret = ret.mean() if mean else ret.sum()
         return ret
@@ -146,7 +114,7 @@ class ContrastiveLearning(nn.Module):
         self.data = data
         self.device = device
         self.num_class = int(self.data.y.max().item()) + 1 
-        self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, type=self.model, use_mlp = args.mlp_use)
+        self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, use_mlp = args.mlp_use)
         self.model = self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=args.lr1, weight_decay=args.wd1)
         self.logreg = LogReg(args.out_dim, self.num_class)
@@ -157,18 +125,16 @@ class ContrastiveLearning(nn.Module):
         for epoch in range(self.epochs):
             self.model.train()
             self.optimizer.zero_grad()
-            new_data1 = random_aug(self.data, self.fmr, self.edr)
-            new_data2 = random_aug(self.data, self.fmr, self.edr)
-            new_data1 = new_data1.to(self.device)
-            new_data2 = new_data2.to(self.device)
-            z1, z2 = self.model(new_data1, new_data2)   
+            new_data1 = self.data.to(self.device)
+            new_data2 = self.data.to(self.device)
+            z1, z2 = self.model(new_data1, new_data2, 0.2, 0.5)   
             loss = self.model.loss(z1, z2, self.batch)
             loss.backward()
             self.optimizer.step()
             print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
 
     def LinearEvaluation(self, train_idx, val_idx, test_idx):
-        embeds = self.model.get_embedding(self.data)
+        embeds = self.model.get_embedding(self.data.to(self.device))
         train_embs = embeds[train_idx]
         val_embs = embeds[val_idx]
         test_embs = embeds[test_idx]
