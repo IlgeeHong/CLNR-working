@@ -6,7 +6,7 @@ from torch_geometric.data import Data
 from torch_geometric.utils import from_scipy_sparse_matrix, to_undirected
 from sklearn.neighbors import kneighbors_graph
 from sklearn.datasets import make_moons, make_circles, make_swiss_roll
-#from ogb.nodeproppred import PygNodePropPredDataset
+from ogb.nodeproppred import PygNodePropPredDataset
 
 def load(name):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
@@ -49,13 +49,13 @@ def load(name):
     #     edge_index, edge_weights = to_undirected(edge_index, edge_weights)
     #     data = Data(x=torch.eye(1000), edge_index=edge_index, edge_weight=edge_weights)
 
-    # elif name in ['ogbn-arxiv']:
-    #     transform = T.Compose([T.ToDevice(device), T.ToUndirected()])
-    #     dataset = PygNodePropPredDataset(name=name, root = '/scratch/midway3/ilgee/SelfGCon/dataset', transform=transform)
-    #     data = dataset[0]
-    #     split_idx = dataset.get_idx_split()
-    #     train_idx = split_idx["train"]
-    #     val_idx = split_idx["valid"]
-    #     test_idx = split_idx["test"]
+    elif name in ['ogbn-arxiv']:
+        transform = T.Compose([T.ToUndirected()])
+        dataset = PygNodePropPredDataset(name=name, root = '/scratch/midway3/ilgee/SelfGCon/dataset', transform=transform)
+        data = dataset[0]
+        split_idx = dataset.get_idx_split()
+        train_idx = split_idx["train"]
+        val_idx = split_idx["valid"]
+        test_idx = split_idx["test"]
 
     return data, train_idx, val_idx, test_idx
