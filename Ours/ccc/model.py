@@ -116,7 +116,9 @@ class Model(nn.Module):
         f = lambda x: torch.exp(x / self.tau)
         if loss_type == "ntxent":
             refl_sim = f(self.sim(z1, z1))
+            print(refl_sim.shape)   
             between_sim = f(self.sim(z1, z2))
+            print(between_sim.shape)   
             loss = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
         elif loss_type == "ntxent-align":
             refl_sim = f(self.sim(z1, z1))
@@ -200,7 +202,6 @@ class ContrastiveLearning(nn.Module):
                 new_data1 = new_data1.to(self.device)
                 new_data2 = new_data2.to(self.device)
                 u, v = self.model(new_data1, new_data2)
-                print(u.shape)   
                 loss = self.model.loss(u, v, self.loss_type)
                 loss.backward()
                 self.optimizer.step()
