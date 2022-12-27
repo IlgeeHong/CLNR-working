@@ -194,6 +194,7 @@ class ContrastiveLearning(nn.Module):
             self.model.train()
             for batch in self.loader:
                 batch = batch.to(self.device)
+                print(batch)
                 self.optimizer.zero_grad()
                 new_data1 = random_aug(batch, self.fmr, self.edr)
                 new_data2 = random_aug(batch, self.fmr, self.edr)
