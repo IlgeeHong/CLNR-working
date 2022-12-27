@@ -107,28 +107,28 @@ class Model(nn.Module):
             z2 = v
         return z1, z2
     
-    def sim(self, z1, z2):
+    def sim(self, z1, z2, indices):
         z1 = F.normalize(z1)
         z2 = F.normalize(z2)
-        return torch.mm(z1, z2.t())
+        return torch.mm(z1[indices,:], z2[indices,:].t())
 
-    def semi_loss(self, z1, z2, loss_type='ntxent'):
+    def semi_loss(self, z1, z2, indices, loss_type='ntxent'):
         f = lambda x: torch.exp(x / self.tau)
         if loss_type == "ntxent":
-            refl_sim = f(self.sim(z1, z1))
-            between_sim = f(self.sim(z1, z2))   
+            refl_sim = f(self.sim(z1, z1, indices))
+            between_sim = f(self.sim(z1, z2, indices))   
             loss = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
         elif loss_type == "ntxent-align":
-            refl_sim = f(self.sim(z1, z1))
-            between_sim = f(self.sim(z1, z2))
+            refl_sim = f(self.sim(z1, z1, indices))
+            between_sim = f(self.sim(z1, z2, indices))
             l1 = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
             z1 = F.normalize(z1)
             z2 = F.normalize(z2)        
             l2 = (z1-z2).norm(dim=1).pow(2).mean()
             loss = l1 + (l2 * self.lambd)
         elif loss_type == "ntxent-uniform":
-            refl_sim = f(self.sim(z1, z1))
-            between_sim = f(self.sim(z1, z2))
+            refl_sim = f(self.sim(z1, z1, indices))
+            between_sim = f(self.sim(z1, z2, indices))
             l1 = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
             z1 = F.normalize(z1)
             sq_pdist = torch.pdist(z1, p=2).pow(2)
@@ -136,11 +136,16 @@ class Model(nn.Module):
             loss = l1 + (l2 * self.lambd)
         return loss
 
-    def loss(self, u, v, loss_type='ntxent', mean = True):
+    def loss(self, u, v, k, loss_type='ntxent', mean = True):
+        if k is not None:
+            N = u.shape[0]
+            indices = torch.LongTensor(random.sample(range(N), k))
+        else:
+            indices = None
         z1, z2 = self.projection(u, v)    
         if loss_type == "ntxent":
-            l1 = self.semi_loss(z1, z2, loss_type)
-            l2 = self.semi_loss(z2, z1, loss_type)
+            l1 = self.semi_loss(z1, z2, indices, loss_type)
+            l2 = self.semi_loss(z2, z1, indices, loss_type)
             ret = (l1 + l2) * 0.5
             ret = ret.mean() if mean else ret.sum()
         elif loss_type == 'cca':
@@ -157,13 +162,13 @@ class Model(nn.Module):
             loss_dec2 = (iden - c2).pow(2).sum()
             ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
         elif loss_type == 'ntxent-uniform':
-            l1 = self.semi_loss(z1, z2, loss_type)
-            l2 = self.semi_loss(z2, z1, loss_type)
+            l1 = self.semi_loss(z1, z2, indices, loss_type)
+            l2 = self.semi_loss(z2, z1, indices, loss_type)
             ret = (l1 + l2) * 0.5
             ret = ret.mean() if mean else ret.sum()
         elif loss_type == 'ntxent-align':
-            l1 = self.semi_loss(z1, z2, loss_type)
-            l2 = self.semi_loss(z2, z1, loss_type)
+            l1 = self.semi_loss(z1, z2, indices, loss_type)
+            l2 = self.semi_loss(z2, z1, indices, loss_type)
             ret = (l1 + l2) * 0.5
             ret = ret.mean() if mean else ret.sum()
         return ret
@@ -189,23 +194,23 @@ class ContrastiveLearning(nn.Module):
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
 
     def train(self):
-        loader = NeighborLoader(self.data, num_neighbors=[30] * 2, batch_size = self.batch, input_nodes=self.data.train_mask)
+        # loader = NeighborLoader(self.data, num_neighbors=[30] * 2, batch_size = self.batch, input_nodes=self.data.train_mask)
         for epoch in range(self.epochs):
             self.model.train()
-            for batch in loader:
-                print(batch.edge_index)
-                A = batch.edge_index[0]
-                print(A.unique().shape)
-                self.optimizer.zero_grad()
-                new_data1 = random_aug(batch, self.fmr, self.edr)
-                new_data2 = random_aug(batch, self.fmr, self.edr)
-                new_data1 = new_data1.to(self.device)
-                new_data2 = new_data2.to(self.device)
-                u, v = self.model(new_data1, new_data2)
-                loss = self.model.loss(u, v, self.loss_type)
-                loss.backward()
-                self.optimizer.step()
-                # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
+            # for batch in loader:
+                # print(batch.edge_index)
+                # A = batch.edge_index[0]
+                # print(A.unique().shape)
+            self.optimizer.zero_grad()
+            new_data1 = random_aug(self.data, self.fmr, self.edr) #batch
+            new_data2 = random_aug(self.data, self.fmr, self.edr)
+            new_data1 = new_data1.to(self.device)
+            new_data2 = new_data2.to(self.device)
+            u, v = self.model(new_data1, new_data2)
+            loss = self.model.loss(u, v, self.batch, self.loss_type)
+            loss.backward()
+            self.optimizer.step()
+            # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
 
     def uniformity(self, val_idx):
         new_data1 = random_aug(self.data,self.fmr,self.edr)
