@@ -124,7 +124,8 @@ class Model(nn.Module):
             l1 = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
             z1 = F.normalize(z1)
             z2 = F.normalize(z2)
-            l2 = (z1-z2).norm(dim=1).pow(2).mean()
+            l2 = (z1-z2).norm(dim=1).pow(2)
+            #.mean()
             loss = l1 + (l2 * self.lambd)
         elif loss_type == "ntxent-uniform":
             refl_sim = f(self.sim(z1, z1))
@@ -132,7 +133,8 @@ class Model(nn.Module):
             l1 = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
             z1 = F.normalize(z1)
             sq_pdist = torch.pdist(z1, p=2).pow(2)
-            l2 = sq_pdist.mul(-2).exp().mean()
+            l2 = sq_pdist.mul(-2).exp()
+            #.mean()
             loss = l1 + (l2 * self.lambd)
         return loss
 
