@@ -75,7 +75,9 @@ class Model(nn.Module):
         # Encode the graph
         h1 = self.backbone(data1.x, data1.edge_index, p1)
         h2 = self.backbone(data2.x, data2.edge_index, p2)
-        return h1, h2
+        z1 = (h1 - h1.mean(0)) / h1.std(0)
+        z2 = (h2 - h2.mean(0)) / h2.std(0)
+        return z1, z2
     
     def sim(self, z1, z2):
         z1 = F.normalize(z1)
