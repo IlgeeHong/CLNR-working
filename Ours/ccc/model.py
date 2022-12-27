@@ -108,17 +108,15 @@ class Model(nn.Module):
         return z1, z2
     
     def sim(self, z1, z2):
+        torch.cuda.empty_cache()
         z1 = F.normalize(z1)
         z2 = F.normalize(z2)
-        print(z1.shape)   
         return torch.mm(z1, z2.t())
 
     def semi_loss(self, z1, z2, loss_type='ntxent'):
         f = lambda x: torch.exp(x / self.tau)
         if loss_type == "ntxent":
-            sim = self.sim(z1, z1)
-            print(sim.shape)   
-            refl_sim = f(sim)
+            refl_sim = f(self.sim(z1, z1))
             between_sim = f(self.sim(z1, z2))   
             loss = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
         elif loss_type == "ntxent-align":
