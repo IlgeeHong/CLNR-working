@@ -194,7 +194,8 @@ class ContrastiveLearning(nn.Module):
             self.model.train()
             for batch in self.loader:
                 print(batch.edge_index)
-                print(batch.edge_index.shape)
+                A = batch.edge_index[0]
+                print(A.unique())
                 self.optimizer.zero_grad()
                 new_data1 = random_aug(batch, self.fmr, self.edr)
                 new_data2 = random_aug(batch, self.fmr, self.edr)
