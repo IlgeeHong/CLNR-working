@@ -8,6 +8,7 @@ from dbn import *
 from aug import *
 import pdb
 from torch_geometric.loader import NeighborLoader
+from ogb.nodeproppred import Evaluator
 
 # CUDA support
 # if torch.cuda.is_available():
@@ -231,7 +232,22 @@ class ContrastiveLearning(nn.Module):
         return (z1-z2).norm(dim=1).pow(2).mean()
 
     def LinearEvaluation(self, train_idx, val_idx, test_idx):
-        embeds = self.model.get_embedding(self.data.to(self.device))
+        self.model.eval()
+        # if self.data == "ogbn-arxiv":
+        #     evaluator = Evaluator(name='ogbn-arxiv')
+        #     valid_acc = evaluator.eval({
+        #                 'y_true': self.data.y[val_idx],
+        #                 'y_pred': y_pred[val_idx],
+        #                 })['acc']
+        #     test_acc = evaluator.eval({
+        #                 'y_true': data.y[split_idx['test']],
+        #                 'y_pred': y_pred[split_idx['test']],
+        #                 })['acc']
+        # else:
+        self.model = self.model.cpu()
+        embeds = self.model.get_embedding(self.data)
+        embeds = embeds.to(self.device)
+        # embeds = self.model.get_embedding(self.data.to(self.device))
         train_embs = embeds[train_idx]
         val_embs = embeds[val_idx]
         test_embs = embeds[test_idx]
@@ -240,7 +256,6 @@ class ContrastiveLearning(nn.Module):
             label = self.data.y.squeeze()
         else:
             label = self.data.y
-
         label = label.to(self.device)
 
         train_labels = label[train_idx]
@@ -250,7 +265,7 @@ class ContrastiveLearning(nn.Module):
         # calculate metric
         Lu = self.uniformity(val_idx)
         La = self.alignment(val_idx)
- 
+
         loss_fn = nn.CrossEntropyLoss()
 
         best_val_acc = 0
