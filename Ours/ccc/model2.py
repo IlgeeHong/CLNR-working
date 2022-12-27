@@ -66,8 +66,8 @@ class Model(nn.Module):
             self.backbone = MLP(in_dim, hid_dim, out_dim)
         self.tau = tau
 
-    def get_embedding(self, data):
-        out = self.backbone(data.x, data.edge_index)
+    def get_embedding(self, data, p):
+        out = self.backbone(data.x, data.edge_index, p)
         # No projection head here
         return out.detach()
 
@@ -108,8 +108,8 @@ class ContrastiveLearning(nn.Module):
         super().__init__()
         self.model = args.model
         self.epochs = args.epochs
-        self.fmr = args.fmr
-        self.edr = args.edr
+        self.p1 = args.p1
+        self.p2 = args.p2
         self.batch = args.batch
         self.data = data
         self.device = device
@@ -127,14 +127,14 @@ class ContrastiveLearning(nn.Module):
             self.optimizer.zero_grad()
             new_data1 = self.data.to(self.device)
             new_data2 = self.data.to(self.device)
-            z1, z2 = self.model(new_data1, new_data2, 0.2, 0.5)   
+            z1, z2 = self.model(new_data1, new_data2, self.p1, self.p2)   
             loss = self.model.loss(z1, z2, self.batch)
             loss.backward()
             self.optimizer.step()
             print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
 
     def LinearEvaluation(self, train_idx, val_idx, test_idx):
-        embeds = self.model.get_embedding(self.data.to(self.device))
+        embeds = self.model.get_embedding(self.data.to(self.device),p=0.0)
         train_embs = embeds[train_idx]
         val_embs = embeds[val_idx]
         test_embs = embeds[test_idx]
