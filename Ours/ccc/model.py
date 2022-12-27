@@ -193,13 +193,13 @@ class ContrastiveLearning(nn.Module):
         for epoch in range(self.epochs):
             self.model.train()
             for batch in self.loader:
-                batch = batch.to(self.device)
-                print(batch)
+                batch = batch
                 self.optimizer.zero_grad()
                 new_data1 = random_aug(batch, self.fmr, self.edr)
                 new_data2 = random_aug(batch, self.fmr, self.edr)
                 new_data1 = new_data1.to(self.device)
                 new_data2 = new_data2.to(self.device)
+                print(new_data2)
                 u, v = self.model(new_data1, new_data2)   
                 loss = self.model.loss(u, v, self.loss_type)
                 loss.backward()
