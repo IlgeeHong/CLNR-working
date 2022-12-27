@@ -7,7 +7,7 @@ from torch_geometric.nn import GCNConv
 from dbn import *
 from aug import *
 import pdb
-from torch_geometric.loader import DataLoader
+from torch_geometric.loader import NeighborLoader
 
 # CUDA support
 # if torch.cuda.is_available():
@@ -169,7 +169,7 @@ class Model(nn.Module):
         return ret
 
 class ContrastiveLearning(nn.Module):
-    def __init__(self, args, data, loader, device):
+    def __init__(self, args, data, device):
         super().__init__()
         self.model = args.model
         self.epochs = args.epochs
@@ -179,7 +179,6 @@ class ContrastiveLearning(nn.Module):
         self.batch = args.batch
         self.loss_type = args.loss_type
         self.data = data
-        self.loader = loader
         self.device = device
         self.num_class = int(self.data.y.max().item()) + 1 
         self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, args.lambd, self.device, self.model, args.mlp_use)
@@ -190,9 +189,10 @@ class ContrastiveLearning(nn.Module):
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
 
     def train(self):
+        loader = NeighborLoader(self.data, num_neighbor=[30] * 2, batch_size = self.batch, input_nodes=self.data_train_mask)
         for epoch in range(self.epochs):
             self.model.train()
-            for batch in self.loader:
+            for batch in loader:
                 print(batch.edge_index)
                 A = batch.edge_index[0]
                 print(A.unique().shape)
