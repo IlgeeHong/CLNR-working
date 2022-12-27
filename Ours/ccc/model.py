@@ -189,7 +189,7 @@ class ContrastiveLearning(nn.Module):
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
 
     def train(self):
-        loader = NeighborLoader(self.data, num_neighbor=[30] * 2, batch_size = self.batch, input_nodes=self.data.train_mask)
+        loader = NeighborLoader(self.data, num_neighbors=[30] * 2, batch_size = self.batch, input_nodes=self.data.train_mask)
         for epoch in range(self.epochs):
             self.model.train()
             for batch in loader:
