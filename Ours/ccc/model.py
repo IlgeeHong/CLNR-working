@@ -112,44 +112,36 @@ class Model(nn.Module):
         z2 = F.normalize(z2)
         return torch.mm(z1, z2.t())
 
-    def semi_loss(self, z1, z2, indices, loss_type='ntxent'):
+    def semi_loss(self, z1, z2, loss_type='ntxent'):
+        f = lambda x: torch.exp(x / self.tau)
         if loss_type == "ntxent":
-            f = lambda x: torch.exp(x / self.tau)
-            if indices is not None:
-                z1 = z1[indices,:]
-                z2 = z2[indices,:]
             refl_sim = f(self.sim(z1, z1))
             between_sim = f(self.sim(z1, z2))
             loss = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
-        elif loss_type == "align":
-            if indices is not None:
-                z1 = z1[indices,:]
-                z2 = z2[indices,:]
+        elif loss_type == "ntxent-align":
+            refl_sim = f(self.sim(z1, z1))
+            between_sim = f(self.sim(z1, z2))
+            l1 = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
             z1 = F.normalize(z1)
             z2 = F.normalize(z2)
-            loss = (z1-z2).norm(dim=1).pow(2).mean()
-        elif loss_type == "uniform":
-            if indices is not None:
-                z1 = z1[indices,:]
-                z2 = z2[indices,:]
+            l2 = (z1-z2).norm(dim=1).pow(2).mean()
+            loss = l1 + (l2 * self.lambd)
+        elif loss_type == "ntxent-uniform":
+            refl_sim = f(self.sim(z1, z1))
+            between_sim = f(self.sim(z1, z2))
+            l1 = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
             z1 = F.normalize(z1)
             z2 = F.normalize(z2)
-            sq_pdist1 = torch.pdist(z1, p=2).pow(2)
-            sq_pdist2 = torch.pdist(z2, p=2).pow(2)
-            loss = (sq_pdist1.mul(-2).exp().mean() + sq_pdist2.mul(-2).exp().mean()) * 0.5
+            sq_pdist = torch.pdist(z1, p=2).pow(2)
+            l2 = sq_pdist.mul(-2).exp().mean()
+            loss = l1 + (l2 * self.lambd)
         return loss
 
-    def loss(self, u, v, k=None, loss_type='ntxent', mean = True):
-        if k is not None:
-            N = u.shape[0]
-            indices = torch.LongTensor(random.sample(range(N), k))
-        else:
-            indices = None
-        z1, z2 = self.projection(u, v)
-
+    def loss(self, u, v, loss_type='ntxent', mean = True):
+        z1, z2 = self.projection(u, v)    
         if loss_type == "ntxent":
-            l1 = self.semi_loss(z1, z2, indices, loss_type)
-            l2 = self.semi_loss(z2, z1, indices, loss_type)
+            l1 = self.semi_loss(z1, z2, loss_type)
+            l2 = self.semi_loss(z2, z1, loss_type)
             ret = (l1 + l2) * 0.5
             ret = ret.mean() if mean else ret.sum()
         elif loss_type == 'cca':
@@ -166,19 +158,15 @@ class Model(nn.Module):
             loss_dec2 = (iden - c2).pow(2).sum()
             ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
         elif loss_type == 'ntxent-uniform':
-            l1 = self.semi_loss(z1, z2, indices, loss_type="ntxent")
-            l2 = self.semi_loss(z2, z1, indices, loss_type="ntxent")
-            l = (l1 + l2) * 0.5
-            l = l.mean() if mean else ret.sum()
-            l_u = self.semi_loss(z1, z2, indices, loss_type="uniform")
-            ret = l + (l_u) * self.lambd
+            l1 = self.semi_loss(z1, z2, loss_type)
+            l2 = self.semi_loss(z2, z1, loss_type)
+            ret = (l1 + l2) * 0.5
+            ret = ret.mean() if mean else ret.sum()
         elif loss_type == 'ntxent-align':
-            l1 = self.semi_loss(z1, z2, indices, loss_type="ntxent")
-            l2 = self.semi_loss(z2, z1, indices, loss_type="ntxent")
-            l = (l1 + l2) * 0.5
-            l = l.mean() if mean else ret.sum()
-            l_a = self.semi_loss(z1, z2, indices, loss_type="align")
-            ret = l + (l_a) * self.lambd
+            l1 = self.semi_loss(z1, z2, loss_type)
+            l2 = self.semi_loss(z2, z1, loss_type)
+            ret = (l1 + l2) * 0.5
+            ret = ret.mean() if mean else ret.sum()
         return ret
 
 class ContrastiveLearning(nn.Module):
@@ -246,7 +234,7 @@ class ContrastiveLearning(nn.Module):
             label = self.data.y.squeeze()
         else:
             label = self.data.y
-            
+
         label = label.to(self.device)
 
         train_labels = label[train_idx]
@@ -336,3 +324,8 @@ class ContrastiveLearning(nn.Module):
         #         loss.backward()
         #         self.optimizer.step()
         #         print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
+        # if k is not None:
+        #     N = u.shape[0]
+        #     indices = torch.LongTensor(random.sample(range(N), k))
+        # else:
+        #     indices = None
