@@ -29,7 +29,7 @@ parser.add_argument('--lr2', type=float, default=5e-3)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--hid_dim', type=int, default=512)
 parser.add_argument('--out_dim', type=int, default=512) 
-parser.add_argument('--p1', type=float, default=0.2)
+parser.add_argument('--p1', type=float, default=0.5)
 parser.add_argument('--p2', type=float, default=0.5)
 parser.add_argument('--batch', type=int, default=None) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
