@@ -29,8 +29,8 @@ parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=5e-3)
 parser.add_argument('--wd2', type=float, default=1e-4)
-parser.add_argument('--hid_dim', type=int, default=256)
-parser.add_argument('--out_dim', type=int, default=256) 
+parser.add_argument('--hid_dim', type=int, default=512)
+parser.add_argument('--out_dim', type=int, default=512) 
 parser.add_argument('--fmr', type=float, default=0.2) #0.1 #0.2
 parser.add_argument('--edr', type=float, default=0.5) #0.4 #0.5
 parser.add_argument('--lambd', type=float, default=1e-3)
@@ -82,7 +82,6 @@ for args.model in ['CLNR-align','nCLNR','CLNR','bCLNR','dCLNR','GRACE','CCA-SSG'
     uniformity_list = []
     alignment_list = [] 
     for exp in range(args.n_experiments):
-        # torch.cuda.empty_cache()
         data, loader, train_idx, val_idx, test_idx = load(args.dataset, args.batch, device)
         model = ContrastiveLearning(args, data, loader, device)
         model.train()
