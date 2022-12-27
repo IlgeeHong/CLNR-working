@@ -23,7 +23,7 @@ from statistics import mean, stdev
 # photo : 2000 / 1e-3 / 1e-5 /
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default='Cora') 
+parser.add_argument('--dataset', type=str, default='Physics') 
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
@@ -34,7 +34,7 @@ parser.add_argument('--out_dim', type=int, default=512)
 parser.add_argument('--fmr', type=float, default=0.2) #0.1 #0.2
 parser.add_argument('--edr', type=float, default=0.5) #0.4 #0.5
 parser.add_argument('--lambd', type=float, default=1e-3)
-parser.add_argument('--batch', type=int, default=1024) #None
+parser.add_argument('--batch', type=int, default=512) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/")
 # parser.add_argument('--model', type=str, default='CLNR')
