@@ -108,10 +108,9 @@ class Model(nn.Module):
         return z1, z2
     
     def sim(self, z1, z2):
-        torch.cuda.empty_cache()
         z1 = F.normalize(z1)
         z2 = F.normalize(z2)
-        return torch.matmul(z1, z2.t())
+        return torch.matmul(z1, z2.T)
 
     def semi_loss(self, z1, z2, loss_type='ntxent'):
         f = lambda x: torch.exp(x / self.tau)
