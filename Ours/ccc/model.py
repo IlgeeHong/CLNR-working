@@ -87,8 +87,8 @@ class Model(nn.Module):
         
     def projection(self, u, v):
         if self.model == "GRACE":
-            u = F.relu(self.fc1(u))
-            v = F.relu(self.fc1(v))
+            u = F.elu(self.fc1(u))
+            v = F.elu(self.fc1(v))
             z1 = self.fc2(u)
             z2 = self.fc2(v)
         elif self.model in ["CCA-SSG","CLNR","CLNR-unif","CLNR-align"]:
@@ -131,7 +131,6 @@ class Model(nn.Module):
             between_sim = f(self.sim(z1, z2))
             l1 = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
             z1 = F.normalize(z1)
-            z2 = F.normalize(z2)
             sq_pdist = torch.pdist(z1, p=2).pow(2)
             l2 = sq_pdist.mul(-2).exp().mean()
             loss = l1 + (l2 * self.lambd)
