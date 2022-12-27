@@ -9,12 +9,12 @@ from sklearn.neighbors import kneighbors_graph
 from sklearn.datasets import make_moons, make_circles, make_swiss_roll
 #from ogb.nodeproppred import PygNodePropPredDataset
 
-def load(name, batch):
+def load(name, batch, device):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
         # Data = os.getcwd()+'/Planetoid'
         transform = T.Compose([T.NormalizeFeatures()]) #,T.ToDevice(device)
         dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name, transform=transform)
-        loader = DataLoader(dataset, batch, shuffle=True)
+        loader = DataLoader(dataset, batch, num_workers=2, pin_memory=device, shuffle=True)
         data = dataset[0]
         train_idx = data.train_mask 
         val_idx = data.val_mask 

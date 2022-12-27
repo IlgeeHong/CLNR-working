@@ -83,7 +83,7 @@ for args.model in ['CLNR-unif','CLNR-align','nCLNR','CLNR','bCLNR','dCLNR','GRAC
     alignment_list = [] 
     for exp in range(args.n_experiments):
         # torch.cuda.empty_cache()
-        data, loader, train_idx, val_idx, test_idx = load(args.dataset, args.batch)
+        data, loader, train_idx, val_idx, test_idx = load(args.dataset, args.batch, device)
         model = ContrastiveLearning(args, data, loader, device)
         model.train()
         eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx)
