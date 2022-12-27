@@ -201,7 +201,7 @@ class ContrastiveLearning(nn.Module):
                 new_data1 = new_data1.to(self.device)
                 new_data2 = new_data2.to(self.device)
                 u, v = self.model(new_data1, new_data2)   
-                loss = self.model.loss(u, v, None, self.loss_type)
+                loss = self.model.loss(u, v, self.loss_type)
                 loss.backward()
                 self.optimizer.step()
                 # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
