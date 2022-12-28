@@ -51,7 +51,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # newly added
 results =[]
 for args.model in ['CLNR-align','nCLNR','CLNR','bCLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif',
-# for args.model in ['CLNR']:#
+# for args.model in ['CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
         args.epochs = 50
         args.lr1 = 1e-3
@@ -83,7 +83,6 @@ for args.model in ['CLNR-align','nCLNR','CLNR','bCLNR','dCLNR','GRACE','CCA-SSG'
     alignment_list = [] 
     for exp in range(args.n_experiments):
         data, train_idx, val_idx, test_idx = load(args.dataset)
-        pdb.set_trace()
         model = ContrastiveLearning(args, data, device)
         model.train()
         eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx)
