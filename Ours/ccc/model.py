@@ -232,7 +232,7 @@ class ContrastiveLearning(nn.Module):
         return (z1-z2).norm(dim=1).pow(2).mean()
 
     def LinearEvaluation(self, train_idx, val_idx, test_idx):
-        self.model.eval()
+        # self.model.eval()
         # if self.data == "ogbn-arxiv":
         #     evaluator = Evaluator(name='ogbn-arxiv')
         #     valid_acc = evaluator.eval({
