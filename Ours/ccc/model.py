@@ -216,8 +216,8 @@ class ContrastiveLearning(nn.Module):
     def uniformity(self, val_idx):
         new_data1 = random_aug(self.data,self.fmr,self.edr)
         new_data2 = random_aug(self.data,self.fmr,self.edr)
-        z1 = F.normalize(self.model.get_embedding(new_data1)[val_idx])
-        z2 = F.normalize(self.model.get_embedding(new_data2)[val_idx])
+        z1 = F.normalize(self.model.get_embedding(new_data1).to(self.device)[val_idx])
+        z2 = F.normalize(self.model.get_embedding(new_data2).to(self.device)[val_idx])
         sq_pdist1 = torch.pdist(z1, p=2).pow(2)
         sq_pdist2 = torch.pdist(z2, p=2).pow(2)
         l1 = sq_pdist1.mul(-2).exp().mean().log()
@@ -227,8 +227,8 @@ class ContrastiveLearning(nn.Module):
     def alignment(self, val_idx):
         new_data1 = random_aug(self.data,self.fmr,self.edr)
         new_data2 = random_aug(self.data,self.fmr,self.edr)
-        z1 = F.normalize(self.model.get_embedding(new_data1)[val_idx])
-        z2 = F.normalize(self.model.get_embedding(new_data2)[val_idx])
+        z1 = F.normalize(self.model.get_embedding(new_data1).to(self.device)[val_idx])
+        z2 = F.normalize(self.model.get_embedding(new_data2).to(self.device)[val_idx])
         return (z1-z2).norm(dim=1).pow(2).mean()
 
     def LinearEvaluation(self, train_idx, val_idx, test_idx):
