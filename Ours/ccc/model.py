@@ -8,7 +8,7 @@ from dbn import *
 from aug import *
 import pdb
 from torch_geometric.loader import NeighborLoader
-from ogb.nodeproppred import Evaluator
+# from ogb.nodeproppred import Evaluator
 
 # CUDA support
 # if torch.cuda.is_available():
