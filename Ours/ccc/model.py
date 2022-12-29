@@ -263,8 +263,8 @@ class ContrastiveLearning(nn.Module):
         test_labels = label[test_idx]
 
         # calculate metric
-        Lu = self.uniformity(val_idx)
-        La = self.alignment(val_idx)
+        # Lu = self.uniformity(val_idx)
+        # La = self.alignment(val_idx)
 
         loss_fn = nn.CrossEntropyLoss()
 
@@ -298,7 +298,7 @@ class ContrastiveLearning(nn.Module):
                         eval_acc = test_acc
             # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
         # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-        return eval_acc, Lu, La
+        return eval_acc#, Lu, La
     
 
  # elif self.type == "bGRACE":

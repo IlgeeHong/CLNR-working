@@ -87,15 +87,15 @@ for args.model in ['CLNR']:
         model.train()
         eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx)
         eval_acc_list.append(eval_acc.item())
-        uniformity_list.append(Lu.item())
-        alignment_list.append(La.item())
+        #uniformity_list.append(Lu.item())
+        #alignment_list.append(La.item())
         
     eval_acc_mean = round(mean(eval_acc_list),4)
     eval_acc_std = round(stdev(eval_acc_list),4)
-    Lu_mean = round(mean(uniformity_list),4)
-    Lu_std = round(stdev(uniformity_list),4)
-    La_mean = round(mean(alignment_list),4)
-    La_std = round(stdev(alignment_list),4)
+    Lu_mean = 1 #round(mean(uniformity_list),4)
+    Lu_std = 1 #round(stdev(uniformity_list),4)
+    La_mean = 1 #round(mean(alignment_list),4)
+    La_std = 1 #round(stdev(alignment_list),4)
 
     print('model: ' + args.model + ' done')
     #results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
