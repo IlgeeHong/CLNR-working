@@ -248,7 +248,10 @@ class ContrastiveLearning(nn.Module):
         # self.model = self.model.cpu()
         # embeds = self.model.get_embedding(self.data)
         # embeds = embeds.to(self.device)
-        embeds = self.model.get_embedding(self.data.to(self.device))
+        self.model = self.model.cpu()
+        # embeds = self.model.get_embedding(self.data.to(self.device))
+        embeds = self.model.get_embedding(self.data)
+        embeds = embeds.to(self.device)
         train_embs = embeds[train_idx]
         val_embs = embeds[val_idx]
         test_embs = embeds[test_idx]
