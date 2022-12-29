@@ -177,6 +177,7 @@ class Model(nn.Module):
 class ContrastiveLearning(nn.Module):
     def __init__(self, args, data, device):
         super().__init__()
+        self.dataset = args.dataset
         self.model = args.model
         self.epochs = args.epochs
         self.fmr = args.fmr
@@ -252,7 +253,7 @@ class ContrastiveLearning(nn.Module):
         val_embs = embeds[val_idx]
         test_embs = embeds[test_idx]
 
-        if self.data == "ogbn-arxiv":
+        if self.dataset == "ogbn-arxiv":
             label = self.data.y.squeeze()
         else:
             label = self.data.y
