@@ -276,6 +276,7 @@ class ContrastiveLearning(nn.Module):
             self.logreg.train()
             self.opt.zero_grad()
             logits = self.logreg(train_embs)
+            print(logits.shape)
             print(train_labels.shape)
             # preds = torch.argmax(logits, dim=1)
             # train_acc = torch.sum(preds == train_labels).float() / train_labels.shape[0]
