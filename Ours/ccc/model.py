@@ -245,12 +245,13 @@ class ContrastiveLearning(nn.Module):
         #                 'y_pred': y_pred[split_idx['test']],
         #                 })['acc']
         # else:
-        self.model = self.model.cpu()
-        embeds = self.model.get_embedding(self.data)
-        embeds = embeds.to(self.device)
-        # self.model = self.model
-        # embeds = self.model.get_embedding(self.data.to(self.device))
-        # embeds = self.model.get_embedding(self.data.to(self.device))
+        if self.dataset == "ogbn-arxiv":
+            self.model = self.model.cpu()
+            embeds = self.model.get_embedding(self.data)
+            embeds = embeds.to(self.device)
+        else:
+            embeds = self.model.get_embedding(self.data.to(self.device))
+            
         train_embs = embeds[train_idx]
         val_embs = embeds[val_idx]
         test_embs = embeds[test_idx]
