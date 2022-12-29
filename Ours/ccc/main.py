@@ -27,8 +27,8 @@ parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #ogbn-arxiv
 parser.add_argument('--n_experiments', type=int, default=2)
 parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--tau', type=float, default=0.5) 
-parser.add_argument('--lr2', type=float, default=5e-3)
-parser.add_argument('--wd2', type=float, default=1e-2)
+parser.add_argument('--lr2', type=float, default=1e-2)
+parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--hid_dim', type=int, default=512)
 parser.add_argument('--out_dim', type=int, default=512) 
 parser.add_argument('--fmr', type=float, default=0.0) #0.1 #0.2
@@ -53,7 +53,7 @@ results =[]
 # for args.model in ['CLNR-align','nCLNR','CLNR','bCLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif',
 for args.model in ['CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
-        args.epochs = 100
+        args.epochs = 200
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
