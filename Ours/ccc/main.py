@@ -85,7 +85,7 @@ for args.model in ['CLNR']:
         data, train_idx, val_idx, test_idx = load(args.dataset)
         model = ContrastiveLearning(args, data, device)
         model.train()
-        eval_acc = model.LinearEvaluation(train_idx, val_idx, test_idx) #, Lu, La
+        eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx) #
         eval_acc_list.append(eval_acc.item())
         #uniformity_list.append(Lu.item())
         #alignment_list.append(La.item())
