@@ -58,23 +58,23 @@ for args.model in ['CLNR']:
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['CLNR-unif']:
-        args.epochs = 600
-        args.lr1 = 1e-3
+        args.epochs = 100
+        args.lr1 = 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent-uniform'
     elif args.model in ['CLNR-align','nCLNR-align']:
-        args.epochs = 600
-        args.lr1 = 1e-3
+        args.epochs = 100
+        args.lr1 = 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent-align'
     elif args.model in ['GRACE']:
-        args.epochs = 600
-        args.lr1 = 1e-3
+        args.epochs = 100
+        args.lr1 = 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['CCA-SSG']:
-        args.epochs = 50
-        args.lr1 = 1e-3
+        args.epochs = 100
+        args.lr1 = 1e-2
         args.wd1 = 0.0
         args.loss_type = 'cca'
 
