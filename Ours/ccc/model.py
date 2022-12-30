@@ -191,6 +191,10 @@ class ContrastiveLearning(nn.Module):
         self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, args.lambd, self.device, self.model, args.mlp_use)
         self.model = self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=args.lr1, weight_decay=args.wd1)
+
+        self.s = lambda epoch: epoch / 1000 if epoch < 1000 else ( 1 + np.cos((epoch-1000) * np.pi / (self.epochs - 1000))) * 0.5
+        self.scheduler = torch.optim.lr_scheduler.LambdaLR(self.optimizer, lr_lambda=self.s)
+
         self.logreg = LogReg(args.out_dim, self.num_class)
         self.logreg = self.logreg.to(self.device)
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
@@ -212,6 +216,8 @@ class ContrastiveLearning(nn.Module):
             loss = self.model.loss(u, v, self.batch, self.loss_type)
             loss.backward()
             self.optimizer.step()
+            if self.dataset == "ogbn-arxiv":
+                self.scheduler.step()
             # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
 
     def uniformity(self, val_idx):
