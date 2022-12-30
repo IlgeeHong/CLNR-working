@@ -24,7 +24,7 @@ from statistics import mean, stdev
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #
-parser.add_argument('--n_experiments', type=int, default=2) #2
+parser.add_argument('--n_experiments', type=int, default=3) #2
 parser.add_argument('--n_layers', type=int, default=3) #3
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=5e-3)
