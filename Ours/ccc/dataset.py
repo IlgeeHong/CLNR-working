@@ -47,7 +47,7 @@ def load(name):
         edge_index, edge_weights = from_scipy_sparse_matrix(A)
         edge_index, edge_weights = to_undirected(edge_index, edge_weights)
         transform = T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)
-        data = Data(x=torch.eye(10000), edge_index=edge_index, edge_weight=edge_weights, y=y)
+        data = Data(x=torch.eye(10000), edge_index=edge_index, edge_weight=edge_weights, y=torch.tensor(y))
         data = transform(data)
         train_idx = data.train_mask 
         val_idx = data.val_mask 
