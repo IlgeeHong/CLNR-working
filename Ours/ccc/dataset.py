@@ -36,18 +36,22 @@ def load(name):
         val_idx = data.val_mask 
         test_idx = data.test_mask  
     
-    # elif name in ['Swissroll','Moon','Circles']:
-    #     if name == 'Moon':
-    #         XX, y = make_moons(n_samples=10000) #, noise=args.noise
-    #     elif name == 'Swissroll':
-    #         XX, y = make_swiss_roll(n_samples=10000)
-    #     elif name == 'Circles':
-    #         XX, y = make_circles(n_samples=10000, factor=0.4)
-        
-    #     A = kneighbors_graph(XX, 15, mode='distance', include_self=False)
-    #     edge_index, edge_weights = from_scipy_sparse_matrix(A)
-    #     edge_index, edge_weights = to_undirected(edge_index, edge_weights)
-    #     data = Data(x=torch.eye(1000), edge_index=edge_index, edge_weight=edge_weights)
+    elif name in ['Swissroll','Moon','Circles']:
+        if name == 'Moon':
+            XX, y = make_moons(n_samples=10000) #, noise=args.noise
+        elif name == 'Swissroll':
+            XX, y = make_swiss_roll(n_samples=10000)
+        elif name == 'Circles':
+            XX, y = make_circles(n_samples=10000, factor=0.4)
+        A = kneighbors_graph(XX, 15, mode='distance', include_self=False)
+        edge_index, edge_weights = from_scipy_sparse_matrix(A)
+        edge_index, edge_weights = to_undirected(edge_index, edge_weights)
+        transform = T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)
+        data = Data(x=torch.eye(10000), edge_index=edge_index, edge_weight=edge_weights)
+        data = transform(data)
+        train_idx = data.train_mask 
+        val_idx = data.val_mask 
+        test_idx = data.test_mask  
 
     elif name in ['ogbn-arxiv']:
         transform = T.Compose([T.ToUndirected()])
