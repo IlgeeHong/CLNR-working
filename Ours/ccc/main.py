@@ -50,31 +50,31 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # newly added
 results =[]
-# for args.model in ['CLNR-align','nCLNR','CLNR','bCLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif',
-for args.model in ['CLNR']:
+for args.model in ['CLNR-align','nCLNR','CLNR','bCLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif',
+# for args.model in ['CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
         args.epochs = 100 # 10000
         args.lr1 = 1e-3 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['CLNR-unif']:
-        args.epochs = 10000
-        args.lr1 = 1e-2
+        args.epochs = 100
+        args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent-uniform'
     elif args.model in ['CLNR-align','nCLNR-align']:
-        args.epochs = 10000
-        args.lr1 = 1e-2
+        args.epochs = 100
+        args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent-align'
     elif args.model in ['GRACE']:
-        args.epochs = 10000
-        args.lr1 = 1e-2
+        args.epochs = 100
+        args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['CCA-SSG']:
-        args.epochs = 10000
-        args.lr1 = 1e-2
+        args.epochs = 100
+        args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'cca'
 

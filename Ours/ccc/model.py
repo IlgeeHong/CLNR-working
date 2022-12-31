@@ -55,8 +55,8 @@ class GCN(nn.Module):
 
     def forward(self, x, edge_index, edge_weight=None):
         for i in range(self.n_layers - 1):
-            x = F.relu(self.convs[i](x, edge_index)) #, edge_weight=edge_weight
-        x = self.convs[-1](x, edge_index)
+            x = F.relu(self.convs[i](x, edge_index, edge_weight=edge_weight)) #
+        x = self.convs[-1](x, edge_index, edge_weight=edge_weight)
         return x
 
 class Model(nn.Module):
@@ -75,14 +75,14 @@ class Model(nn.Module):
         self.bn = nn.BatchNorm1d(out_dim)
 
     def get_embedding(self, data):
-        out = self.backbone(data.x, data.edge_index)    #, data.edge_weight
+        out = self.backbone(data.x, data.edge_index, data.edge_weight) 
         # No projection head here
         return out.detach()
 
     def forward(self, data1, data2):
         # Encode the graph
-        u = self.backbone(data1.x, data1.edge_index)
-        v = self.backbone(data2.x, data2.edge_index)
+        u = self.backbone(data1.x, data1.edge_index, data1.edge_weight)
+        v = self.backbone(data2.x, data2.edge_index, data2.edge_weight)
         return u, v
         
     def projection(self, u, v):
