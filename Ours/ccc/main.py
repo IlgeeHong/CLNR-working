@@ -23,16 +23,16 @@ from statistics import mean, stdev
 # photo : 2000 / 1e-3 / 1e-5 /
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #
-parser.add_argument('--n_experiments', type=int, default=3) #2
-parser.add_argument('--n_layers', type=int, default=3) #3
+parser.add_argument('--dataset', type=str, default='Moon') #
+parser.add_argument('--n_experiments', type=int, default=2) #2
+parser.add_argument('--n_layers', type=int, default=2) #3
 parser.add_argument('--tau', type=float, default=0.5) 
-parser.add_argument('--lr2', type=float, default=5e-3)
+parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--hid_dim', type=int, default=512)
 parser.add_argument('--out_dim', type=int, default=512) 
-parser.add_argument('--fmr', type=float, default=0.0) #0.0 #0.2
-parser.add_argument('--edr', type=float, default=0.6) #0.6 #0.5
+parser.add_argument('--fmr', type=float, default=0.2) #0.0 #0.2
+parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5
 parser.add_argument('--lambd', type=float, default=1e-3) # citeseer, computer 5e-4
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
@@ -50,11 +50,11 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # newly added
 results =[]
-for args.model in ['CLNR-align','nCLNR','CLNR','bCLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif',
-# for args.model in ['CLNR']:
+# for args.model in ['CLNR-align','nCLNR','CLNR','bCLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif',
+for args.model in ['CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
-        args.epochs = 10000 # 20000
-        args.lr1 = 1e-2 # 1e-3
+        args.epochs = 100 # 10000
+        args.lr1 = 1e-3 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['CLNR-unif']:

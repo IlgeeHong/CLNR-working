@@ -195,6 +195,9 @@ class ContrastiveLearning(nn.Module):
         self.s = lambda epoch: epoch / 1000 if epoch < 1000 else ( 1 + np.cos((epoch-1000) * np.pi / (self.epochs - 1000))) * 0.5
         self.scheduler = torch.optim.lr_scheduler.LambdaLR(self.optimizer, lr_lambda=self.s)
 
+        # if self.dataset in ['Swissroll','Moon','Circles']:
+        #     self.logreg = LogReg(args.out_dim, 1)
+        # else:
         self.logreg = LogReg(args.out_dim, self.num_class)
         self.logreg = self.logreg.to(self.device)
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
@@ -276,8 +279,7 @@ class ContrastiveLearning(nn.Module):
         Lu = self.uniformity(val_idx)
         La = self.alignment(val_idx)
 
-        loss_fn = nn.CrossEntropyLoss()
-
+        loss_fn = nn.CrossEntropyLoss()       
         best_val_acc = 0
         eval_acc = 0
 
@@ -306,6 +308,8 @@ class ContrastiveLearning(nn.Module):
                     best_val_acc = val_acc
                     if test_acc > eval_acc:
                         eval_acc = test_acc
+
+        
             # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
         # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
         return eval_acc, Lu, La
