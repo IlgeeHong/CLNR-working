@@ -191,9 +191,9 @@ class ContrastiveLearning(nn.Module):
         self.model = self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=args.lr1, weight_decay=args.wd1)
 
-        self.s = lambda epoch: epoch / 1000 if epoch < 1000 else ( 1 + np.cos((epoch-1000) * np.pi / (self.epochs - 1000))) * 0.5
-        self.scheduler = torch.optim.lr_scheduler.LambdaLR(self.optimizer, lr_lambda=self.s)
-
+        if self.dataset == "ogbn-arxiv":
+            self.s = lambda epoch: epoch / 1000 if epoch < 1000 else ( 1 + np.cos((epoch-1000) * np.pi / (self.epochs - 1000))) * 0.5
+            self.scheduler = torch.optim.lr_scheduler.LambdaLR(self.optimizer, lr_lambda=self.s)
         # if self.dataset in ['Swissroll','Moon','Circles']:
         #     self.logreg = LogReg(args.out_dim, 1)
         # else:
