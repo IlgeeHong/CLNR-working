@@ -23,7 +23,7 @@ from statistics import mean, stdev
 # photo : 2000 / 1e-3 / 1e-5 /
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default='Moon') #
+parser.add_argument('--dataset', type=str, default='Circles') #
 parser.add_argument('--n_experiments', type=int, default=20) #2
 parser.add_argument('--n_layers', type=int, default=2) #3
 parser.add_argument('--tau', type=float, default=0.5) 
