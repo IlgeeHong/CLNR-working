@@ -54,7 +54,7 @@ results =[]
 # for args.model in ['nCLNR','CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR',
 for args.model in ['CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
-        args.epochs = 400 # 10000
+        args.epochs = 100 # 10000
         args.lr1 = 1e-3 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
