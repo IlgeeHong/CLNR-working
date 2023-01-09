@@ -21,19 +21,20 @@ from statistics import mean, stdev
 # computers : 1500 / 1e-3 / 0.0 /
 # cs : 1000 / 1e-3 / 0.0 /
 # photo : 1500 / 1e-3 / 1e-5 /
+# physics : 1000 / 1e-3 / 0.0 /
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default='Physics') #
+parser.add_argument('--dataset', type=str, default='Computers') #
 parser.add_argument('--n_experiments', type=int, default=20) #
 parser.add_argument('--n_layers', type=int, default=2) #3
 parser.add_argument('--tau', type=float, default=0.5) 
-parser.add_argument('--lr2', type=float, default=5e-3)
+parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--hid_dim', type=int, default=512)
 parser.add_argument('--out_dim', type=int, default=512) 
-parser.add_argument('--fmr', type=float, default=0.2) #0.0 #0.2
-parser.add_argument('--edr', type=float, default=0.4) #0.6 #0.5
-parser.add_argument('--lambd', type=float, default=1e-3) # citeseer, computer 5e-4
+parser.add_argument('--fmr', type=float, default=0.0) #0.0 #0.2
+parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5
+parser.add_argument('--lambd', type=float, default=5e-4) # citeseer, computer 5e-4
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/")
@@ -53,7 +54,7 @@ results =[]
 for args.model in ['nCLNR','CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR',
 # for args.model in ['CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
-        args.epochs = 50 # 10000
+        args.epochs = 200 # 10000
         args.lr1 = 1e-3 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
@@ -63,7 +64,7 @@ for args.model in ['nCLNR','CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['CCA-SSG']:
-        args.epochs = 100
+        args.epochs = 50
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'cca'
