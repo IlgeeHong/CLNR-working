@@ -8,15 +8,18 @@ from sklearn.neighbors import kneighbors_graph
 from sklearn.datasets import make_moons, make_circles, make_swiss_roll
 from ogb.nodeproppred import PygNodePropPredDataset
 from copy import deepcopy
+from aug_perturbed import *
 
-def load(name, sigma):
+def load(name, sigma, alpha):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
         # Data = os.getcwd()+'/Planetoid'
         transform = T.Compose([T.NormalizeFeatures()]) #,T.ToDevice(device)
         dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name, transform=transform)
         temp = dataset[0]
         noise = torch.normal(0, sigma, size=(temp.num_nodes, temp.num_features))
+        new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=True)
         data = deepcopy(temp)
+        data.edge_index = new_edge_index
         feat = temp.x + noise
         data.x = feat
         train_idx = data.train_mask 
