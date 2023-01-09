@@ -24,9 +24,9 @@ from statistics import mean, stdev
 # physics : 1000 / 1e-3 / 0.0 /
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default='Photo') #
-parser.add_argument('--n_experiments', type=int, default=20) #
-parser.add_argument('--n_layers', type=int, default=2) #3
+parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #
+parser.add_argument('--n_experiments', type=int, default=2) #
+parser.add_argument('--n_layers', type=int, default=3) #3
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
