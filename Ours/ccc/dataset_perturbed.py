@@ -9,6 +9,7 @@ from sklearn.datasets import make_moons, make_circles, make_swiss_roll
 from ogb.nodeproppred import PygNodePropPredDataset
 from copy import deepcopy
 from aug_perturbed import *
+import random
 
 def load(name, sigma, alpha, outlier):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
@@ -23,6 +24,11 @@ def load(name, sigma, alpha, outlier):
             new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=True)
         if outlier is not None:
             noise = torch.zeros(temp.num_nodes, temp.num_features)
+            out = 100 * torch.ones(1, temp.num_features)
+            ind = torch.LongTensor(random.sample(range(temp.num_nodes), 1))
+            noise[ind,:] = out
+            feat = temp.x + noise
+
         data = deepcopy(temp)
         data.x = feat
         data.edge_index = new_edge_index
