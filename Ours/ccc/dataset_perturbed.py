@@ -24,10 +24,9 @@ def load(name, sigma, alpha, outlier):
             data.edge_index = new_edge_index
         if outlier is not None:
             noise = torch.zeros(temp.num_nodes, temp.num_features)
-
-
         data = deepcopy(temp)
         data.x = feat
+        data = transform(data)
         train_idx = data.train_mask 
         val_idx = data.val_mask 
         test_idx = data.test_mask  
