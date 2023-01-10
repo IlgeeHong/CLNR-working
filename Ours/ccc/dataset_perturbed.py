@@ -21,11 +21,11 @@ def load(name, sigma, alpha, outlier):
             feat = temp.x + noise
         if alpha is not None:
             new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=True)
-            data.edge_index = new_edge_index
         if outlier is not None:
             noise = torch.zeros(temp.num_nodes, temp.num_features)
         data = deepcopy(temp)
         data.x = feat
+        data.edge_index = new_edge_index
         data = transform(data)
         train_idx = data.train_mask 
         val_idx = data.val_mask 
