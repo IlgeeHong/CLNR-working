@@ -36,8 +36,8 @@ parser.add_argument('--fmr', type=float, default=0.2) #0.0 #0.2
 parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5
 parser.add_argument('--lambd', type=float, default=1e-3) # citeseer, computer 5e-4
 parser.add_argument('--batch', type=int, default=1024) #None
-parser.add_argument('--sigma', type=int, default=None) #None
-parser.add_argument('--alpha', type=int, default=0.2) #None
+parser.add_argument('--sigma', type=int, default=1.0) #None
+parser.add_argument('--alpha', type=int, default=None) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Robust")
 
