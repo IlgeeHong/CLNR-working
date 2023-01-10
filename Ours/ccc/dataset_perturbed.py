@@ -10,11 +10,11 @@ from ogb.nodeproppred import PygNodePropPredDataset
 from copy import deepcopy
 from aug_perturbed import *
 
-def load(name, sigma, alpha):
+def load(name, sigma, alpha, outlier):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
         # Data = os.getcwd()+'/Planetoid'
         transform = T.Compose([T.NormalizeFeatures()]) #,T.ToDevice(device)
-        dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name, transform=transform)
+        dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name) #, transform=transform
         temp = dataset[0]
         if sigma is not None:
             noise = torch.normal(0, sigma, size=(temp.num_nodes, temp.num_features))
@@ -22,6 +22,10 @@ def load(name, sigma, alpha):
         if alpha is not None:
             new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=True)
             data.edge_index = new_edge_index
+        if outlier is not None:
+            noise = torch.zeros(temp.num_nodes, temp.num_features)
+
+
         data = deepcopy(temp)
         data.x = feat
         train_idx = data.train_mask 
