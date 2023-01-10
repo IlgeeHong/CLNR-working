@@ -38,7 +38,7 @@ parser.add_argument('--lambd', type=float, default=1e-3) # citeseer, computer 5e
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--sigma', type=float, default=None) #None
 parser.add_argument('--outlier', type=bool, default=True) #None
-parser.add_argument('--alpha', type=float, default=0.2) #None
+parser.add_argument('--alpha', type=float, default=None) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Robust")
 
