@@ -1,0 +1,2 @@
+model,dataset,epochs,out_dim,acc_mean,acc_std,Lu_mean,Lu_std,La_mean,La_std
+CCA-SSG,ogbn-arxiv,50,512,0.6049,0.0021,-0.5983,0.0065,0.025,0.0004

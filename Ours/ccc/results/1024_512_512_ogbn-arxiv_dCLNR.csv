@@ -1,0 +1,2 @@
+model,dataset,epochs,out_dim,acc_mean,acc_std,Lu_mean,Lu_std,La_mean,La_std
+dCLNR,ogbn-arxiv,10000,512,0.7049,0.0011,-3.5334,0.0005,0.1544,0.0018
