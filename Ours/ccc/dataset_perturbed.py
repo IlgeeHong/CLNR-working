@@ -30,8 +30,12 @@ def load(name, sigma, alpha, outlier):
             feat = temp.x + noise
 
         data = deepcopy(temp)
-        data.x = feat
-        data.edge_index = new_edge_index
+        if sigma is not None:
+            data.x = feat
+        if alpha is not None:
+            data.edge_index = new_edge_index
+        if outlier is True:
+            data.x = feat
         data = transform(data)
         train_idx = data.train_mask 
         val_idx = data.val_mask 
