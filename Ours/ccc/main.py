@@ -34,7 +34,7 @@ parser.add_argument('--hid_dim', type=int, default=512)
 parser.add_argument('--out_dim', type=int, default=512) 
 parser.add_argument('--fmr', type=float, default=0.0) #0.0 #0.2
 parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5
-parser.add_argument('--lambd', type=float, default=1e-3) # citeseer, computer 5e-4
+parser.add_argument('--lambd', type=float, default=5e-4) # citeseer, computer 5e-4
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/")
@@ -52,8 +52,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # newly added
 results =[]
 # for args.model in ['nCLNR','CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR',
-for args.epochs in [10000]:
-    for args.model in ['GRACE']:
+for args.epochs in [50]:
+    for args.model in ['CCA-SSG']:
         if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
             # args.epochs = 100 # 10000
             args.lr1 = 1e-3 # 1e-2
