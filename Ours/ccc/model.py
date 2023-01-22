@@ -115,7 +115,6 @@ class Model(nn.Module):
     def sim(self, z1, z2, indices):
         z1 = F.normalize(z1)
         z2 = F.normalize(z2)
-        print(z1.shape)
         return torch.mm(z1[indices,:], z2[indices,:].t())
 
     def semi_loss(self, z1, z2, indices, loss_type='ntxent'):
@@ -168,7 +167,7 @@ class Model(nn.Module):
             iden = torch.tensor(np.eye(c.shape[0])).to(self.device)
             loss_dec1 = (iden - c1).pow(2).sum()
             loss_dec2 = (iden - c2).pow(2).sum()
-            ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
+            ret = inv + self.lambd * (loss_dec1 + loss_dec2)
         elif loss_type == 'cca':
             N = z1.shape[0]
             c = torch.mm(z1.T, z2)
