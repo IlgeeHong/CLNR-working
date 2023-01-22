@@ -35,7 +35,7 @@ parser.add_argument('--out_dim', type=int, default=512)
 parser.add_argument('--fmr', type=float, default=0.2) #0.0 #0.2 # 0.0
 parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5 # ogbn
 parser.add_argument('--lambd', type=float, default=1e-3) # citeseer, computer, ogbn-arxiv 5e-4 
-parser.add_argument('--batch', type=int, default=None) #None
+parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/robust")
 # parser.add_argument('--model', type=str, default='CLNR')
@@ -53,7 +53,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 # for args.model in ['nCLNR','CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR',
 for args.epochs in [50]:
-    for args.model in ['dCLNR']:
+    for args.model in ['dCLNR','CLNR','GRACE','CCA-SSG','GRACE_CCA','dCCA-SSG']:
         if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
             # args.epochs = 100 # 10000
             args.lr1 = 1e-3 # 1e-2
@@ -69,6 +69,16 @@ for args.epochs in [50]:
             args.lr1 = 1e-3
             args.wd1 = 0.0
             args.loss_type = 'cca'
+        elif args.model in ['GRACE_CCA']:
+            # args.epochs = 50
+            args.lr1 = 1e-3
+            args.wd1 = 0.0
+            args.loss_type = 'ntxent_cca'
+        elif args.model in ['dCCA-SSG']:
+            # args.epochs = 50
+            args.lr1 = 1e-3
+            args.wd1 = 0.0
+            args.loss_type = 'dcca'   
         # elif args.model in ['CLNR-unif']:
         #     args.epochs = 600
         #     args.lr1 = 1e-3

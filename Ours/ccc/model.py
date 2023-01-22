@@ -94,6 +94,11 @@ class Model(nn.Module):
         elif self.model in ["CCA-SSG","CLNR","CLNR-unif","CLNR-align"]:
             z1 = (u - u.mean(0)) / u.std(0)
             z2 = (v - v.mean(0)) / v.std(0)
+        elif self.model in "dCCA-SSG":
+            dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            z1 = dbn1(u)
+            z2 = dbn2(v)
         elif self.model == "dCLNR":
             dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
             dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
@@ -149,6 +154,21 @@ class Model(nn.Module):
             l2 = self.semi_loss(z2, z1, indices, loss_type)
             ret = (l1 + l2) * 0.5
             ret = ret.mean() if mean else ret.sum()
+        if loss_type == "ntxent_cca":
+            l1 = self.semi_loss(z1, z2, indices, loss_type)
+            l2 = self.semi_loss(z2, z1, indices, loss_type)
+            inv = (l1 + l2) * 0.5
+            inv = inv.mean() if mean else inv.sum()   
+            c = torch.mm(z1.T, z2)
+            c1 = torch.mm(z1.T, z1)
+            c2 = torch.mm(z2.T, z2)
+            c = c #/ N
+            c1 = c1 #/ N
+            c2 = c2 #/ N 
+            iden = torch.tensor(np.eye(c.shape[0])).to(self.device)
+            loss_dec1 = (iden - c1).pow(2).sum()
+            loss_dec2 = (iden - c2).pow(2).sum()
+            ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
         elif loss_type == 'cca':
             N = z1.shape[0]
             c = torch.mm(z1.T, z2)
@@ -162,6 +182,16 @@ class Model(nn.Module):
             loss_dec1 = (iden - c1).pow(2).sum()
             loss_dec2 = (iden - c2).pow(2).sum()
             ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
+        elif loss_type == 'dcca':
+            N = z1.shape[0]
+            c = torch.mm(z1.T, z2)
+            c1 = torch.mm(z1.T, z1)
+            c2 = torch.mm(z2.T, z2)
+            c = c / N
+            c1 = c1 / N
+            c2 = c2 / N
+            loss_inv = - torch.diagonal(c).sum()
+            ret = loss_inv
         elif loss_type == 'ntxent-uniform':
             l1 = self.semi_loss(z1, z2, indices, loss_type)
             l2 = self.semi_loss(z2, z1, indices, loss_type)
