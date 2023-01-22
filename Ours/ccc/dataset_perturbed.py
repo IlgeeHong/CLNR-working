@@ -26,7 +26,6 @@ def load(name, sigma, alpha, outlier):
             noise = torch.zeros(temp.num_nodes, temp.num_features)
             out = 10000 * torch.ones(1, temp.num_features)
             ind = torch.LongTensor(random.sample(range(temp.train_mask.sum()), 1))
-            print(ind)
             noise[ind,:] = out
             feat = temp.x + noise
 

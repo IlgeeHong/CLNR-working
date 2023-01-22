@@ -50,15 +50,15 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 #for args.sigma in torch.arange(0,1.5,0.2): #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
 # for args.model in ['CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
-for args.model in ['CLNR','dCLNR',,'GRACE','CCA-SSG','dCCA-SSG','']:
+for args.model in ['CLNR','dCLNR','GRACE','GRACE_CCA','CCA-SSG','dCCA-SSG']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
         args.epochs = 600 # 10000
         args.lr1 = 1e-3 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['GRACE']:
-        args.epochs = 1500
-        args.lr1 = 5e-4
+        args.epochs = 1000
+        args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['CCA-SSG']:
@@ -67,8 +67,8 @@ for args.model in ['CLNR','dCLNR',,'GRACE','CCA-SSG','dCCA-SSG','']:
         args.wd1 = 0.0
         args.loss_type = 'cca'
     elif args.model in ['GRACE_CCA']:
-        args.epochs = 1500
-        args.lr1 = 5e-4
+        args.epochs = 1000
+        args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent_cca'
     elif args.model in ['dCCA-SSG']:
@@ -92,7 +92,6 @@ for args.model in ['CLNR','dCLNR',,'GRACE','CCA-SSG','dCCA-SSG','']:
     alignment_list = [] 
     for exp in range(args.n_experiments):
         data, train_idx, val_idx, test_idx = load(args.dataset, args.sigma, args.alpha, args.outlier)
-        print(train_idx)
         model = ContrastiveLearning(args, data, device)
         model.train()
         eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx) #
@@ -111,4 +110,4 @@ for args.model in ['CLNR','dCLNR',,'GRACE','CCA-SSG','dCCA-SSG','']:
     #results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
     results += [[args.model, args.dataset, args.epochs, args.sigma, args.outlier, eval_acc_mean, eval_acc_std, Lu_mean, Lu_std, La_mean, La_std]]#
 res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'noise', 'outlier', 'acc_mean', 'acc_std', 'Lu_mean', 'Lu_std', 'La_mean', 'La_std'])#, 
-res.to_csv(file_path + str(args.batch) + "_" + str(args.out_dim) + "_" + str(args.hid_dim) + "_" + args.dataset + "_" + str(args.outlier) + ".csv", index=False) #str(args.epochs)args.model + "_" + 
+res.to_csv(file_path + "_" + str(args.batch) + "_" + str(args.out_dim) + "_" + str(args.hid_dim) + "_" + args.dataset + "_" + str(args.outlier) + ".csv", index=False) #str(args.epochs)args.model + "_" + 
