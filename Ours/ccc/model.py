@@ -115,7 +115,7 @@ class Model(nn.Module):
     def sim(self, z1, z2, indices):
         z1 = F.normalize(z1)
         z2 = F.normalize(z2)
-        return torch.mm(z1[indices,:], z2[indices,:].t())
+        return torch.mm(z1[indices,:], z2[indices,:].T)
 
     def semi_loss(self, z1, z2, indices, loss_type='ntxent'):
         f = lambda x: torch.exp(x / self.tau)
