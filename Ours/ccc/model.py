@@ -120,7 +120,7 @@ class Model(nn.Module):
 
     def semi_loss(self, z1, z2, indices, loss_type='ntxent'):
         f = lambda x: torch.exp(x / self.tau)
-        if loss_type == "ntxent":
+        if loss_type in ["ntxent", "ntxent_cca"]:
             refl_sim = f(self.sim(z1, z1, indices))
             between_sim = f(self.sim(z1, z2, indices))   
             loss = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
