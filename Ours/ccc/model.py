@@ -110,6 +110,7 @@ class Model(nn.Module):
     def sim(self, z1, z2, indices):
         z1 = F.normalize(z1)
         z2 = F.normalize(z2)
+        print(z1.shape)
         return torch.mm(z1[indices,:], z2[indices,:].t())
 
     def semi_loss(self, z1, z2, indices, loss_type='ntxent'):
