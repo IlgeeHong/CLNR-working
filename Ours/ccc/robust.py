@@ -50,7 +50,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 #for args.sigma in torch.arange(0,1.5,0.2): #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
 # for args.model in ['CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
-for args.model in ['CLNR']:
+for args.model in ['CLNR','dCLNR',,'GRACE','CCA-SSG','dCCA-SSG','']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
         args.epochs = 600 # 10000
         args.lr1 = 1e-3 # 1e-2
@@ -66,16 +66,26 @@ for args.model in ['CLNR']:
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'cca'
-    elif args.model in ['CLNR-unif']:
-        args.epochs = 600
+    elif args.model in ['GRACE_CCA']:
+        args.epochs = 1500
+        args.lr1 = 5e-4
+        args.wd1 = 0.0
+        args.loss_type = 'ntxent_cca'
+    elif args.model in ['dCCA-SSG']:
+        args.epochs = 100
         args.lr1 = 1e-3
         args.wd1 = 0.0
-        args.loss_type = 'ntxent-uniform'
-    elif args.model in ['CLNR-align','nCLNR-align']:
-        args.epochs = 200
-        args.lr1 = 1e-3
-        args.wd1 = 0.0
-        args.loss_type = 'ntxent-align'
+        args.loss_type = 'dcca'         
+    # elif args.model in ['CLNR-unif']:
+    #     args.epochs = 600
+    #     args.lr1 = 1e-3
+    #     args.wd1 = 0.0
+    #     args.loss_type = 'ntxent-uniform'
+    # elif args.model in ['CLNR-align','nCLNR-align']:
+    #     args.epochs = 200
+    #     args.lr1 = 1e-3
+    #     args.wd1 = 0.0
+    #     args.loss_type = 'ntxent-align'
 
     eval_acc_list = []
     uniformity_list = []
