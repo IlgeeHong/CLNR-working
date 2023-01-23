@@ -120,7 +120,7 @@ def load(name, sigma, alpha, outlier):
         transform = T.Compose([T.ToUndirected()])
         dataset = PygNodePropPredDataset(name=name, root = '/scratch/midway3/ilgee/SelfGCon/dataset', transform=transform)
         temp = dataset[0]
-        print(temp.feat.shape)
+        print(temp.x.shape)
         if sigma is not None:
             noise = torch.normal(0, sigma, size=(temp.num_nodes, temp.num_features))
             feat = temp.x + noise
