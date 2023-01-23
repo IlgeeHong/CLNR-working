@@ -25,7 +25,7 @@ from statistics import mean, stdev
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #
-parser.add_argument('--n_experiments', type=int, default=2) #
+parser.add_argument('--n_experiments', type=int, default=3) #
 parser.add_argument('--n_layers', type=int, default=3) #3
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=1e-2)
@@ -51,14 +51,14 @@ results =[]
 #for args.sigma in torch.arange(0,1.5,0.2): #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
 # for args.model in ['CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
 # for args.model in ['CLNR','dCLNR','GRACE','GRACE_CCA','CCA-SSG','dCCA-SSG']:
-for args.model in ['CLNR']:
+for args.model in ['CLNR','dCLNR','GRACE','CCA-SSG']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
-        args.epochs = 1000 # 10000
-        args.lr1 = 1e-2 # 1e-2
+        args.epochs = 10000 # 10000
+        args.lr1 = 1e-3 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['GRACE']:
-        args.epochs = 1000
+        args.epochs = 10000
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
@@ -67,16 +67,16 @@ for args.model in ['CLNR']:
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'cca'
-    elif args.model in ['GRACE_CCA']:
-        args.epochs = 1000
-        args.lr1 = 1e-3
-        args.wd1 = 0.0
-        args.loss_type = 'ntxent_cca'
-    elif args.model in ['dCCA-SSG']:
-        args.epochs = 100
-        args.lr1 = 1e-3
-        args.wd1 = 0.0
-        args.loss_type = 'dcca'         
+    # elif args.model in ['GRACE_CCA']:
+    #     args.epochs = 1000
+    #     args.lr1 = 1e-3
+    #     args.wd1 = 0.0
+    #     args.loss_type = 'ntxent_cca'
+    # elif args.model in ['dCCA-SSG']:
+    #     args.epochs = 100
+    #     args.lr1 = 1e-3
+    #     args.wd1 = 0.0
+    #     args.loss_type = 'dcca'         
     # elif args.model in ['CLNR-unif']:
     #     args.epochs = 600
     #     args.lr1 = 1e-3
@@ -111,4 +111,4 @@ for args.model in ['CLNR']:
     #results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
     results += [[args.model, args.dataset, args.epochs, args.sigma, args.outlier, eval_acc_mean, eval_acc_std, Lu_mean, Lu_std, La_mean, La_std]]#
 res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'noise', 'outlier', 'acc_mean', 'acc_std', 'Lu_mean', 'Lu_std', 'La_mean', 'La_std'])#, 
-res.to_csv(file_path + "_" + str(args.batch) + "_" + str(args.out_dim) + "_" + str(args.hid_dim) + "_" + args.dataset + "_" + str(args.outlier) + ".csv", index=False) #str(args.epochs)args.model + "_" + 
+res.to_csv(file_path + "_" + str(args.batch) + "_" + str(args.out_dim) + "_" + str(args.hid_dim) + "_" + args.dataset + "_" + str(args.sigma) + ".csv", index=False) #str(args.epochs)args.model + "_" + 
