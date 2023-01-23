@@ -38,9 +38,9 @@ parser.add_argument('--lambd', type=float, default=1e-3) # citeseer, computer, o
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--sigma', type=float, default=None) #None
 parser.add_argument('--alpha', type=float, default=None) #None
-parser.add_argument('--outlier', type=bool, default=None) #None
+parser.add_argument('--outlier', type=bool, default=True) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Robust_no_out")
+parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Robust_zero")
 
 args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
