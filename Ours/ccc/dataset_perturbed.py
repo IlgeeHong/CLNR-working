@@ -23,7 +23,7 @@ def load(name, sigma, alpha, outlier):
         if alpha is not None:
             new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=True)
         if outlier == True:
-            # noise = torch.zeros(temp.num_nodes, temp.num_features)
+            noise = torch.zeros(temp.num_nodes, temp.num_features)
             out = 10000 * torch.ones(1, temp.num_features)
             # out = torch.zeros(1, temp.num_features)
             ind = torch.LongTensor(random.sample(range(temp.train_mask.sum()), 10))
