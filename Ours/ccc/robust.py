@@ -53,7 +53,7 @@ results =[]
 # for args.model in ['CLNR','dCLNR','GRACE','GRACE_CCA','CCA-SSG','dCCA-SSG']:
 for args.model in ['CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
-        args.epochs = 100 # 10000
+        args.epochs = 1000 # 10000
         args.lr1 = 1e-2 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
