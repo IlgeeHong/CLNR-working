@@ -36,7 +36,7 @@ parser.add_argument('--fmr', type=float, default=0.0) #0.0 #0.2
 parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5
 parser.add_argument('--lambd', type=float, default=5e-4) # citeseer, computer, ogbn-arxiv 5e-4
 parser.add_argument('--batch', type=int, default=1024) #None
-parser.add_argument('--sigma', type=float, default=1.0) #None
+parser.add_argument('--sigma', type=float, default=0.1) #None
 parser.add_argument('--alpha', type=float, default=None) #None
 parser.add_argument('--outlier', type=bool, default=None) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
