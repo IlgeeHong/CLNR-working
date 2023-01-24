@@ -1,0 +1,5 @@
+model,dataset,epochs,noise,outlier,acc_mean,acc_std,Lu_mean,Lu_std,La_mean,La_std
+CLNR,ogbn-arxiv,10000,0.01,,0.7016,0.0017,-1.7354,0.0775,0.0746,0.0037
+dCLNR,ogbn-arxiv,10000,0.01,,0.701,0.0018,-3.5337,0.0078,0.157,0.0009
+GRACE,ogbn-arxiv,10000,0.01,,0.6977,0.0014,-3.1701,0.0324,0.1338,0.0017
+CCA-SSG,ogbn-arxiv,100,0.01,,0.4181,0.0205,-0.0154,0.0011,0.0003,0.0
