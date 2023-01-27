@@ -51,7 +51,8 @@ results =[]
 for args.sigma in [None, 0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5]:#torch.arange(0,1.5,0.2): #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
 # for args.model in ['CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
 # for args.model in ['CLNR','dCLNR','GRACE','GRACE_CCA','CCA-SSG','dCCA-SSG']:
-    for args.model in ['CLNR','dCLNR','GRACE','CCA-SSG']:
+    # for args.model in ['CLNR','dCLNR','GRACE','CCA-SSG']:
+    for args.model in ['CLNR']:
         if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
             args.epochs = 200 # 10000
             args.lr1 = 1e-3 # 1e-2
@@ -111,4 +112,4 @@ for args.sigma in [None, 0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5]:#torch.arange(0
         #results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
         results += [[args.model, args.dataset, args.epochs, args.sigma, args.outlier, eval_acc_mean, eval_acc_std, Lu_mean, Lu_std, La_mean, La_std]]#
 res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'noise', 'outlier', 'acc_mean', 'acc_std', 'Lu_mean', 'Lu_std', 'La_mean', 'La_std'])#, 
-res.to_csv(file_path + "_" + str(args.batch) + "_" + str(args.out_dim) + "_" + str(args.hid_dim) + "_" + args.dataset + ".csv", index=False) #str(args.epochs)args.model + "_" + + "_" + str(args.sigma) + 
+res.to_csv(file_path + "_" + args.model + "_" + str(args.batch) + "_" + str(args.out_dim) + "_" + str(args.hid_dim) + "_" + args.dataset + ".csv", index=False) #str(args.epochs)args.model + "_" + + "_" + str(args.sigma) + 
