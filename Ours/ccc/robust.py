@@ -52,7 +52,7 @@ for args.sigma in [None, 0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5]:#torch.arange(0
 # for args.model in ['CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
 # for args.model in ['CLNR','dCLNR','GRACE','GRACE_CCA','CCA-SSG','dCCA-SSG']:
     # for args.model in ['CLNR','dCLNR','GRACE','CCA-SSG']:
-    for args.model in ['dCLNR']:
+    for args.model in ['GRACE']:
         if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
             args.epochs = 200 # 10000
             args.lr1 = 1e-3 # 1e-2
