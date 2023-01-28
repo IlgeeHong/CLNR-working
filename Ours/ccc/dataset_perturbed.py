@@ -21,14 +21,14 @@ def load(name, sigma, alpha, outlier):
             noise = torch.normal(0, sigma, size=(temp.num_nodes, temp.num_features))
             feat = temp.x + noise
         if alpha is not None:
-            new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=True)
-        if outlier == True:
-            noise = torch.zeros(temp.num_nodes, temp.num_features)
-            out = 10000 * torch.ones(1, temp.num_features)
-            # out = torch.zeros(1, temp.num_features)
-            ind = torch.LongTensor(random.sample(range(temp.train_mask.sum()), 10))
-            noise[ind,:] = out
-            feat = temp.x + noise
+            new_edge_index, _ = dropout_edge(temp.edge_index, alpha, force_undirected=True) # add_random_edge
+        # if outlier == True:
+        #     noise = torch.zeros(temp.num_nodes, temp.num_features)
+        #     out = 10000 * torch.ones(1, temp.num_features)
+        #     # out = torch.zeros(1, temp.num_features)
+        #     ind = torch.LongTensor(random.sample(range(temp.train_mask.sum()), 10))
+        #     noise[ind,:] = out
+        #     feat = temp.x + noise
 
         data = deepcopy(temp)
         if sigma is not None:
