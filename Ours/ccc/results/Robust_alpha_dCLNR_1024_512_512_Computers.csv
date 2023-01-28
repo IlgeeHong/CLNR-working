@@ -1,0 +1,6 @@
+model,dataset,epochs,noise,outlier,acc_mean,acc_std,Lu_mean,Lu_std,La_mean,La_std
+dCLNR,Computers,200,,,0.8835,0.0047,-3.0036,0.1578,0.1075,0.0067
+dCLNR,Computers,200,,,0.8522,0.0037,-1.7943,0.0586,0.1417,0.0082
+dCLNR,Computers,200,,,0.8303,0.0044,-1.2238,0.0326,0.0907,0.0044
+dCLNR,Computers,200,,,0.8109,0.0052,-0.9445,0.0334,0.0712,0.0036
+dCLNR,Computers,200,,,0.7914,0.0103,-0.775,0.0533,0.0569,0.0045
