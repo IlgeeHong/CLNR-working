@@ -49,7 +49,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # newly added
 results =[]
 # for args.sigma in [None, 0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5]:#torch.arange(0,1.5,0.2): #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
-for args.alpha in [None, 0.2, 0.4, 0.6, 0.8]:#torch.arange(0,1.5,0.2): #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
+for args.sigma in [None, 0.2, 0.4, 0.6, 0.8]:#torch.arange(0,1.5,0.2): #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
 # for args.model in ['CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
 # for args.model in ['CLNR','dCLNR','GRACE','GRACE_CCA','CCA-SSG','dCCA-SSG']:
     for args.model in ['CLNR','dCLNR','GRACE','CCA-SSG']:

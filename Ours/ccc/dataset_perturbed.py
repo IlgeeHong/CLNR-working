@@ -18,8 +18,9 @@ def load(name, sigma, alpha, outlier):
         dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name) #, transform=transform
         temp = dataset[0]
         if sigma is not None:
-            noise = torch.normal(0, sigma, size=(temp.num_nodes, temp.num_features))
-            feat = temp.x + noise
+            new_feat, _ = mask_feature(temp.feat, alpha, mode='all') 
+        # noise = torch.normal(0, sigma, size=(temp.num_nodes, temp.num_features))
+        # feat = temp.x + noise
         if alpha is not None:
             new_edge_index, _ = dropout_edge(temp.edge_index, alpha, force_undirected=True) # add_random_edge
         # if outlier == True:
@@ -32,7 +33,7 @@ def load(name, sigma, alpha, outlier):
 
         data = deepcopy(temp)
         if sigma is not None:
-            data.x = feat
+            data.x = new_feat #feat
         if alpha is not None:
             data.edge_index = new_edge_index
         if outlier is True:
