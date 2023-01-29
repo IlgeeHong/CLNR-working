@@ -3,7 +3,7 @@ import torch
 import torch_geometric.transforms as T
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 from torch_geometric.data import Data
-from torch_geometric.utils import from_scipy_sparse_matrix, to_undirected
+from torch_geometric.utils import from_scipy_sparse_matrix, to_undirected, dropout_edge, mask_feature
 from sklearn.neighbors import kneighbors_graph
 from sklearn.datasets import make_moons, make_circles, make_swiss_roll
 from ogb.nodeproppred import PygNodePropPredDataset
@@ -136,6 +136,7 @@ def load(name, sigma, alpha, outlier):
             ind = torch.LongTensor(random.sample(range(temp.num_nodes), 1))
             noise[ind,:] = out
             feat = temp.x + noise
+
         data = deepcopy(temp)
         if sigma is not None:
             data.x = feat
