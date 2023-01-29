@@ -20,13 +20,13 @@ echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 # Add lines here to run your computations.
 module load python
 module load cuda
-# source activate pytorch_env2  
+source activate pytorch_env2  
 
 cd $SCRATCH/$USER/SelfGCon
 echo $1
 echo $2
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 python3 Ours/ccc/robust.py
-# conda deactivate
+conda deactivate
 ~
 ~
