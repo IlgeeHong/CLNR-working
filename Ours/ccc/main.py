@@ -37,7 +37,7 @@ parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5 # ogbn
 parser.add_argument('--lambd', type=float, default=1e-3) # citeseer, computer, ogbn-arxiv 5e-4 
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Cora")
+parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Final")
 # parser.add_argument('--model', type=str, default='CLNR')
 # # parser.add_argument('--loss_type', type=str, default='ntxent') #None 
 # parser.add_argument('--epochs', type=int, default=50)
