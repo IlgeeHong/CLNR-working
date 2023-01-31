@@ -61,19 +61,14 @@ for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR','GRACE','CLNR']:#,'CL
         args.loss_type = 'ntxent'
     elif args.model in ['GRACE','gCCA-SSG']:
         args.epochs = 400
-        args.lr1 = 1e-3
+        args.lr1 = 5e-4
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['CCA-SSG','dCCA-SSG']:
         args.epochs = 50
         args.lr1 = 1e-3
         args.wd1 = 0.0
-        args.loss_type = 'cca'
-    elif args.model in ['dCCA-SSG']:
-        args.epochs = 100
-        args.lr1 = 1e-3
-        args.wd1 = 0.0
-        args.loss_type = 'cca'    
+        args.loss_type = 'cca'   
     # elif args.model in ['GRACE_CCA']:
     #     args.epochs = 10000
     #     args.lr1 = 1e-3
