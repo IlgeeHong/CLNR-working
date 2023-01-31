@@ -52,7 +52,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR','GRACE','CLNR']:
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
-for args.model in ['dCCA','CCA-SSG']:
+for args.model in ['CCA-SSG']:
 # for args.model in ['GRACE','CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
         args.epochs = 10000
@@ -68,24 +68,21 @@ for args.model in ['dCCA','CCA-SSG']:
         args.epochs = 50
         args.lr1 = 1e-3
         args.wd1 = 0.0
-        args.loss_type = 'cca'           
-    elif args.model in ['dCCA']:
-        args.epochs = 50
-        args.lr1 = 1e-3
-        args.wd1 = 0.0
-        args.loss_type = 'dcca'               
+        args.loss_type = 'cca'                         
 
     eval_acc_list = []
     uniformity_list = []
     alignment_list = [] 
+    decor_list = [] 
     for exp in range(args.n_experiments):
         data, train_idx, val_idx, test_idx = load(args.dataset)
         model = ContrastiveLearning(args, data, device)
         model.train()
-        eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx)
+        eval_acc, Lu, La, dec = model.LinearEvaluation(train_idx, val_idx, test_idx)
         eval_acc_list.append(eval_acc.item())
         uniformity_list.append(Lu.item())
         alignment_list.append(La.item())
+        decor_list.append(dec.item())
         
     eval_acc_mean = round(mean(eval_acc_list),4)
     eval_acc_std = round(stdev(eval_acc_list),4)
@@ -93,9 +90,11 @@ for args.model in ['dCCA','CCA-SSG']:
     Lu_std = round(stdev(uniformity_list),4)
     La_mean = round(mean(alignment_list),4)
     La_std = round(stdev(alignment_list),4)
+    dec_mean = round(mean(decor_list),4)
+    dec_std = round(stdev(decor_list),4)
 
     print('model: ' + args.model + ' done')
     #results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
-    results += [[args.model, args.dataset, args.epochs, args.out_dim, eval_acc_mean, eval_acc_std, Lu_mean, Lu_std, La_mean, La_std]]#
-res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'out_dim', 'acc_mean', 'acc_std', 'Lu_mean', 'Lu_std', 'La_mean', 'La_std'])#, 
+    results += [[args.model, args.dataset, args.epochs, args.out_dim, eval_acc_mean, eval_acc_std, Lu_mean, Lu_std, La_mean, La_std, dec_mean]]#
+res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'out_dim', 'acc_mean', 'acc_std', 'Lu_mean', 'Lu_std', 'La_mean', 'La_std', 'dec'])#, 
 res.to_csv(file_path + "_" + str(args.batch) + "_" + str(args.out_dim) + "_" + str(args.hid_dim) + "_" + args.dataset +  ".csv", index=False) #str(args.epochs) + args.model + "_" + 
