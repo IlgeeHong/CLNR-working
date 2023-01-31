@@ -55,9 +55,9 @@ results =[]
 # for args.epochs in [50]:
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR','GRACE','CLNR']:#,'CLNR','GRACE','CCA-SSG','GRACE_CCA','dCCA-SSG']:
 for args.epochs in [50]:
-    for args.model in ['CCA-SSG']:
+    for args.model in ['CLNR']:
         if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
-            args.epochs = 10000
+            #args.epochs = 10000
             args.lr1 = 1e-3 # 1e-2
             args.wd1 = 0.0
             args.loss_type = 'ntxent'
