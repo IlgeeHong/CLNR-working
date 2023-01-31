@@ -104,6 +104,16 @@ class Model(nn.Module):
             dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
             z1 = dbn1(u)
             z2 = dbn2(v)
+        elif self.model in ["dCCA-SSG","dCCA"]:
+            dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            z1 = dbn1(u)
+            z2 = dbn2(v)
+        elif self.model == "gCCA-SSG":
+            u = F.elu(self.fc1(u))
+            v = F.elu(self.fc1(v))
+            z1 = self.fc2(u)
+            z2 = self.fc2(v)       
         elif self.model == "bCLNR":
             z1 = self.bn(u)
             z2 = self.bn(v)
