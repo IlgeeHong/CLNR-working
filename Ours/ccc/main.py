@@ -54,7 +54,7 @@ results =[]
 # for args.model in ['nCLNR','CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR',
 # for args.epochs in [50]:
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR','GRACE','CLNR']:#,'CLNR','GRACE','CCA-SSG','GRACE_CCA','dCCA-SSG']:
-for args.epochs in [50, 100, 200, 400, 600, 800, 1000]:
+for args.epochs in [50]:
     for args.model in ['CCA-SSG']:
         if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
             args.epochs = 10000
@@ -67,7 +67,7 @@ for args.epochs in [50, 100, 200, 400, 600, 800, 1000]:
             args.wd1 = 0.0
             args.loss_type = 'ntxent'
         elif args.model in ['CCA-SSG','dCCA-SSG']:
-            args.epochs = 50
+            # args.epochs = 50
             args.lr1 = 1e-3
             args.wd1 = 0.0
             args.loss_type = 'cca'           
