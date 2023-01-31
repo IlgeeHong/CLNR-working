@@ -53,7 +53,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 # for args.model in ['nCLNR','CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR',
 # for args.epochs in [50]:
-for args.model in ['dCCA','dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR','GRACE','CLNR']:#,'CLNR','GRACE','CCA-SSG','GRACE_CCA','dCCA-SSG']:
+for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR','GRACE','CLNR']:#,'CLNR','GRACE','CCA-SSG','GRACE_CCA','dCCA-SSG']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
         args.epochs = 50
         args.lr1 = 1e-3 # 1e-2
@@ -68,12 +68,7 @@ for args.model in ['dCCA','dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR','GRACE','CLNR'
         args.epochs = 50
         args.lr1 = 1e-3
         args.wd1 = 0.0
-        args.loss_type = 'cca' 
-    elif args.model in ['dCCA']:
-        args.epochs = 50
-        args.lr1 = 1e-3
-        args.wd1 = 0.0
-        args.loss_type = 'dcca'            
+        args.loss_type = 'cca'           
     # elif args.model in ['GRACE_CCA']:
     #     args.epochs = 10000
     #     args.lr1 = 1e-3
