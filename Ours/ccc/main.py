@@ -24,9 +24,9 @@ from statistics import mean, stdev
 # physics : 1000 / 1e-3 / 0.0 /
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default='Computers') #
-parser.add_argument('--n_experiments', type=int, default=20) #
-parser.add_argument('--n_layers', type=int, default=2) #3
+parser.add_argument('--dataset', type=str, default='ogbn-arxiv')
+parser.add_argument('--n_experiments', type=int, default=5)
+parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
@@ -49,20 +49,16 @@ args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# newly added
 results =[]
-# for args.model in ['nCLNR','CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR',
-# for args.epochs in [50]:
-for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR','GRACE','CLNR']:#,'CLNR','GRACE','CCA-SSG','GRACE_CCA','dCCA-SSG']:
-# for args.epochs in [50, 100, 200, 400, 600, 800, 1000]:
-# for args.model in ['CCA-SSG']:
+# for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR','GRACE','CLNR']:
+for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
-        args.epochs = 200
+        args.epochs = 10000
         args.lr1 = 1e-3 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['GRACE','gCCA-SSG']:
-        args.epochs = 1000
+        args.epochs = 10000
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
