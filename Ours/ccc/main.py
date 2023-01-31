@@ -30,8 +30,8 @@ parser.add_argument('--n_layers', type=int, default=3) #3
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
-parser.add_argument('--hid_dim', type=int, default=1024)
-parser.add_argument('--out_dim', type=int, default=1024) 
+parser.add_argument('--hid_dim', type=int, default=512)
+parser.add_argument('--out_dim', type=int, default=512) 
 parser.add_argument('--fmr', type=float, default=0.0) #0.0 #0.2 # 0.0
 parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5 # ogbn
 parser.add_argument('--lambd', type=float, default=5e-4) # citeseer, computer, ogbn-arxiv 5e-4 
@@ -54,8 +54,8 @@ results =[]
 # for args.model in ['nCLNR','CLNR','dCLNR','GRACE','CCA-SSG']: #'CLNR-unif','CLNR-align','bCLNR',
 # for args.epochs in [50]:
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR','GRACE','CLNR']:#,'CLNR','GRACE','CCA-SSG','GRACE_CCA','dCCA-SSG']:
-for args.epochs in [50]:
-    for args.model in ['CLNR']:
+for args.epochs in [50, 100, 200, 400, 600, 800, 1000]:
+    for args.model in ['CCA-SSG']:
         if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
             #args.epochs = 10000
             args.lr1 = 1e-3 # 1e-2
