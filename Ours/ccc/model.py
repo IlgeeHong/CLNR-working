@@ -191,21 +191,6 @@ class Model(nn.Module):
             loss_dec1 = (iden - c1).pow(2).sum()
             loss_dec2 = (iden - c2).pow(2).sum()
             ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
-        elif loss_type == 'dcca':
-            N = z1.shape[0]
-            c = torch.mm(z1.T, z2)
-            c1 = torch.mm(z1.T, z1)
-            c2 = torch.mm(z2.T, z2)
-            c = c #/ N
-            c1 = c1 #/ N
-            c2 = c2 #/ N
-            # loss_inv = - torch.diagonal(c).sum()
-            # ret = loss_inv
-            loss_inv = - torch.diagonal(c).sum()
-            iden = torch.tensor(np.eye(c.shape[0])).to(self.device)
-            loss_dec1 = (iden - c1).pow(2).sum()
-            loss_dec2 = (iden - c2).pow(2).sum()
-            ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
         elif loss_type == 'ntxent-uniform':
             l1 = self.semi_loss(z1, z2, indices, loss_type)
             l2 = self.semi_loss(z2, z1, indices, loss_type)
@@ -289,7 +274,7 @@ class ContrastiveLearning(nn.Module):
         z1 = self.model.get_embedding(self.data).to(self.device)[val_idx]
         c = torch.mm(z1.T, z1)
         iden = torch.tensor(np.eye(c.shape[0])).to(self.device)
-        ret = (iden - c).pow(2).sum()
+        ret = (iden - c).pow(2).sum()/(c.shape[0]*c.shape[0])
         return ret
 
     def LinearEvaluation(self, train_idx, val_idx, test_idx):
