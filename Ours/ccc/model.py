@@ -196,9 +196,9 @@ class Model(nn.Module):
             c = torch.mm(z1.T, z2)
             c1 = torch.mm(z1.T, z1)
             c2 = torch.mm(z2.T, z2)
-            c = c / N
-            c1 = c1 / N
-            c2 = c2 / N
+            c = c #/ N
+            c1 = c1 #/ N
+            c2 = c2 #/ N
             loss_inv = - torch.diagonal(c).sum()
             ret = loss_inv
         elif loss_type == 'ntxent-uniform':
