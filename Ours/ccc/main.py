@@ -52,7 +52,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR','GRACE','CLNR']:
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
-for args.model in ['dCCA']:
+for args.model in ['dCCA','CCA-SSG']:
 # for args.model in ['GRACE','CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
         args.epochs = 10000

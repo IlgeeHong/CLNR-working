@@ -199,8 +199,13 @@ class Model(nn.Module):
             c = c #/ N
             c1 = c1 #/ N
             c2 = c2 #/ N
+            # loss_inv = - torch.diagonal(c).sum()
+            # ret = loss_inv
             loss_inv = - torch.diagonal(c).sum()
-            ret = loss_inv
+            iden = torch.tensor(np.eye(c.shape[0])).to(self.device)
+            loss_dec1 = (iden - c1).pow(2).sum()
+            loss_dec2 = (iden - c2).pow(2).sum()
+            ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
         elif loss_type == 'ntxent-uniform':
             l1 = self.semi_loss(z1, z2, indices, loss_type)
             l2 = self.semi_loss(z2, z1, indices, loss_type)
