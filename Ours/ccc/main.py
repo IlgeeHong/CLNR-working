@@ -25,7 +25,7 @@ from statistics import mean, stdev
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv') #
-parser.add_argument('--n_experiments', type=int, default=3) #
+parser.add_argument('--n_experiments', type=int, default=2) #
 parser.add_argument('--n_layers', type=int, default=3) #3
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=1e-2)
@@ -71,38 +71,15 @@ for args.epochs in [50]:
             args.lr1 = 1e-3
             args.wd1 = 0.0
             args.loss_type = 'cca'           
-        # elif args.model in ['GRACE_CCA']:
-        #     args.epochs = 10000
-        #     args.lr1 = 1e-3
-        #     args.wd1 = 0.0
-        #     args.loss_type = 'ntxent_cca'
-        # elif args.model in ['dCCA-SSG']:
-        #     args.epochs = 50
-        #     args.lr1 = 1e-3
-        #     args.wd1 = 0.0
-        #     args.loss_type = 'dcca'   
-        # elif args.model in ['CLNR-unif']:
-        #     args.epochs = 600
-        #     args.lr1 = 1e-3
-        #     args.wd1 = 0.0
-        #     args.loss_type = 'ntxent-uniform'
-        # elif args.model in ['CLNR-align','nCLNR-align']:
-        #     args.epochs = 200
-        #     args.lr1 = 1e-3
-        #     args.wd1 = 0.0
-        #     args.loss_type = 'ntxent-align'
 
         eval_acc_list = []
         uniformity_list = []
         alignment_list = [] 
         for exp in range(args.n_experiments):
             data, train_idx, val_idx, test_idx = load(args.dataset)
-            # print(data)
-            # print(data.y)
-            # print(data.y.shape)
             model = ContrastiveLearning(args, data, device)
             model.train()
-            eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx) #
+            eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx)
             eval_acc_list.append(eval_acc.item())
             uniformity_list.append(Lu.item())
             alignment_list.append(La.item())
