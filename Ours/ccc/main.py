@@ -37,7 +37,7 @@ parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5 # ogbn
 parser.add_argument('--lambd', type=float, default=5e-4) # citeseer, computer, ogbn-arxiv 5e-4 
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Final1") #_test_epoch_lamb
+parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Final2") #_test_epoch_lamb
 # parser.add_argument('--model', type=str, default='CLNR')
 # # parser.add_argument('--loss_type', type=str, default='ntxent') #None 
 # parser.add_argument('--epochs', type=int, default=50)
@@ -51,9 +51,9 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 results =[]
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR','GRACE','CLNR']:
-for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
+# for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
 # for args.model in ['CCA-SSG']:
-# for args.model in ['GRACE','CLNR']:
+for args.model in ['GRACE','CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
         args.epochs = 10000
         args.lr1 = 1e-3 # 1e-2
