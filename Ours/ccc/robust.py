@@ -52,7 +52,7 @@ results =[]
 for args.alpha in [0.0, 0.2, 0.4, 0.6, 0.8]:#torch.arange(0,1.5,0.2): #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
 # for args.model in ['CCA-SSG']:
-    for args.model in ['CCA-SSG']:
+    for args.model in ['gCCA-SSG']:
         if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
             args.epochs = 10000
             args.lr1 = 1e-3 # 1e-2
