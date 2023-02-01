@@ -255,8 +255,9 @@ class ContrastiveLearning(nn.Module):
     def uniformity(self, val_idx):
         new_data1 = random_aug(self.data,self.fmr,self.edr)
         new_data2 = random_aug(self.data,self.fmr,self.edr)
-        z1 = F.normalize(self.model.get_embedding(new_data1).to(self.device)[val_idx])
-        z2 = F.normalize(self.model.get_embedding(new_data2).to(self.device)[val_idx])
+        u, v = self.model.projection(self.model.get_embedding(new_data1).to(self.device), self.model.get_embedding(new_data2).to(self.device))
+        z1 = F.normalize(u)[val_idx]
+        z2 = F.normalize(v)[val_idx]
         sq_pdist1 = torch.pdist(z1, p=2).pow(2)
         sq_pdist2 = torch.pdist(z2, p=2).pow(2)
         l1 = sq_pdist1.mul(-2).exp().mean().log()
@@ -266,16 +267,23 @@ class ContrastiveLearning(nn.Module):
     def alignment(self, val_idx):
         new_data1 = random_aug(self.data,self.fmr,self.edr)
         new_data2 = random_aug(self.data,self.fmr,self.edr)
-        z1 = F.normalize(self.model.get_embedding(new_data1).to(self.device)[val_idx])
-        z2 = F.normalize(self.model.get_embedding(new_data2).to(self.device)[val_idx])
+        u, v = self.model.projection(self.model.get_embedding(new_data1).to(self.device), self.model.get_embedding(new_data2).to(self.device))
+        z1 = F.normalize(u)[val_idx]
+        z2 = F.normalize(v)[val_idx]
         return (z1-z2).norm(p=2, dim=1).pow(2).mean()
+    # def alignment(self, val_idx):
+    #     new_data1 = random_aug(self.data,self.fmr,self.edr)
+    #     new_data2 = random_aug(self.data,self.fmr,self.edr)
+    #     z1 = F.normalize(self.model.get_embedding(new_data1).to(self.device)[val_idx])
+    #     z2 = F.normalize(self.model.get_embedding(new_data2).to(self.device)[val_idx])
+    #     return (z1-z2).norm(p=2, dim=1).pow(2).mean()
 
-    def decorr(self, val_idx):
-        z1 = self.model.get_embedding(self.data).to(self.device)[val_idx]
-        c = torch.mm(z1.T, z1)
-        iden = torch.tensor(np.eye(c.shape[0])).to(self.device)
-        ret = (iden - c).pow(2).sum()/(c.shape[0]*c.shape[0])
-        return ret
+    # def decorr(self, val_idx):
+    #     z1 = self.model.get_embedding(self.data).to(self.device)[val_idx]
+    #     c = torch.mm(z1.T, z1)
+    #     iden = torch.tensor(np.eye(c.shape[0])).to(self.device)
+    #     ret = (iden - c).pow(2).sum()/(c.shape[0]*c.shape[0])
+    #     return ret
 
     def LinearEvaluation(self, train_idx, val_idx, test_idx):
         # self.model.eval()
