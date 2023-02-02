@@ -1,0 +1,4 @@
+model,dataset,epochs,out_dim,acc_mean,acc_std,Lu_mean,Lu_std,La_mean,La_std,dec
+dCLNR,PubMed,600,512,0.815,0.0077,-3.1794,0.0096,0.2342,0.0155,0.002
+GRACE,PubMed,1000,512,0.8139,0.0133,-2.6961,0.0636,0.1551,0.0111,0.0021
+CLNR,PubMed,600,512,0.828,0.0058,-3.3309,0.0077,0.2272,0.0166,0.0031

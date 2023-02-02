@@ -1,0 +1,4 @@
+model,dataset,epochs,out_dim,acc_mean,acc_std,Lu_mean,Lu_std,La_mean,La_std,dec
+dCLNR,Photo,100,512,0.9294,0.0033,-3.2307,0.0219,0.1358,0.0071,0.8322
+GRACE,Photo,1000,512,0.9326,0.0027,-3.299,0.015,0.0606,0.0036,14.0316
+CLNR,Photo,100,512,0.9322,0.0036,-3.394,0.0155,0.11,0.0056,17.6867
