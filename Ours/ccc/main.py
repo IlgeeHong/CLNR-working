@@ -51,12 +51,12 @@ for args.model in ['nCLNR','CLNR','dCLNR','GRACE','GCLNR']:
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
 # for args.model in ['CCA-SSG']:
 # for args.model in ['GRACE','CLNR']:
-    if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
+    if args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GCLNR']:
         args.epochs = 50 # 10000
         args.lr1 = 1e-3 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
-    elif args.model in ['GRACE','gCCA-SSG','GCLNR']:
+    elif args.model in ['GRACE','gCCA-SSG']:
         args.epochs = 400 # 10000
         args.lr1 = 5e-4
         args.wd1 = 0.0
