@@ -1,0 +1,4 @@
+model,dataset,epochs,out_dim,acc_mean,acc_std,Lu_mean,Lu_std,La_mean,La_std,dec
+dCLNR,Physics,50,512,0.9541,0.0008,-3.1335,0.0159,0.1351,0.0082,37.64
+GRACE,Physics,1000,512,0.9521,0.0013,-3.444,0.0098,0.0803,0.0022,56.4393
+CLNR,Physics,50,512,0.9549,0.0012,-3.3195,0.008,0.135,0.0056,239.3317
