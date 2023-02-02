@@ -57,8 +57,8 @@ for args.model in ['GCLNR','CLNR']:
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['GRACE','gCCA-SSG','GCLNR']:
-        args.epochs = 400 # 10000
-        args.lr1 = 5e-4
+        args.epochs = 200 # 10000
+        args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     # elif args.model in ['CCA-SSG','dCCA-SSG']:
