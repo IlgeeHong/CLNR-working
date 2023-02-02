@@ -94,6 +94,13 @@ class Model(nn.Module):
         elif self.model in ["CCA-SSG","CLNR","CLNR-unif","CLNR-align"]:
             z1 = (u - u.mean(0)) / u.std(0)
             z2 = (v - v.mean(0)) / v.std(0)
+        elif self.model in ["GCLNR"]:
+            u = F.elu(self.fc1(u))
+            v = F.elu(self.fc1(v))
+            u = self.fc2(u)
+            v = self.fc2(v)
+            z1 = (u - u.mean(0)) / u.std(0)
+            z2 = (v - v.mean(0)) / v.std(0)    
         elif self.model in "dCCA-SSG":
             dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
             dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
@@ -171,9 +178,9 @@ class Model(nn.Module):
             c = torch.mm(z1.T, z2)
             c1 = torch.mm(z1.T, z1)
             c2 = torch.mm(z2.T, z2)
-            c = c #/ N
-            c1 = c1 #/ N
-            c2 = c2 #/ N 
+            c = c / N
+            c1 = c1 / N
+            c2 = c2 / N 
             iden = torch.tensor(np.eye(c.shape[0])).to(self.device)
             loss_dec1 = (iden - c1).pow(2).sum()
             loss_dec2 = (iden - c2).pow(2).sum()
