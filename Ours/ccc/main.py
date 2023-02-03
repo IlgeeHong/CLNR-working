@@ -37,7 +37,7 @@ parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5 # ogbn
 parser.add_argument('--lambd', type=float, default=5e-4) # citeseer, computer, ogbn-arxiv 5e-4 
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Final_test1") 
+parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Final_test2") 
 
 args = parser.parse_args()
 
