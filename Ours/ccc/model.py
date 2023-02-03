@@ -187,6 +187,8 @@ class Model(nn.Module):
             ret = inv + self.lambd * (loss_dec1 + loss_dec2)
         elif loss_type == 'cca':
             N = z1.shape[0]
+            z1 = F.normalize(z1)
+            z2 = F.normalize(z2)
             c = torch.mm(z1.T, z2)
             c1 = torch.mm(z1.T, z1)
             c2 = torch.mm(z2.T, z2)
