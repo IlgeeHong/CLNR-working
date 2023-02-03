@@ -18,34 +18,33 @@ def load(name, sigma, alpha, outlier):
         transform = T.Compose([T.NormalizeFeatures()]) #,T.ToDevice(device)
         dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name) #, transform=transform
         temp = dataset[0]
-        edge_mask = mask_edge(temp, alpha)
-        feat = drop_feature(temp.x, alpha)
-        data = deepcopy(temp)
-        src = data.edge_index[0]
-        dst = data.edge_index[1]
-        nsrc = src[edge_mask]
-        ndst = dst[edge_mask]
-        data.edge_index = torch.vstack([nsrc, ndst])
-        data.x = feat
-        # if sigma is not None:
-        # #    new_feat, _ = mask_feature(temp.feat, alpha, mode='all') 
-        #     noise = torch.normal(0, sigma, size=(temp.num_nodes, temp.num_features))
-        #     new_feat = temp.x + noise
-        # if alpha is not None:
-        #     new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=True)
-        # # if outlier == True:
-        # #     noise = torch.zeros(temp.num_nodes, temp.num_features)
-        # #     out = 10000 * torch.ones(1, temp.num_features)
-        # #     # out = torch.zeros(1, temp.num_features)
-        # #     ind = torch.LongTensor(random.sample(range(temp.train_mask.sum()), 10))
-        # #     noise[ind,:] = out
-        # #     feat = temp.x + noise
-
+        # edge_mask = mask_edge(temp, alpha)
+        # feat = drop_feature(temp.x, alpha)
         # data = deepcopy(temp)
-        # if sigma is not None:
-        #     data.x = new_feat #feat
-        # if alpha is not None:
-        #     data.edge_index = new_edge_index
+        # src = data.edge_index[0]
+        # dst = data.edge_index[1]
+        # nsrc = src[edge_mask]
+        # ndst = dst[edge_mask]
+        # data.edge_index = torch.vstack([nsrc, ndst])
+        # data.x = feat
+        if sigma is not None:
+            noise = torch.normal(0, sigma, size=(temp.num_nodes, temp.num_features))
+            new_feat = temp.x + noise
+        if alpha is not None:
+            new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=True)
+        # if outlier == True:
+        #     noise = torch.zeros(temp.num_nodes, temp.num_features)
+        #     out = 10000 * torch.ones(1, temp.num_features)
+        #     # out = torch.zeros(1, temp.num_features)
+        #     ind = torch.LongTensor(random.sample(range(temp.train_mask.sum()), 10))
+        #     noise[ind,:] = out
+        #     feat = temp.x + noise
+
+        data = deepcopy(temp)
+        if sigma is not None:
+            data.x = new_feat #feat
+        if alpha is not None:
+            data.edge_index = new_edge_index
         # if outlier is True:
         #     data.x = feat
         data = transform(data)
@@ -60,23 +59,14 @@ def load(name, sigma, alpha, outlier):
         temp = dataset[0]
         if sigma is not None:
             noise = torch.normal(0, sigma, size=(temp.num_nodes, temp.num_features))
-            feat = temp.x + noise
+            new_feat = temp.x + noise
         if alpha is not None:
             new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=True)
-        if outlier == True:
-            noise = torch.zeros(temp.num_nodes, temp.num_features)
-            out = 10000 * torch.ones(1, temp.num_features)
-            ind = torch.LongTensor(random.sample(range(temp.num_nodes), 1))
-            noise[ind,:] = out
-            feat = temp.x + noise
-
         data = deepcopy(temp)
         if sigma is not None:
-            data.x = feat
+            data.x = new_feat
         if alpha is not None:
             data.edge_index = new_edge_index
-        if outlier is True:
-            data.x = feat
         data = transform(data)
         train_idx = data.train_mask 
         val_idx = data.val_mask 
@@ -89,23 +79,14 @@ def load(name, sigma, alpha, outlier):
         temp = dataset[0]
         if sigma is not None:
             noise = torch.normal(0, sigma, size=(temp.num_nodes, temp.num_features))
-            feat = temp.x + noise
+            new_feat = temp.x + noise
         if alpha is not None:
             new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=True)
-        if outlier == True:
-            noise = torch.zeros(temp.num_nodes, temp.num_features)
-            out = 10000 * torch.ones(1, temp.num_features)
-            ind = torch.LongTensor(random.sample(range(temp.num_nodes), 1))
-            noise[ind,:] = out
-            feat = temp.x + noise
-
         data = deepcopy(temp)
         if sigma is not None:
-            data.x = feat
+            data.x = new_feat
         if alpha is not None:
             data.edge_index = new_edge_index
-        if outlier is True:
-            data.x = feat
         data = transform(data)
         train_idx = data.train_mask 
         val_idx = data.val_mask 
@@ -132,26 +113,16 @@ def load(name, sigma, alpha, outlier):
         transform = T.Compose([T.ToUndirected()])
         dataset = PygNodePropPredDataset(name=name, root = '/scratch/midway3/ilgee/SelfGCon/dataset', transform=transform)
         temp = dataset[0]
-        print(temp.x.shape)
         if sigma is not None:
             noise = torch.normal(0, sigma, size=(temp.num_nodes, temp.num_features))
-            feat = temp.x + noise
+            new_feat = temp.x + noise
         if alpha is not None:
-            new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=True)
-        if outlier == True:
-            noise = torch.zeros(temp.num_nodes, temp.num_features)
-            out = 10000 * torch.ones(1, temp.num_features)
-            ind = torch.LongTensor(random.sample(range(temp.num_nodes), 1))
-            noise[ind,:] = out
-            feat = temp.x + noise
-
+            new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=False)
         data = deepcopy(temp)
         if sigma is not None:
-            data.x = feat
+            data.x = new_feat
         if alpha is not None:
             data.edge_index = new_edge_index
-        if outlier is True:
-            data.x = feat
         data = transform(data)
         split_idx = dataset.get_idx_split()
         train_idx = split_idx["train"]
