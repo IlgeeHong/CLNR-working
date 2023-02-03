@@ -49,7 +49,7 @@ results =[]
 # for args.model in ['CLNR','dCLNR','GRACE']:#'nCLNR',
 # ,'dCCA-SSG','gCCA-SSG','CCA-SSG'
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
-for args.model in ['CLNR']:
+for args.model in ['dCLNR']:
 # for args.model in ['GRACE','CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GCLNR']:
         args.epochs = 10000 
