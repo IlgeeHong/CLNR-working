@@ -48,8 +48,9 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # newly added
 results =[]
-for args.sigma in [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5]:#torch.arange(0,1.5,0.2): #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
+# for args.sigma in [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5]:#torch.arange(0,1.5,0.2): #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
 # for args.sigma in [0.0, 0.2, 0.4, 0.6, 0.8]:#torch.arange(0,1.5,0.2): #'CLNR-unif','CLNR-align','bCLNR','nCLNR',
+for args.alpha in [0.0, 0.2, 0.4, 0.6, 0.8]:
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
 # for args.model in ['CCA-SSG']:
     for args.model in ['CCA-SSG','dCCA-SSG','gCCA-SSG','CLNR','dCLNR','GRACE']:
@@ -82,6 +83,6 @@ for args.sigma in [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5]:#torch.arange(0,
 
         print('model: ' + args.model + ' done')
         #results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
-        results += [[args.model, args.dataset, args.epochs, args.sigma, args.outlier, eval_acc_mean, eval_acc_std]]#
-res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'sigma', 'outlier', 'acc_mean', 'acc_std'])#, 
-res.to_csv(file_path + "_" + args.model + "_" + str(args.batch) + "_" + str(args.out_dim) + "_" + str(args.hid_dim) + "_" + args.dataset + ".csv", index=False) #str(args.epochs)args.model + "_" + + "_" + str(args.sigma) + + args.model + "_" 
+        results += [[args.model, args.dataset, args.epochs, args.alpha, args.outlier, eval_acc_mean, eval_acc_std]]#
+res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'alpha', 'outlier', 'acc_mean', 'acc_std'])#, 
+res.to_csv(file_path + "_" + str(args.batch) + "_" + str(args.out_dim) + "_" + str(args.hid_dim) + "_" + args.dataset + ".csv", index=False) #str(args.epochs)args.model + "_" + + "_" + str(args.sigma) + + args.model + "_" 
