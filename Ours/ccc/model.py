@@ -283,13 +283,21 @@ class ContrastiveLearning(nn.Module):
         return (l1+l2)/2
 
     def alignment(self, val_idx):
-        new_data1 = random_aug(self.data,self.fmr,self.edr)
-        new_data2 = random_aug(self.data,self.fmr,self.edr)
-        new_data1 = new_data1.to(self.device)
-        new_data2 = new_data2.to(self.device)
-        u, v = self.model.projection(self.model.get_embedding(new_data1), self.model.get_embedding(new_data2))
-        z1 = F.normalize(u)[val_idx]
-        z2 = F.normalize(v)[val_idx]
+        if self.dataset == "ogbn-arxiv":
+            self.model = self.model.cpu()
+            new_data1 = random_aug(self.data,self.fmr,self.edr)
+            new_data2 = random_aug(self.data,self.fmr,self.edr)
+            u, v = self.model.projection(self.model.get_embedding(new_data1), self.model.get_embedding(new_data2))
+            z1 = F.normalize(u)[val_idx]
+            z2 = F.normalize(v)[val_idx]
+        else:
+            new_data1 = random_aug(self.data,self.fmr,self.edr)
+            new_data2 = random_aug(self.data,self.fmr,self.edr)
+            new_data1 = new_data1.to(self.device)
+            new_data2 = new_data2.to(self.device)
+            u, v = self.model.projection(self.model.get_embedding(new_data1), self.model.get_embedding(new_data2))
+            z1 = F.normalize(u)[val_idx]
+            z2 = F.normalize(v)[val_idx]
         return (z1-z2).norm(p=2, dim=1).pow(2).mean()
 
     # def alignment(self, val_idx):
