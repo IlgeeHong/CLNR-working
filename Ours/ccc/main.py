@@ -25,7 +25,7 @@ from statistics import mean, stdev
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv')
-parser.add_argument('--n_experiments', type=int, default=5)
+parser.add_argument('--n_experiments', type=int, default=2)
 parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=1e-2)
@@ -37,7 +37,7 @@ parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5 # ogbn
 parser.add_argument('--lambd', type=float, default=5e-4) # citeseer, computer, ogbn-arxiv 5e-4 
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Final_test4") 
+parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Final_test3") 
 
 args = parser.parse_args()
 
@@ -49,7 +49,7 @@ results =[]
 # for args.model in ['CLNR','dCLNR','GRACE']:#'nCLNR',
 # ,'dCCA-SSG','gCCA-SSG','CCA-SSG'
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
-for args.model in ['gCCA-SSG']:
+for args.model in ['GRACE']:
 # for args.model in ['GRACE','CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GCLNR']:
         args.epochs = 10000 
