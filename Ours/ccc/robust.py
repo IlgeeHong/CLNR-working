@@ -37,10 +37,10 @@ parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5
 parser.add_argument('--lambd', type=float, default=1e-3) # citeseer, computer, ogbn-arxiv 5e-4
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--sigma', type=float, default=None) #None
-parser.add_argument('--alpha', type=float, default=None) #None
+parser.add_argument('--alpha', type=float, default=0.2) #None
 parser.add_argument('--outlier', type=bool, default=None) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/test_feat_robust")
+parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/test_feat_robust2")
 
 args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
