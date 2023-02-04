@@ -16,7 +16,7 @@ def load(name, sigma, alpha, outlier):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
         # Data = os.getcwd()+'/Planetoid'
         transform = T.Compose([T.NormalizeFeatures()]) #,T.ToDevice(device)
-        dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name) #, transform=transform
+        dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name, transform=transform)
         temp = dataset[0]
         # edge_mask = mask_edge(temp, alpha)
         # feat = drop_feature(temp.x, alpha)
@@ -47,7 +47,7 @@ def load(name, sigma, alpha, outlier):
             data.edge_index = new_edge_index
         # if outlier is True:
         #     data.x = feat
-        data = transform(data)
+        # data = transform(data)
         train_idx = data.train_mask 
         val_idx = data.val_mask 
         test_idx = data.test_mask  
