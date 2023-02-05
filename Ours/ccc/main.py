@@ -52,12 +52,12 @@ results =[]
 for args.model in ['GRACE']:
 # for args.model in ['GRACE','CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GCLNR']:
-        args.epochs = 10000 
+        args.epochs = 10000
         args.lr1 = 1e-3 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['GRACE','gCCA-SSG']:
-        args.epochs = 10000 
+        args.epochs = 100
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
