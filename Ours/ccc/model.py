@@ -263,8 +263,6 @@ class ContrastiveLearning(nn.Module):
         if self.dataset == "ogbn-arxiv":
             new_data1 = random_aug(self.data,self.fmr,self.edr)
             new_data2 = random_aug(self.data,self.fmr,self.edr)
-            new_data1 = new_data1.to(self.device)
-            new_data2 = new_data2.to(self.device)
             u, v = self.model(new_data1, new_data2)
             u, v = self.model.projection(u, v)
             z1 = F.normalize(u)[val_idx]
@@ -330,18 +328,17 @@ class ContrastiveLearning(nn.Module):
         #                 })['acc']
         # else:
 
-        # calculate metric
-        Lu = self.uniformity(val_idx)
-        La = self.alignment(val_idx)
-        dec = self.decorr(val_idx)
-
         if self.dataset == "ogbn-arxiv":
             self.model = self.model.cpu()
             embeds = self.model.get_embedding(self.data)
             embeds = embeds.to(self.device)
-            self.model.to(self.device)
         else:
             embeds = self.model.get_embedding(self.data.to(self.device))
+
+        # calculate metric
+        Lu = self.uniformity(val_idx)
+        La = self.alignment(val_idx)
+        dec = self.decorr(val_idx)    
             
         train_embs = embeds[train_idx]
         val_embs = embeds[val_idx]
