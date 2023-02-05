@@ -25,7 +25,7 @@ from statistics import mean, stdev
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv')
-parser.add_argument('--n_experiments', type=int, default=2)
+parser.add_argument('--n_experiments', type=int, default=5)
 parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=1e-2)
@@ -49,7 +49,7 @@ results =[]
 # for args.model in ['CLNR','dCLNR','GRACE']:#'nCLNR',
 # ,'dCCA-SSG','gCCA-SSG','CCA-SSG'
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
-for args.model in ['GRACE']:
+for args.model in ['GRACE','nCLNR']:
 # for args.model in ['GRACE','CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GCLNR']:
         args.epochs = 10000
@@ -57,7 +57,7 @@ for args.model in ['GRACE']:
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['GRACE','gCCA-SSG']:
-        args.epochs = 100
+        args.epochs = 10000
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'

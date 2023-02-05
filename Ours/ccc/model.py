@@ -10,12 +10,6 @@ import pdb
 from torch_geometric.loader import NeighborLoader
 # from ogb.nodeproppred import Evaluator
 
-# CUDA support
-# if torch.cuda.is_available():
-#     device = torch.device('cuda')
-# else:
-#     device = torch.device('cpu')
-
 class LogReg(nn.Module):
     def __init__(self, hid_dim, out_dim):
         super(LogReg, self).__init__()
@@ -158,30 +152,20 @@ class ContrastiveLearning(nn.Module):
         self.data = data
         self.device = device
         self.num_class = int(self.data.y.max().item()) + 1 
+        # encoder (GCN)
         self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, args.lambd, self.device, self.model, args.mlp_use)
         self.model = self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=args.lr1, weight_decay=args.wd1)
-
-        # if self.dataset == "ogbn-arxiv":
-        #     self.s = lambda epoch: epoch / 1000 if epoch < 1000 else ( 1 + np.cos((epoch-1000) * np.pi / (self.epochs - 1000))) * 0.5
-        #     self.scheduler = torch.optim.lr_scheduler.LambdaLR(self.optimizer, lr_lambda=self.s)
-        # if self.dataset in ['Swissroll','Moon','Circles']:
-        #     self.logreg = LogReg(args.out_dim, 1)
-        # else:
+        # logistic regression
         self.logreg = LogReg(args.out_dim, self.num_class)
         self.logreg = self.logreg.to(self.device)
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
 
     def train(self):
-        # loader = NeighborLoader(self.data, num_neighbors=[30] * 2, batch_size = self.batch, input_nodes=self.data.train_mask)
         for epoch in range(self.epochs):
             self.model.train()
-            # for batch in loader:
-                # print(batch.edge_index)
-                # A = batch.edge_index[0]
-                # print(A.unique().shape)
             self.optimizer.zero_grad()
-            new_data1 = random_aug(self.data, self.fmr, self.edr) #batch
+            new_data1 = random_aug(self.data, self.fmr, self.edr)
             new_data2 = random_aug(self.data, self.fmr, self.edr)
             new_data1 = new_data1.to(self.device)
             new_data2 = new_data2.to(self.device)
@@ -189,12 +173,10 @@ class ContrastiveLearning(nn.Module):
             loss = self.model.loss(u, v, self.batch, self.loss_type)
             loss.backward()
             self.optimizer.step()
-            # if self.dataset == "ogbn-arxiv":
-            #     self.scheduler.step()
-            # print('Epoch={:03d}, loss={:.4f}'.format(epoch, loss))
 
     def uniformity(self, val_idx):                    
         if self.dataset == "ogbn-arxiv":
+            # model and data is in cpu
             new_data1 = random_aug(self.data,self.fmr,self.edr)
             new_data2 = random_aug(self.data,self.fmr,self.edr)
             u, v = self.model(new_data1, new_data2)
@@ -203,10 +185,10 @@ class ContrastiveLearning(nn.Module):
             z1 = F.normalize(u)[val_idx]
             z2 = F.normalize(v)[val_idx]
         else:
+            # model and data is in gpu
             new_data1 = random_aug(self.data,self.fmr,self.edr)
             new_data2 = random_aug(self.data,self.fmr,self.edr)
-            new_data1 = new_data1.to(self.device)
-            new_data2 = new_data2.to(self.device)
+            new_data1, new_data2 = new_data1.to(self.device), new_data2.to(self.device)
             u, v = self.model.projection(self.model.get_embedding(new_data1), self.model.get_embedding(new_data2))
             z1 = F.normalize(u)[val_idx]
             z2 = F.normalize(v)[val_idx]          
@@ -235,13 +217,6 @@ class ContrastiveLearning(nn.Module):
             z1 = F.normalize(u)[val_idx]
             z2 = F.normalize(v)[val_idx]
         return (z1-z2).norm(p=2, dim=1).pow(2).mean()
-
-    # def alignment(self, val_idx):
-    #     new_data1 = random_aug(self.data,self.fmr,self.edr)
-    #     new_data2 = random_aug(self.data,self.fmr,self.edr)
-    #     z1 = F.normalize(self.model.get_embedding(new_data1).to(self.device)[val_idx])
-    #     z2 = F.normalize(self.model.get_embedding(new_data2).to(self.device)[val_idx])
-    #     return (z1-z2).norm(p=2, dim=1).pow(2).mean()
 
     def decorr(self, val_idx):
         z1 = self.model.get_embedding(self.data).to(self.device)[val_idx]
