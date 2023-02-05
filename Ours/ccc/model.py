@@ -275,7 +275,7 @@ class ContrastiveLearning(nn.Module):
             u, v = self.model.projection(self.model.get_embedding(new_data1), self.model.get_embedding(new_data2))
             z1 = F.normalize(u)[val_idx]
             z2 = F.normalize(v)[val_idx]          
-            
+
         sq_pdist1 = torch.pdist(z1, p=2).pow(2)
         sq_pdist2 = torch.pdist(z2, p=2).pow(2)
         l1 = sq_pdist1.mul(-2).exp().mean().log()
@@ -331,6 +331,7 @@ class ContrastiveLearning(nn.Module):
             self.model = self.model.cpu()
             embeds = self.model.get_embedding(self.data)
             embeds = embeds.to(self.device)
+            self.model.to(self.device)
         else:
             embeds = self.model.get_embedding(self.data.to(self.device))
             
