@@ -261,10 +261,10 @@ class ContrastiveLearning(nn.Module):
 
     def uniformity(self, val_idx):                    
         if self.dataset == "ogbn-arxiv":
-            self.model = self.model.cpu()
+            # self.model = self.model.cpu()
             new_data1 = random_aug(self.data,self.fmr,self.edr)
             new_data2 = random_aug(self.data,self.fmr,self.edr)
-            u, v = self.model.get_embedding(new_data1), self.model.get_embedding(new_data2)
+            u, v = self.model(new_data1, new_data2)
             # self.model = self.model.to(self.device)
             u, v = self.model.projection(u, v)
             z1 = F.normalize(u)[val_idx]
