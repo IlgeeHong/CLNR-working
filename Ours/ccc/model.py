@@ -263,6 +263,8 @@ class ContrastiveLearning(nn.Module):
         if self.dataset == "ogbn-arxiv":
             new_data1 = random_aug(self.data,self.fmr,self.edr)
             new_data2 = random_aug(self.data,self.fmr,self.edr)
+            new_data1 = new_data1.to(self.device)
+            new_data2 = new_data2.to(self.device)
             u, v = self.model(new_data1, new_data2)
             u, v = self.model.projection(u, v)
             z1 = F.normalize(u)[val_idx]
@@ -327,7 +329,7 @@ class ContrastiveLearning(nn.Module):
         #                 'y_pred': y_pred[split_idx['test']],
         #                 })['acc']
         # else:
-        
+
         # calculate metric
         Lu = self.uniformity(val_idx)
         La = self.alignment(val_idx)
