@@ -10,7 +10,7 @@
 #SBATCH --ntasks-per-node=1 # num cores to drive each gpu
 #SBATCH --cpus-per-task=1   # set this to the desired number of threads
 #SBATCH --account=pi-cdonnat
-#SBATCH --mem-per-cpu=30G
+#SBATCH --mem-per-cpu=40G
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ilgee@uchicago.edu
 
