@@ -327,6 +327,12 @@ class ContrastiveLearning(nn.Module):
         #                 'y_pred': y_pred[split_idx['test']],
         #                 })['acc']
         # else:
+        
+        # calculate metric
+        Lu = self.uniformity(val_idx)
+        La = self.alignment(val_idx)
+        dec = self.decorr(val_idx)
+
         if self.dataset == "ogbn-arxiv":
             self.model = self.model.cpu()
             embeds = self.model.get_embedding(self.data)
@@ -348,11 +354,6 @@ class ContrastiveLearning(nn.Module):
         train_labels = label[train_idx]
         val_labels = label[val_idx]
         test_labels = label[test_idx]
-
-        # calculate metric
-        Lu = self.uniformity(val_idx)
-        La = self.alignment(val_idx)
-        dec = self.decorr(val_idx)
 
         loss_fn = nn.CrossEntropyLoss()       
         best_val_acc = 0
