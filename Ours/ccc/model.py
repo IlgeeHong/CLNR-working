@@ -85,49 +85,24 @@ class Model(nn.Module):
         v = self.backbone(data2.x, data2.edge_index)
         return u, v
         
-    def projection(self, u, v):
-        if self.model == "GRACE":
+    def projection(self, u):
+        if self.model in ["GRACE","gCCA-SSG"]:
             u = F.elu(self.fc1(u))
-            v = F.elu(self.fc1(v))
-            z1 = self.fc2(u)
-            z2 = self.fc2(v)
-        elif self.model in ["CCA-SSG","CLNR","CLNR-unif","CLNR-align"]:
-            z1 = (u - u.mean(0)) / u.std(0)
-            z2 = (v - v.mean(0)) / v.std(0)
+            z = self.fc2(u)
+        elif self.model in ["CCA-SSG","CLNR"]:
+            z = (u - u.mean(0)) / u.std(0)
         elif self.model in ["GCLNR"]:
             u = F.elu(self.fc1(u))
-            v = F.elu(self.fc1(v))
             u = self.fc2(u)
-            v = self.fc2(v)
-            z1 = (u - u.mean(0)) / u.std(0)
-            z2 = (v - v.mean(0)) / v.std(0)    
-        elif self.model in "dCCA-SSG":
-            dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            z1 = dbn1(u)
-            z2 = dbn2(v)
-        elif self.model == "dCLNR":
-            dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            z1 = dbn1(u)
-            z2 = dbn2(v)
-        elif self.model in ["dCCA-SSG","dCCA"]:
-            dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            z1 = dbn1(u)
-            z2 = dbn2(v)
-        elif self.model == "gCCA-SSG":
-            u = F.elu(self.fc1(u))
-            v = F.elu(self.fc1(v))
-            z1 = self.fc2(u)
-            z2 = self.fc2(v)       
+            z = (u - u.mean(0)) / u.std(0)
+        elif self.model in ["dCCA-SSG","dCLNR"]:
+            dbn = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
+            z = dbn(u)    
         elif self.model == "bCLNR":
-            z1 = self.bn(u)
-            z2 = self.bn(v)
+            z = self.bn(u)
         else:
-            z1 = u              
-            z2 = v
-        return z1, z2
+            z = u              
+        return z
     
     def sim(self, z1, z2, indices):
         z1 = F.normalize(z1)
@@ -136,26 +111,10 @@ class Model(nn.Module):
 
     def semi_loss(self, z1, z2, indices, loss_type='ntxent'):
         f = lambda x: torch.exp(x / self.tau)
-        if loss_type in ["ntxent", "ntxent_cca"]:
+        if loss_type == "ntxent":
             refl_sim = f(self.sim(z1, z1, indices))
             between_sim = f(self.sim(z1, z2, indices))   
             loss = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
-        elif loss_type == "ntxent-align":
-            refl_sim = f(self.sim(z1, z1, indices))
-            between_sim = f(self.sim(z1, z2, indices))
-            l1 = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
-            z1 = F.normalize(z1)
-            z2 = F.normalize(z2)        
-            l2 = (z1-z2).norm(dim=1).pow(2).mean()
-            loss = l1 + (l2 * self.lambd)
-        elif loss_type == "ntxent-uniform":
-            refl_sim = f(self.sim(z1, z1, indices))
-            between_sim = f(self.sim(z1, z2, indices))
-            l1 = -torch.log(between_sim.diag() / (refl_sim.sum(1) + between_sim.sum(1) - refl_sim.diag()))
-            z1 = F.normalize(z1)
-            sq_pdist = torch.pdist(z1, p=2).pow(2)
-            l2 = sq_pdist.mul(-2).exp().mean()
-            loss = l1 + (l2 * self.lambd)
         return loss
 
     def loss(self, u, v, k, loss_type='ntxent', mean = True):
@@ -164,27 +123,12 @@ class Model(nn.Module):
             indices = torch.LongTensor(random.sample(range(N), k))
         else:
             indices = None
-        z1, z2 = self.projection(u, v)    
+        z1, z2 = self.projection(u), self.projection(v)        
         if loss_type == "ntxent":
             l1 = self.semi_loss(z1, z2, indices, loss_type)
             l2 = self.semi_loss(z2, z1, indices, loss_type)
             ret = (l1 + l2) * 0.5
             ret = ret.mean() if mean else ret.sum()
-        if loss_type == "ntxent_cca":
-            l1 = self.semi_loss(z1, z2, indices, loss_type)
-            l2 = self.semi_loss(z2, z1, indices, loss_type)
-            inv = (l1 + l2) * 0.5
-            inv = inv.mean() if mean else inv.sum()   
-            c = torch.mm(z1.T, z2)
-            c1 = torch.mm(z1.T, z1)
-            c2 = torch.mm(z2.T, z2)
-            c = c / N
-            c1 = c1 / N
-            c2 = c2 / N 
-            iden = torch.tensor(np.eye(c.shape[0])).to(self.device)
-            loss_dec1 = (iden - c1).pow(2).sum()
-            loss_dec2 = (iden - c2).pow(2).sum()
-            ret = inv + self.lambd * (loss_dec1 + loss_dec2)
         elif loss_type == 'cca':
             N = z1.shape[0]
             c = torch.mm(z1.T, z2)
@@ -198,16 +142,6 @@ class Model(nn.Module):
             loss_dec1 = (iden - c1).pow(2).sum()
             loss_dec2 = (iden - c2).pow(2).sum()
             ret = loss_inv + self.lambd * (loss_dec1 + loss_dec2)
-        elif loss_type == 'ntxent-uniform':
-            l1 = self.semi_loss(z1, z2, indices, loss_type)
-            l2 = self.semi_loss(z2, z1, indices, loss_type)
-            ret = (l1 + l2) * 0.5
-            ret = ret.mean() if mean else ret.sum()
-        elif loss_type == 'ntxent-align':
-            l1 = self.semi_loss(z1, z2, indices, loss_type)
-            l2 = self.semi_loss(z2, z1, indices, loss_type)
-            ret = (l1 + l2) * 0.5
-            ret = ret.mean() if mean else ret.sum()
         return ret
 
 class ContrastiveLearning(nn.Module):
@@ -264,7 +198,8 @@ class ContrastiveLearning(nn.Module):
             new_data1 = random_aug(self.data,self.fmr,self.edr)
             new_data2 = random_aug(self.data,self.fmr,self.edr)
             u, v = self.model(new_data1, new_data2)
-            u, v = self.model.projection(u, v)
+            u = self.model.projection(u).detach()
+            v = self.model.projection(v).detach()
             z1 = F.normalize(u)[val_idx]
             z2 = F.normalize(v)[val_idx]
         else:
@@ -287,7 +222,8 @@ class ContrastiveLearning(nn.Module):
             new_data1 = random_aug(self.data,self.fmr,self.edr)
             new_data2 = random_aug(self.data,self.fmr,self.edr)
             u, v = self.model(new_data1, new_data2)
-            u, v = self.model.projection(u, v)
+            u = self.model.projection(u).detach()
+            v = self.model.projection(v).detach()
             z1 = F.normalize(u)[val_idx]
             z2 = F.normalize(v)[val_idx]
         else:
@@ -315,26 +251,12 @@ class ContrastiveLearning(nn.Module):
         return ret
 
     def LinearEvaluation(self, train_idx, val_idx, test_idx):
-        # self.model.eval()
-        # if self.data == "ogbn-arxiv":
-        #     evaluator = Evaluator(name='ogbn-arxiv')
-        #     valid_acc = evaluator.eval({
-        #                 'y_true': self.data.y[val_idx],
-        #                 'y_pred': y_pred[val_idx],
-        #                 })['acc']
-        #     test_acc = evaluator.eval({
-        #                 'y_true': data.y[split_idx['test']],
-        #                 'y_pred': y_pred[split_idx['test']],
-        #                 })['acc']
-        # else:
-
         if self.dataset == "ogbn-arxiv":
             self.model = self.model.cpu()
             embeds = self.model.get_embedding(self.data)
             embeds = embeds.to(self.device)
         else:
             embeds = self.model.get_embedding(self.data.to(self.device))
-
         # calculate metric
         Lu = self.uniformity(val_idx)
         La = self.alignment(val_idx)
