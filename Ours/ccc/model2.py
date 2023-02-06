@@ -8,13 +8,7 @@ from dbn import *
 from aug import *
 import pdb
 from torch_geometric.loader import NeighborLoader
-# from ogb.nodeproppred import Evaluator
 
-# CUDA support
-# if torch.cuda.is_available():
-#     device = torch.device('cuda')
-# else:
-#     device = torch.device('cpu')
 
 class LogReg(nn.Module):
     def __init__(self, hid_dim, out_dim):
@@ -163,7 +157,7 @@ class Model(nn.Module):
         return ret
 
 class ContrastiveLearning(nn.Module):
-    def __init__(self, args, data, device):
+    def __init__(self, args, data, clean, device):
         super().__init__()
         self.dataset = args.dataset
         self.model = args.model
@@ -175,31 +169,20 @@ class ContrastiveLearning(nn.Module):
         self.loss_type = args.loss_type
         self.data = data
         self.device = device
+        self.clean = clean
         self.num_class = int(self.data.y.max().item()) + 1 
         self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, args.lambd, self.device, self.model, args.mlp_use)
         self.model = self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=args.lr1, weight_decay=args.wd1)
-
-        # if self.dataset == "ogbn-arxiv":
-        #     self.s = lambda epoch: epoch / 1000 if epoch < 1000 else ( 1 + np.cos((epoch-1000) * np.pi / (self.epochs - 1000))) * 0.5
-        #     self.scheduler = torch.optim.lr_scheduler.LambdaLR(self.optimizer, lr_lambda=self.s)
-        # if self.dataset in ['Swissroll','Moon','Circles']:
-        #     self.logreg = LogReg(args.out_dim, 1)
-        # else:
         self.logreg = LogReg(args.out_dim, self.num_class)
         self.logreg = self.logreg.to(self.device)
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
 
     def train(self):
-        # loader = NeighborLoader(self.data, num_neighbors=[30] * 2, batch_size = self.batch, input_nodes=self.data.train_mask)
         for epoch in range(self.epochs):
             self.model.train()
-            # for batch in loader:
-                # print(batch.edge_index)
-                # A = batch.edge_index[0]
-                # print(A.unique().shape)
             self.optimizer.zero_grad()
-            new_data1 = random_aug(self.data, self.fmr, self.edr) #batch
+            new_data1 = random_aug(self.data, self.fmr, self.edr)
             new_data2 = random_aug(self.data, self.fmr, self.edr)
             new_data1 = new_data1.to(self.device)
             new_data2 = new_data2.to(self.device)
@@ -213,10 +196,10 @@ class ContrastiveLearning(nn.Module):
         
         if self.dataset == "ogbn-arxiv":
             self.model = self.model.cpu()
-            embeds = self.model.get_embedding(self.data)
+            embeds = self.model.get_embedding(self.clean) # self.data
             embeds = embeds.to(self.device)
         else:
-            embeds = self.model.get_embedding(self.data.to(self.device))
+            embeds = self.model.get_embedding(self.clean.to(self.device)) # self.data
             
         train_embs = embeds[train_idx]
         val_embs = embeds[val_idx]
@@ -240,13 +223,11 @@ class ContrastiveLearning(nn.Module):
             self.logreg.train()
             self.opt.zero_grad()
             logits = self.logreg(train_embs)
-            # preds = torch.argmax(logits, dim=1)
-            # train_acc = torch.sum(preds == train_labels).float() / train_labels.shape[0]
             loss = loss_fn(logits, train_labels)
             loss.backward()
             self.opt.step()
-
             self.logreg.eval()
+
             with torch.no_grad():
                 val_logits = self.logreg(val_embs)
                 test_logits = self.logreg(test_embs)

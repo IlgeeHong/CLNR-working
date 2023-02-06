@@ -40,7 +40,7 @@ parser.add_argument('--sigma', type=float, default=None) #None
 parser.add_argument('--alpha', type=float, default=0.2) #None
 parser.add_argument('--outlier', type=bool, default=None) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/test_feat_robust2")
+parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Test_feat_robust")
 
 args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
@@ -50,7 +50,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 for args.sigma in [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5]:
 # for args.alpha in [0.0, 0.2, 0.4, 0.6, 0.8]:
-    for args.model in ['CCA-SSG','dCCA-SSG','gCCA-SSG','CLNR','dCLNR','GRACE']:
+    # for args.model in ['CCA-SSG','dCCA-SSG','gCCA-SSG','CLNR','dCLNR','GRACE']:
+    for args.model in ['CCA-SSG','CLNR','GRACE']:
         if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
             args.epochs = 100
             args.lr1 = 1e-3 # 1e-2
@@ -69,8 +70,8 @@ for args.sigma in [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5]:
 
         eval_acc_list = []
         for exp in range(args.n_experiments):
-            data, train_idx, val_idx, test_idx = load(args.dataset, args.sigma, args.alpha, args.outlier)
-            model = ContrastiveLearning(args, data, device)
+            data, clean, train_idx, val_idx, test_idx = load(args.dataset, args.sigma, args.alpha, args.outlier)
+            model = ContrastiveLearning(args, data, clean, device)
             model.train()
             eval_acc = model.LinearEvaluation(train_idx, val_idx, test_idx) #
             eval_acc_list.append(eval_acc.item())

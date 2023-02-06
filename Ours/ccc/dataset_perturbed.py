@@ -14,47 +14,26 @@ import random
 
 def load(name, sigma, alpha, outlier):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
-        # Data = os.getcwd()+'/Planetoid'
-        transform = T.Compose([T.NormalizeFeatures()]) #,T.ToDevice(device)
+        transform = T.Compose([T.NormalizeFeatures()])
         dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name, transform=transform)
         temp = dataset[0]
-        # edge_mask = mask_edge(temp, alpha)
-        # feat = drop_feature(temp.x, alpha)
-        # data = deepcopy(temp)
-        # src = data.edge_index[0]
-        # dst = data.edge_index[1]
-        # nsrc = src[edge_mask]
-        # ndst = dst[edge_mask]
-        # data.edge_index = torch.vstack([nsrc, ndst])
-        # data.x = feat
         if sigma is not None:
             noise = torch.normal(0, sigma, size=(temp.num_nodes, temp.num_features))
             new_feat = temp.x + noise
         if alpha is not None:
             new_edge_index, _ = add_random_edge(temp.edge_index, alpha, force_undirected=True)
-        # if outlier == True:
-        #     noise = torch.zeros(temp.num_nodes, temp.num_features)
-        #     out = 10000 * torch.ones(1, temp.num_features)
-        #     # out = torch.zeros(1, temp.num_features)
-        #     ind = torch.LongTensor(random.sample(range(temp.train_mask.sum()), 10))
-        #     noise[ind,:] = out
-        #     feat = temp.x + noise
-
         data = deepcopy(temp)
         if sigma is not None:
             data.x = new_feat #feat
         if alpha is not None:
             data.edge_index = new_edge_index
-        # if outlier is True:
-        #     data.x = feat
-        # data = transform(data)
+        
         train_idx = data.train_mask 
         val_idx = data.val_mask 
         test_idx = data.test_mask  
 
     elif name in ['CS', 'Physics']:
-        # Data = os.getcwd()+'/Coauthor'
-        transform = T.Compose([T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)]) #T.ToDevice(device), 
+        transform = T.Compose([T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Coauthor(name=name, root = '/scratch/midway3/ilgee/SelfGCon', transform=transform)
         temp = dataset[0]
         if sigma is not None:
@@ -67,14 +46,13 @@ def load(name, sigma, alpha, outlier):
             data.x = new_feat
         if alpha is not None:
             data.edge_index = new_edge_index
-        data = transform(data)
+        
         train_idx = data.train_mask 
         val_idx = data.val_mask 
         test_idx = data.test_mask
 
     elif name in ['Computers', 'Photo']:
-        # Data = os.getcwd()+'/Amazon'
-        transform = T.Compose([T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)]) #T.ToDevice(device), 
+        transform = T.Compose([T.RandomNodeSplit(split="train_rest", num_val = 0.1, num_test = 0.8)])
         dataset = Amazon(name=name, root = '/scratch/midway3/ilgee/SelfGCon', transform=transform)
         temp = dataset[0]
         if sigma is not None:
@@ -87,7 +65,7 @@ def load(name, sigma, alpha, outlier):
             data.x = new_feat
         if alpha is not None:
             data.edge_index = new_edge_index
-        data = transform(data)
+        
         train_idx = data.train_mask 
         val_idx = data.val_mask 
         test_idx = data.test_mask
@@ -129,4 +107,26 @@ def load(name, sigma, alpha, outlier):
         val_idx = split_idx["valid"]
         test_idx = split_idx["test"]
 
-    return data, train_idx, val_idx, test_idx
+    return data, temp, train_idx, val_idx, test_idx
+
+
+
+
+ # edge_mask = mask_edge(temp, alpha)
+        # feat = drop_feature(temp.x, alpha)
+        # data = deepcopy(temp)
+        # src = data.edge_index[0]
+        # dst = data.edge_index[1]
+        # nsrc = src[edge_mask]
+        # ndst = dst[edge_mask]
+        # data.edge_index = torch.vstack([nsrc, ndst])
+        # data.x = feat   
+
+
+        # if outlier == True:
+        #     noise = torch.zeros(temp.num_nodes, temp.num_features)
+        #     out = 10000 * torch.ones(1, temp.num_features)
+        #     # out = torch.zeros(1, temp.num_features)
+        #     ind = torch.LongTensor(random.sample(range(temp.train_mask.sum()), 10))
+        #     noise[ind,:] = out
+        #     feat = temp.x + noise        
