@@ -49,10 +49,12 @@ results =[]
 # for args.model in ['CLNR','dCLNR','GRACE']:#'nCLNR',
 # ,'dCCA-SSG','gCCA-SSG','CCA-SSG'
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
-for args.model in ['CLNR']: #,'dCLNR'
+args.model == 'CLNR'
+# for args.model in ['CLNR']: #,'dCLNR'
+for args.epochs in [1000,2000,3000,4000,5000]: #,'dCLNR'
 # for args.model in ['GRACE','CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GCLNR']:
-        args.epochs = 1000
+        # args.epochs = 1000
         args.lr1 = 1e-2 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
