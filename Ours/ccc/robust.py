@@ -51,7 +51,7 @@ results =[]
 for args.sigma in [0.0, 0.01, 0.03, 0.05, 0.07, 0.09, 0.11, 0.13, 0.15]:
 # for args.alpha in [0.0, 0.2, 0.4, 0.6, 0.8]:
     # for args.model in ['CCA-SSG','dCCA-SSG','gCCA-SSG','CLNR','dCLNR','GRACE']:
-    for args.model in ['CCA-SSG','CLNR','GRACE']:
+    for args.model in ['CLNR','dCLNR','GRACE','CCA-SSG','dCCA-SSG','gCCA-SSG']:
         if args.model in ['nCLNR','CLNR','bCLNR','dCLNR']:
             args.epochs = 50
             args.lr1 = 1e-3 # 1e-2
