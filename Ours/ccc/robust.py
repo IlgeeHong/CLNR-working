@@ -48,7 +48,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # newly added
 results =[]
-for args.sigma in [0.0, 0.1, 0.3, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5]:
+for args.sigma in [0.0, 0.01, 0.03, 0.05, 0.07, 0.09, 0.11, 0.13, 0.15]:
 # for args.alpha in [0.0, 0.2, 0.4, 0.6, 0.8]:
     # for args.model in ['CCA-SSG','dCCA-SSG','gCCA-SSG','CLNR','dCLNR','GRACE']:
     for args.model in ['CCA-SSG','CLNR','GRACE']:
