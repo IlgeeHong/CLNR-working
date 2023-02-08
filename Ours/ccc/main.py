@@ -25,7 +25,7 @@ from statistics import mean, stdev
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='ogbn-arxiv')
-parser.add_argument('--n_experiments', type=int, default=2)
+parser.add_argument('--n_experiments', type=int, default=5)
 parser.add_argument('--n_layers', type=int, default=3)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=1e-2)
@@ -49,13 +49,11 @@ results =[]
 # for args.model in ['CLNR','dCLNR','GRACE']:#'nCLNR',
 # ,'dCCA-SSG','gCCA-SSG','CCA-SSG'
 # for args.model in ['dCCA-SSG','gCCA-SSG','CCA-SSG','dCLNR']:
-args.model = 'CLNR'
-# for args.model in ['CLNR']: #,'dCLNR'
-for args.epochs in [5000, 7000, 10000]: #,'dCLNR'
+for args.model in ['CLNR','dCLNR']: #,'dCLNR'
 # for args.model in ['GRACE','CLNR']:
     if args.model in ['nCLNR','CLNR','bCLNR','dCLNR','GCLNR']:
-        # args.epochs = 1000
-        args.lr1 = 1e-2 # 1e-2
+        args.epochs = 5000
+        args.lr1 = 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['GRACE','gCCA-SSG']:
