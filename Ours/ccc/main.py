@@ -48,7 +48,7 @@ results =[]
 for args.model in ['nCLNR','CLNR','dCLNR','GRACE','GCLNR']: 
     if args.model in ['nCLNR','bCLNR','dCLNR','CLNR','GCLNR']:
         args.epochs = 50 # 5000
-        args.lr1 = 5e-2 # 1e-2
+        args.lr1 = 1e-3 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['GRACE']:
