@@ -80,7 +80,7 @@ class Model(nn.Module):
         return u, v
         
     def projection(self, u):
-        if self.model in ["GRACE","gCCA-SSG"]:
+        if self.model in ["GRACE"]: #,"gCCA-SSG"
             u = F.elu(self.fc1(u))
             z = self.fc2(u)
         elif self.model in ["CCA-SSG","CLNR"]:
@@ -188,8 +188,9 @@ class ContrastiveLearning(nn.Module):
             # model and data is in gpu
             new_data1 = random_aug(self.data,self.fmr,self.edr)
             new_data2 = random_aug(self.data,self.fmr,self.edr)
-            new_data1, new_data2 = new_data1.to(self.device), new_data2.to(self.device)
-            u, v = self.model.projection(self.model.get_embedding(new_data1), self.model.get_embedding(new_data2))
+            u, v = self.model.get_embedding(new_data1), self.model.get_embedding(new_data2)
+            u = self.model.projection(u)
+            v = self.model.projection(v)
             z1 = F.normalize(u)[val_idx]
             z2 = F.normalize(v)[val_idx]          
 
@@ -213,7 +214,9 @@ class ContrastiveLearning(nn.Module):
             new_data2 = random_aug(self.data,self.fmr,self.edr)
             new_data1 = new_data1.to(self.device)
             new_data2 = new_data2.to(self.device)
-            u, v = self.model.projection(self.model.get_embedding(new_data1), self.model.get_embedding(new_data2))
+            u, v = self.model.get_embedding(new_data1), self.model.get_embedding(new_data2)
+            u = self.model.projection(u).detach()
+            v = self.model.projection(v).detach()
             z1 = F.normalize(u)[val_idx]
             z2 = F.normalize(v)[val_idx]
         return (z1-z2).norm(p=2, dim=1).pow(2).mean()
