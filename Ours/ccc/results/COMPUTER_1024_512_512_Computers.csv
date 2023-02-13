@@ -1,0 +1,5 @@
+model,dataset,epochs,out_dim,acc_mean,acc_std,Lu_mean,Lu_std,La_mean,La_std,dec
+nCLNR,Computers,200,512,0.8789,0.0035,-3.3248,0.0182,0.121,0.0053,3.1612
+CLNR,Computers,200,512,0.895,0.0037,-3.45,0.0091,0.0942,0.0034,49.3761
+GRACE,Computers,1000,512,0.8912,0.003,-3.3075,0.0206,0.0659,0.0026,36.6563
+GCLNR,Computers,200,512,0.8918,0.0039,-3.3759,0.0172,0.0808,0.003,2092.3842
