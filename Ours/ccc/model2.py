@@ -88,26 +88,18 @@ class Model(nn.Module):
         elif self.model in ["CCA-SSG","CLNR","CLNR-unif","CLNR-align"]:
             z1 = (u - u.mean(0)) / u.std(0)
             z2 = (v - v.mean(0)) / v.std(0)
-        elif self.model in "dCCA-SSG":
-            dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            z1 = dbn1(u)
-            z2 = dbn2(v)
+        elif self.model in ["GCLNR"]:
+            u = F.elu(self.fc1(u))
+            v = F.elu(self.fc1(v))
+            u = self.fc2(u)
+            v = self.fc2(v)
+            z1 = (u - u.mean(0)) / u.std(0)
+            z2 = (v - v.mean(0)) / v.std(0)
         elif self.model == "dCLNR":
             dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
             dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
             z1 = dbn1(u)
             z2 = dbn2(v)
-        elif self.model in ["dCCA-SSG","dCCA"]:
-            dbn1 = DBN(device=u.device, num_features=u.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            dbn2 = DBN(device=v.device, num_features=v.shape[1], num_groups=1, dim=2, affine=False, momentum=1.)
-            z1 = dbn1(u)
-            z2 = dbn2(v)
-        elif self.model == "gCCA-SSG":
-            u = F.elu(self.fc1(u))
-            v = F.elu(self.fc1(v))
-            z1 = self.fc2(u)
-            z2 = self.fc2(v)       
         elif self.model == "bCLNR":
             z1 = self.bn(u)
             z2 = self.bn(v)
