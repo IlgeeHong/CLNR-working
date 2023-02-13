@@ -47,7 +47,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 for args.model in ['nCLNR','CLNR','GRACE','GCLNR']:  #'dCLNR'
     if args.model in ['nCLNR','bCLNR','dCLNR','CLNR','GCLNR']:
-        args.epochs = 200
+        args.epochs = 100
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
