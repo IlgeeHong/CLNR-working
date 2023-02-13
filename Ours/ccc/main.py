@@ -24,7 +24,7 @@ from statistics import mean, stdev
 # physics : 1000 / 1e-3 / 0.0 /
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default='Computers')
+parser.add_argument('--dataset', type=str, default='Photo')
 parser.add_argument('--n_experiments', type=int, default=20)
 parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
@@ -37,7 +37,7 @@ parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5 # ogbn
 parser.add_argument('--lambd', type=float, default=5e-4) # citeseer, computer, ogbn-arxiv 5e-4 
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/COMPUTER") #Final_test1
+parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/PHOTO") #Final_test1
 
 args = parser.parse_args()
 
@@ -47,7 +47,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 results =[]
 for args.model in ['nCLNR','CLNR','GRACE','GCLNR']:  #'dCLNR',
     if args.model in ['nCLNR','bCLNR','dCLNR','CLNR','GCLNR']:
-        args.epochs = 200 # 5000
+        args.epochs = 100 # 5000
         args.lr1 = 1e-3 # 1e-2
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
