@@ -1,0 +1,3 @@
+model,dataset,epochs,out_dim,acc_mean,acc_std,Lu_mean,Lu_std,La_mean,La_std,dec
+GRACE,ogbn-arxiv,10000,512,0.6988,0.0009,-3.4181,0.0024,0.1329,0.0013,3116.0129
+GCLNR,ogbn-arxiv,5000,512,0.711,0.0037,-3.5037,0.0135,0.1677,0.0011,33058473154.0647
