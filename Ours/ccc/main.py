@@ -45,7 +45,7 @@ file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 results =[]
-for args.model in ['dCLNR','nCLNR','CLNR','GRACE','GCLNR']: 
+for args.model in ['dCLNR','nCLNR','CLNR']: #,'GRACE','GCLNR'
     if args.model in ['nCLNR','bCLNR','dCLNR','CLNR','GCLNR']:
         args.epochs = 5000
         args.lr1 = 1e-2
