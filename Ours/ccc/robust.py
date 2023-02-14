@@ -24,7 +24,7 @@ from statistics import mean, stdev
 # physics : 1000 / 1e-3 / 0.0 /
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default='Photo') 
+parser.add_argument('--dataset', type=str, default='Computers') 
 parser.add_argument('--n_experiments', type=int, default=10)
 parser.add_argument('--n_layers', type=int, default=2) 
 parser.add_argument('--tau', type=float, default=0.5) 
@@ -53,7 +53,7 @@ results =[]
 for args.alpha in [0.0, 0.2, 0.4, 0.6, 0.8]:
     for args.model in ['nCLNR','CLNR','GRACE','GCLNR','dCLNR']:
         if args.model in ['nCLNR','bCLNR','dCLNR','CLNR','GCLNR']:
-            args.epochs = 100
+            args.epochs = 200
             args.lr1 = 1e-3 # 1e-2
             args.wd1 = 0.0
             args.loss_type = 'ntxent'
