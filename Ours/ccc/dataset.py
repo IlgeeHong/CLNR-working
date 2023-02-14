@@ -35,7 +35,16 @@ def load(name):
         train_idx = data.train_mask 
         val_idx = data.val_mask 
         test_idx = data.test_mask  
-    
+        
+    elif name in ['ogbn-arxiv']:
+        transform = T.Compose([T.ToUndirected()])
+        dataset = PygNodePropPredDataset(name=name, root = '/scratch/midway3/ilgee/SelfGCon/dataset', transform=transform)
+        data = dataset[0]
+        split_idx = dataset.get_idx_split()
+        train_idx = split_idx["train"]
+        val_idx = split_idx["valid"]
+        test_idx = split_idx["test"]
+
     elif name in ['Swissroll','Moon','Circles']:
         if name == 'Moon':
             XX, y = make_moons(n_samples=10000) #, noise=args.noise
@@ -52,14 +61,5 @@ def load(name):
         train_idx = data.train_mask 
         val_idx = data.val_mask 
         test_idx = data.test_mask  
-
-    elif name in ['ogbn-arxiv']:
-        transform = T.Compose([T.ToUndirected()])
-        dataset = PygNodePropPredDataset(name=name, root = '/scratch/midway3/ilgee/SelfGCon/dataset', transform=transform)
-        data = dataset[0]
-        split_idx = dataset.get_idx_split()
-        train_idx = split_idx["train"]
-        val_idx = split_idx["valid"]
-        test_idx = split_idx["test"]
 
     return data, train_idx, val_idx, test_idx
