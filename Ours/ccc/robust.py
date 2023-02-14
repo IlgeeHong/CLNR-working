@@ -24,11 +24,11 @@ from statistics import mean, stdev
 # physics : 1000 / 1e-3 / 0.0 /
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default='Cora') 
+parser.add_argument('--dataset', type=str, default='CiteSeer') 
 parser.add_argument('--n_experiments', type=int, default=10)
-parser.add_argument('--n_layers', type=int, default=2) 
+parser.add_argument('--n_layers', type=int, default=1) 
 parser.add_argument('--tau', type=float, default=0.5) 
-parser.add_argument('--lr2', type=float, default=5e-3)
+parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--hid_dim', type=int, default=512)
 parser.add_argument('--out_dim', type=int, default=512) 
@@ -58,7 +58,7 @@ for args.alpha in [0.0, 0.2, 0.4, 0.6, 0.8]:
             args.wd1 = 0.0
             args.loss_type = 'ntxent'
         elif args.model in ['GRACE','gCCA-SSG']:
-            args.epochs = 400
+            args.epochs = 100
             args.lr1 = 5e-4
             args.wd1 = 0.0
             args.loss_type = 'ntxent'
