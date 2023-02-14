@@ -1,2 +1,2 @@
 model,dataset,epochs,out_dim,acc_mean,acc_std,Lu_mean,Lu_std,La_mean,La_std,dec
-dCLNR,CiteSeer,50,512,0.7299,0.0081,-3.7562,0.0085,0.2826,0.0101,0.0019
+dCLNR,Computers,200,512,0.8848,0.0033,-3.3229,0.0136,0.1207,0.004,6.1276
