@@ -221,12 +221,12 @@ class ContrastiveLearning(nn.Module):
             z2 = F.normalize(v)[val_idx]
         return (z1-z2).norm(p=2, dim=1).pow(2).mean()
 
-    def decorr(self, val_idx):
-        z1 = self.model.get_embedding(self.data).to(self.device)[val_idx]
-        c = torch.mm(z1.T, z1)
-        iden = torch.tensor(np.eye(c.shape[0])).to(self.device)
-        ret = (iden - c).pow(2).sum()/(c.shape[0]*c.shape[0])
-        return ret
+    # def decorr(self, val_idx):
+    #     z1 = self.model.get_embedding(self.data).to(self.device)[val_idx]
+    #     c = torch.mm(z1.T, z1)
+    #     iden = torch.tensor(np.eye(c.shape[0])).to(self.device)
+    #     ret = (iden - c).pow(2).sum()/(c.shape[0]*c.shape[0])
+    #     return ret
 
     def LinearEvaluation(self, train_idx, val_idx, test_idx):
         if self.dataset == "ogbn-arxiv":
@@ -238,7 +238,6 @@ class ContrastiveLearning(nn.Module):
         # calculate metric
         Lu = self.uniformity(val_idx)
         La = self.alignment(val_idx)
-        dec = self.decorr(val_idx)    
             
         train_embs = embeds[train_idx]
         val_embs = embeds[val_idx]
@@ -287,7 +286,7 @@ class ContrastiveLearning(nn.Module):
         
             # print('Epoch:{}, train_acc:{:.4f}, val_acc:{:4f}, test_acc:{:4f}'.format(epoch, train_acc, val_acc, test_acc))
         # print('Linear evaluation accuracy:{:.4f}'.format(eval_acc))
-        return eval_acc, Lu, La, dec
+        return eval_acc, Lu, La
     
 
  # elif self.type == "bGRACE":
