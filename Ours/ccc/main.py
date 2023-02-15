@@ -37,7 +37,7 @@ parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5 # ogbn
 parser.add_argument('--lambd', type=float, default=5e-4) # citeseer, computer, ogbn-arxiv 5e-4 
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/TEST") #Final_test1
+parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/Time_Cora") #Final_test1
 
 args = parser.parse_args()
 
@@ -83,11 +83,11 @@ for args.model in ['CLNR','nCLNR','dCLNR','GRACE','GCLNR']: #
         uniformity_list.append(Lu.item())
         alignment_list.append(La.item())
         
-    eval_acc_mean = eval_acc_list.item()
+    eval_acc_mean = eval_acc_list
     eval_acc_std = 0
-    Lu_mean = uniformity_list.item()
+    Lu_mean = uniformity_list
     Lu_std = 0
-    La_mean = alignment_list.item()
+    La_mean = alignment_list
     La_std = 0
 
     # eval_acc_mean = round(mean(eval_acc_list),4)
