@@ -162,6 +162,10 @@ class ContrastiveLearning(nn.Module):
         self.opt = torch.optim.Adam(self.logreg.parameters(), lr=args.lr2, weight_decay=args.wd2)
 
     def train(self):
+        # Time
+        start = torch.cuda.Event(enable_timing=True)
+        end = torch.cuda.Event(enable_timing=True)
+        start.record()      
         for epoch in range(self.epochs):
             self.model.train()
             self.optimizer.zero_grad()
@@ -173,6 +177,11 @@ class ContrastiveLearning(nn.Module):
             loss = self.model.loss(u, v, self.batch, self.loss_type)
             loss.backward()
             self.optimizer.step()
+        # Time
+        end.record()
+        torch.cuda.synchronize()
+        recored_time = start.elapsed_time(end)
+        return recored_time
 
     def uniformity(self, val_idx):                    
         if self.dataset == "ogbn-arxiv":

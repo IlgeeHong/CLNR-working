@@ -68,16 +68,8 @@ for args.model in ['CLNR','nCLNR','dCLNR','GRACE','GCLNR']: #
 
     for exp in range(args.n_experiments):
         data, train_idx, val_idx, test_idx = load(args.dataset)
-        # Time
-        start = torch.cuda.Event(enable_timing=True)
-        end = torch.cuda.Event(enable_timing=True)
-        start.record()      
         model = ContrastiveLearning(args, data, device)
-        model.train()
-        # Time
-        end.record()
-        torch.cuda.synchronize()
-        recored_time = start.elapsed_time(end)
+        recored_time = model.train()
         eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx)
         eval_acc_list.append(eval_acc.item())
         uniformity_list.append(Lu.item())
