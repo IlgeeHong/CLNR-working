@@ -44,8 +44,8 @@ args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+results =[]
 for args.model in ['nCLNR','CLNR','GRACE','CCA-SSG']:
-    results =[]
     for args.out_dim in [64,126,256,512]: 
         if args.model in ['nCLNR','bCLNR','dCLNR','CLNR','GCLNR']:
             args.epochs = 50
