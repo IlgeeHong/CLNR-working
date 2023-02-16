@@ -79,4 +79,4 @@ for args.out_dim in [64,126,256,512]: #
     print('model: ' + args.model + ' done')
     results += [[args.model, args.dataset, args.epochs, args.out_dim, eval_acc_mean, eval_acc_std]]
 res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'out_dim', 'acc_mean', 'acc_std'])
-res.to_csv(file_path + "_" + str(args.batch) + "_" + args.dataset +  ".csv", index=False) 
+res.to_csv(file_path + "_" + args.model + "_" + str(args.batch) + "_" + args.dataset +  ".csv", index=False) 
