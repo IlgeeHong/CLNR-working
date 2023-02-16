@@ -32,7 +32,7 @@ parser.add_argument('--lr2', type=float, default=5e-3) # ogbn 5e-3 ???
 parser.add_argument('--wd2', type=float, default=1e-4) 
 parser.add_argument('--fmr', type=float, default=0.2) #0.0 #0.2 # 0.0 #
 parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5 # ogbn
-parser.add_argument('--lambd', type=float, default=5e-4) # citeseer, computer, ogbn-arxiv 5e-4 
+parser.add_argument('--lambd', type=float, default=1e-3) # citeseer, computer, ogbn-arxiv 5e-4 
 parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--sigma', type=float, default=None) #None
 parser.add_argument('--alpha', type=float, default=None) #None
@@ -44,7 +44,7 @@ args = parser.parse_args()
 file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-args.model = 'CLNR' #,'nCLNR','dCLNR','GRACE','GCLNR'
+args.model = 'GRACE' # 'CLNR','nCLNR','dCLNR','GRACE','GCLNR'
 results =[]
 for args.out_dim in [64,126,256,512]: # 
     if args.model in ['nCLNR','bCLNR','dCLNR','CLNR','GCLNR']:
