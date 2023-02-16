@@ -11,7 +11,7 @@ import pandas as pd
 from torch_geometric.datasets import Planetoid, Coauthor, Amazon
 import torch_geometric.transforms as T
 
-from model2 import * 
+from model3 import * 
 from dataset import *
 from statistics import mean, stdev
 
@@ -34,6 +34,8 @@ parser.add_argument('--fmr', type=float, default=0.2) #0.0 #0.2 # 0.0 #
 parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5 # ogbn
 parser.add_argument('--lambd', type=float, default=5e-4) # citeseer, computer, ogbn-arxiv 5e-4 
 parser.add_argument('--batch', type=int, default=1024) #None
+parser.add_argument('--sigma', type=float, default=None) #None
+parser.add_argument('--alpha', type=float, default=None) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
 parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/FINAL") #Final_test1
 
@@ -66,19 +68,14 @@ for args.out_dim in [64,126,256,512]: #
 
     eval_acc_list = []
     for exp in range(args.n_experiments):
-        data, clean, train_idx, val_idx, test_idx = load(args.dataset, args.sigma, args.alpha, args.outlier)
-        model = ContrastiveLearning(args, data, clean, device)
+        data, train_idx, val_idx, test_idx = load(args.dataset)
+        model = ContrastiveLearning(args, data, device)
         model.train()
         eval_acc = model.LinearEvaluation(train_idx, val_idx, test_idx) #
         eval_acc_list.append(eval_acc.item())
-            
+                    
     eval_acc_mean = round(mean(eval_acc_list),4)
     eval_acc_std = round(stdev(eval_acc_list),4)
-
-
-    eval_acc_mean = round(mean(eval_acc_list),4)
-    eval_acc_std = round(stdev(eval_acc_list),4)
-
     print('model: ' + args.model + ' done')
     results += [[args.model, args.dataset, args.epochs, args.out_dim, eval_acc_mean, eval_acc_std]]
 res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'out_dim', 'acc_mean', 'acc_std'])
