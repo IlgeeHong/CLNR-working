@@ -12,7 +12,7 @@ from aug_perturbed import *
 from aug import *
 import random
 
-def load(name, sigma, alpha, outlier):
+def load(name, sigma, alpha):
     if name in ['Cora', 'CiteSeer', 'PubMed']:
         transform = T.Compose([T.NormalizeFeatures()])
         dataset = Planetoid(root = '/scratch/midway3/ilgee/SelfGCon/Planetoid', name=name, transform=transform)
