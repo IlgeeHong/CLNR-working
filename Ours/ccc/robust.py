@@ -80,6 +80,6 @@ for args.alpha in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]:
 
         print('model: ' + args.model + ' done')
         #results += [[args.model, args.dataset, args.epochs, args.n_layers, args.tau, args.lr1, args.lr2, args.wd1, args.wd2, args.out_dim, args.edr, args.fmr, eval_acc_mean, eval_acc_std,args.loss_type]]#
-        results += [[args.model, args.dataset, args.epochs, args.alpha, args.outlier, eval_acc_mean, eval_acc_std]]#
-res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'alpha', 'outlier', 'acc_mean', 'acc_std'])#, 
+        results += [[args.model, args.dataset, args.epochs, args.alpha, eval_acc_mean, eval_acc_std]]#
+res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'alpha', 'acc_mean', 'acc_std'])#, 
 res.to_csv(file_path + "_" + str(args.batch) + "_" + str(args.out_dim) + "_" + str(args.hid_dim) + "_" + args.dataset + ".csv", index=False) #str(args.epochs)args.model + "_" + + "_" + str(args.sigma) + + args.model + "_" 
