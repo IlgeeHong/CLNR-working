@@ -1,0 +1,5 @@
+model,dataset,epochs,out_dim,acc_mean,acc_std
+CLNR,Cora,50,64,0.8021,0.0098
+CLNR,Cora,50,126,0.8181,0.0121
+CLNR,Cora,50,256,0.8398,0.0088
+CLNR,Cora,50,512,0.8429,0.0067
