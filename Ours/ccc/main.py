@@ -24,11 +24,11 @@ from statistics import mean, stdev
 # physics : 1000 / 1e-3 / 0.0 /
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default="Cora")
-parser.add_argument('--n_experiments', type=int, default=10)
+parser.add_argument('--dataset', type=str, default="Moon")
+parser.add_argument('--n_experiments', type=int, default=2)
 parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
-parser.add_argument('--lr2', type=float, default=5e-3) # ogbn 5e-3 ???
+parser.add_argument('--lr2', type=float, default=1e-2) # ogbn 5e-3 ???
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--hid_dim', type=int, default=512)
 parser.add_argument('--out_dim', type=int, default=512) 
@@ -45,9 +45,9 @@ file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 results =[]
-for args.model in ['CLNR','nCLNR','dCLNR','GRACE','GCLNR']: # 
+for args.model in ['CLNR']:# ['CLNR','nCLNR','dCLNR','GRACE','GCLNR']: # 
     if args.model in ['nCLNR','bCLNR','dCLNR','CLNR','GCLNR']:
-        args.epochs = 50
+        args.epochs = 100
         args.lr1 = 1e-3
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
