@@ -1,0 +1,9 @@
+model,dataset,epochs,out_dim,acc_mean,acc_std
+GRACE,Computers,1000,64,0.8735,0.0042
+GRACE,Computers,1000,126,0.8833,0.0037
+GRACE,Computers,1000,256,0.8889,0.003
+GRACE,Computers,1000,512,0.8909,0.0034
+CCA-SSG,Computers,50,64,0.8387,0.0055
+CCA-SSG,Computers,50,126,0.8639,0.0048
+CCA-SSG,Computers,50,256,0.8767,0.0035
+CCA-SSG,Computers,50,512,0.8858,0.0056
