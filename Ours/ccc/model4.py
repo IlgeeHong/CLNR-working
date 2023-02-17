@@ -72,7 +72,7 @@ class Model(nn.Module):
     def get_embedding(self, data):
         out = self.backbone(data.x, data.edge_index) 
         # No projection head here
-        return out.detach()
+        return out #.detach()
 
     def forward(self, data1, data2):
         # Encode the graph
@@ -194,7 +194,7 @@ class ContrastiveLearning(nn.Module):
         label = label.to(self.device)
 
         embedding = self.model.projection(self.model.get_embedding(self.data.to(self.device)))
-        val_embedding = F.normalize(embedding)[val_idx].cpu()
+        val_embedding = F.normalize(embedding[val_idx]).cpu()
         val_label = label[val_idx].cpu()
         plt.figure(figsize=(7,7))
         plt.xticks([])
