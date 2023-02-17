@@ -188,17 +188,12 @@ class ContrastiveLearning(nn.Module):
         
         if self.dataset == "ogbn-arxiv":
             self.model = self.model.cpu()
-            dirt_embeds = self.model.get_embedding(self.data) # self.data
-            dirt_embeds = dirt_embeds.to(self.device)
             clean_embeds = self.model.get_embedding(self.clean) # self.data
             clean_embeds = clean_embeds.to(self.device)
         else:
-            dirt_embeds = self.model.get_embedding(self.data.to(self.device)) # self.data
             clean_embeds = self.model.get_embedding(self.clean.to(self.device)) # self.data
             
-        train_embs = dirt_embeds[train_idx]
-        # val_embs = dirt_embeds[val_idx]
-        # test_embs = dirt_embeds[test_idx]
+        train_embs = clean_embeds[train_idx]
         val_embs = clean_embeds[val_idx]
         test_embs = clean_embeds[test_idx]
 
