@@ -196,6 +196,14 @@ class ContrastiveLearning(nn.Module):
         embedding = self.model.projection(self.model.get_embedding(self.data.to(self.device)))
         val_embedding = F.normalize(embedding[val_idx]).cpu()
         val_label = label[val_idx].cpu()
+
+        plt.figure(figsize=(7,7))
+        plt.xticks([])
+        plt.yticks([])
+        plt.scatter(val_embedding[:,0], val_embedding[:,1],s=200) #c=val_label,
+        plt.title("Uniformity", fontsize = 20)
+        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/Uniformity' + '_' + str(self.dataset) + '.png')    
+
         plt.figure(figsize=(7,7))
         plt.xticks([])
         plt.yticks([])
@@ -271,8 +279,17 @@ class ContrastiveLearning(nn.Module):
         z1 = F.normalize(u)[val_idx]
         z2 = F.normalize(v)[val_idx]
         align = (z1-z2).norm(p=2, dim=1).pow(2).cpu()
-        print(align)
-        print(align.shape)
+        align_mean = (z1-z2).norm(p=2, dim=1).pow(2).mean().cpu()
+        
+        plt.figure(figsize=(7,7))
+        plt.hist(align, edgecolor='black', zorder=0)
+        plt.axvline(align_mean, linestyle='--', linewidth = 5, c='black', zorder=1)
+        plt.ylabel('Count',size=25)
+        plt.xlabel(r'$\ell_{2}$'+' Distances',size=25)
+        plt.title('Alignment',size=25)
+        plt.yticks(fontsize=15)
+        plt.xticks(fontsize=15)
+        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/alignment' + '_' + str(self.dataset) + '.png')
 
         train_labels = label[train_idx]
         val_labels = label[val_idx]
