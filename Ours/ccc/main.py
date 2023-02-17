@@ -57,7 +57,7 @@ for args.model in ['CCA-SSG']:# ['CLNR','nCLNR','dCLNR','GRACE','GCLNR']: #
         args.wd1 = 0.0
         args.loss_type = 'ntxent'
     elif args.model in ['CCA-SSG']:
-        args.epochs = 5000
+        args.epochs = 100
         args.lr1 = 1e-2
         args.wd1 = 0.0
         args.loss_type = 'cca'                         
