@@ -194,14 +194,14 @@ class ContrastiveLearning(nn.Module):
         label = label.to(self.device)
 
         embedding = self.model.projection(self.model.get_embedding(self.data.to(self.device)))
-        val_embedding = F.normalize(embedding[val_idx]).cpu()
+        val_embedding = F.normalize(embedding[val_idx], p=2, dim=1).cpu()
         val_label = label[val_idx].cpu()
         plt.figure(figsize=(7,7))
         plt.xticks([])
         plt.yticks([])
         plt.scatter(val_embedding[:,0],val_embedding[:,1],c=val_label)
         plt.title(self.dataset, fontsize = 20)
-        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/uniformity' + '_' + str(self.dataset)+ '_' + '.png')    
+        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/uniformity' + '_' + str(self.dataset) + '.png')    
 
         train_labels = label[train_idx]
         val_labels = label[val_idx]
