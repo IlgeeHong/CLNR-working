@@ -202,9 +202,19 @@ class ContrastiveLearning(nn.Module):
         y1 = (val_label==0)
         y2 = (val_label==1)
         y3 = (val_label==2)
+        y4 = (val_label==3)
+        y5 = (val_label==4)
+        y6 = (val_label==5)
+        y7 = (val_label==6)
+
         X1 = val_embedding[y1]
         X2 = val_embedding[y2]
         X3 = val_embedding[y3]
+        X4 = val_embedding[y4]
+        X5 = val_embedding[y5]
+        X6 = val_embedding[y6]
+        X7 = val_embedding[y7]
+
         plt.scatter(X1[:,0],X1[:,1],s=200) #c=val_label,
         plt.title("Class 0", fontsize = 20)
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_0' + '_' + str(self.dataset) + '.png')    
@@ -223,6 +233,46 @@ class ContrastiveLearning(nn.Module):
         plt.title("Class 2", fontsize = 20)
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_2' + '_' + str(self.dataset) + '.png')
 
+        plt.figure(figsize=(7,7))
+        plt.xticks([])
+        plt.yticks([])
+        plt.scatter(X4[:,0],X4[:,1],s=200) #c=val_label,
+        plt.title("Class 3", fontsize = 20)
+        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_3' + '_' + str(self.dataset) + '.png')
+
+        plt.figure(figsize=(7,7))
+        plt.xticks([])
+        plt.yticks([])
+        plt.scatter(X5[:,0],X5[:,1],s=200) #c=val_label,
+        plt.title("Class 4", fontsize = 20)
+        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_4' + '_' + str(self.dataset) + '.png')
+
+        plt.figure(figsize=(7,7))
+        plt.xticks([])
+        plt.yticks([])
+        plt.scatter(X6[:,0],X6[:,1],s=200) #c=val_label,
+        plt.title("Class 5", fontsize = 20)
+        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_5' + '_' + str(self.dataset) + '.png')
+
+        plt.figure(figsize=(7,7))
+        plt.xticks([])
+        plt.yticks([])
+        plt.scatter(X7[:,0],X7[:,1],s=200) #c=val_label,
+        plt.title("Class 6", fontsize = 20)
+        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_6' + '_' + str(self.dataset) + '.png')
+
+        new_data1 = random_aug(self.data,self.fmr,self.edr)
+        new_data2 = random_aug(self.data,self.fmr,self.edr)
+        new_data1 = new_data1.to(self.device)
+        new_data2 = new_data2.to(self.device)
+        u, v = self.model(new_data1, new_data2)
+        u = self.model.projection(u).detach()
+        v = self.model.projection(v).detach()
+        z1 = F.normalize(u)[val_idx]
+        z2 = F.normalize(v)[val_idx]
+        align = (z1-z2).norm(p=2, dim=1).pow(2).cpu()
+        print(align)
+        print(align.shape)
 
         train_labels = label[train_idx]
         val_labels = label[val_idx]
