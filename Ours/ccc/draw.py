@@ -26,7 +26,7 @@ from statistics import mean, stdev
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='CiteSeer') 
 parser.add_argument('--n_experiments', type=int, default=1)
-parser.add_argument('--n_layers', type=int, default=2) 
+parser.add_argument('--n_layers', type=int, default=1) 
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-2)
