@@ -143,7 +143,7 @@ class ContrastiveLearning(nn.Module):
     def __init__(self, args, data, device):
         super().__init__()
         self.dataset = args.dataset
-        self.model = args.model
+        self.model_name = args.model
         self.epochs = args.epochs
         self.fmr = args.fmr
         self.edr = args.edr
@@ -154,7 +154,7 @@ class ContrastiveLearning(nn.Module):
         self.device = device
         self.num_class = int(self.data.y.max().item()) + 1 
         # encoder (GCN)
-        self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, args.lambd, self.device, self.model, args.mlp_use)
+        self.model = Model(self.data.num_features, args.hid_dim, args.out_dim, args.n_layers, args.tau, args.lambd, self.device, self.model_name, args.mlp_use)
         self.model = self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=args.lr1, weight_decay=args.wd1)
         # logistic regression
@@ -200,8 +200,8 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(val_embedding[:,0],val_embedding[:,1],c=val_label)
-        plt.title("Uniformity" , fontsize = 20)
-        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/uniformity' + '_' + self.model + '_' + '.png')    
+        plt.title(self.model_name, fontsize = 20)
+        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/uniformity' + '_' + self.model_name + '_' + '.png')    
 
         train_labels = label[train_idx]
         val_labels = label[val_idx]
