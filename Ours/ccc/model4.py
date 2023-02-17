@@ -200,8 +200,8 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(val_embedding[:,0],val_embedding[:,1],c=val_label)
-        plt.title(self.model_name, fontsize = 20)
-        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/uniformity' + '_' + self.model_name + '_' + '.png')    
+        plt.title(self.data, fontsize = 20)
+        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/uniformity' + '_' + self.data + '_' + '.png')    
 
         train_labels = label[train_idx]
         val_labels = label[val_idx]
