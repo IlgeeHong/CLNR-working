@@ -199,9 +199,30 @@ class ContrastiveLearning(nn.Module):
         plt.figure(figsize=(7,7))
         plt.xticks([])
         plt.yticks([])
-        plt.scatter(val_embedding[:,0],val_embedding[:,1],c=val_label,s=200)
-        plt.title(self.dataset, fontsize = 20)
-        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/uniformity' + '_' + str(self.dataset) + '.png')    
+        y1 = (val_label==0)
+        y2 = (val_label==1)
+        y3 = (val_label==2)
+        X1 = val_embedding[y1]
+        X2 = val_embedding[y2]
+        X3 = val_embedding[y3]
+        plt.scatter(X1[:,0],X1[:,1],s=200) #c=val_label,
+        plt.title("Class 0", fontsize = 20)
+        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_0' + '_' + str(self.dataset) + '.png')    
+
+        plt.figure(figsize=(7,7))
+        plt.xticks([])
+        plt.yticks([])
+        plt.scatter(X2[:,0],X2[:,1],s=200) #c=val_label,
+        plt.title("Class 1", fontsize = 20)
+        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_1' + '_' + str(self.dataset) + '.png')
+
+        plt.figure(figsize=(7,7))
+        plt.xticks([])
+        plt.yticks([])
+        plt.scatter(X3[:,0],X3[:,1],s=200) #c=val_label,
+        plt.title("Class 2", fontsize = 20)
+        plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_2' + '_' + str(self.dataset) + '.png')
+
 
         train_labels = label[train_idx]
         val_labels = label[val_idx]
