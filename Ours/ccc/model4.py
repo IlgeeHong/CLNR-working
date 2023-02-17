@@ -72,7 +72,7 @@ class Model(nn.Module):
     def get_embedding(self, data):
         out = self.backbone(data.x, data.edge_index) 
         # No projection head here
-        return out #.detach()
+        return out.detach()
 
     def forward(self, data1, data2):
         # Encode the graph
