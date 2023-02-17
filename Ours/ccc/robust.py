@@ -24,7 +24,7 @@ from statistics import mean, stdev
 # physics : 1000 / 1e-3 / 0.0 /
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--dataset', type=str, default='Photo') 
+parser.add_argument('--dataset', type=str, default='PubMed') 
 parser.add_argument('--n_experiments', type=int, default=10)
 parser.add_argument('--n_layers', type=int, default=2) 
 parser.add_argument('--tau', type=float, default=0.5) 
@@ -32,7 +32,7 @@ parser.add_argument('--lr2', type=float, default=1e-2)
 parser.add_argument('--wd2', type=float, default=1e-4)
 parser.add_argument('--hid_dim', type=int, default=512)
 parser.add_argument('--out_dim', type=int, default=512) 
-parser.add_argument('--fmr', type=float, default=0.0) #0.0 #0.2
+parser.add_argument('--fmr', type=float, default=0.3) #0.0 #0.2
 parser.add_argument('--edr', type=float, default=0.5) #0.6 #0.5
 parser.add_argument('--lambd', type=float, default=1e-3) # citeseer, computer, ogbn-arxiv 5e-4
 parser.add_argument('--batch', type=int, default=1024) #None
@@ -52,7 +52,7 @@ results =[]
 for args.alpha in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]:
     for args.model in ['nCLNR','CLNR','GRACE','CCA-SSG']:
         if args.model in ['nCLNR','bCLNR','dCLNR','CLNR','GCLNR']:
-            args.epochs = 100
+            args.epochs = 600
             args.lr1 = 1e-3 # 1e-2
             args.wd1 = 0.0
             args.loss_type = 'ntxent'
@@ -62,7 +62,7 @@ for args.alpha in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]:
             args.wd1 = 0.0
             args.loss_type = 'ntxent'
         elif args.model in ['CCA-SSG','dCCA-SSG']:
-            args.epochs = 50
+            args.epochs = 100
             args.lr1 = 1e-3
             args.wd1 = 0.0
             args.loss_type = 'cca'
