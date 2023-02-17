@@ -1,0 +1,5 @@
+model,dataset,epochs,out_dim,acc_mean,acc_std
+CLNR,PubMed,600,64,0.8163,0.0124
+CLNR,PubMed,600,126,0.8219,0.0075
+CLNR,PubMed,600,256,0.8226,0.006
+CLNR,PubMed,600,512,0.8284,0.0058
