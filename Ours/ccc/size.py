@@ -37,7 +37,7 @@ parser.add_argument('--batch', type=int, default=1024) #None
 parser.add_argument('--sigma', type=float, default=None) #None
 parser.add_argument('--alpha', type=float, default=None) #None
 parser.add_argument('--mlp_use', type=bool, default=False)
-parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/FINAL2") #Final_test1
+parser.add_argument('--result_file', type=str, default="/Ours/ccc/results/FINAL1") #Final_test1
 
 args = parser.parse_args()
 
@@ -45,7 +45,7 @@ file_path = os.getcwd() + args.result_file
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 results =[]
-for args.model in ['GRACE','CCA-SSG']: #,'nCLNR','CLNR'
+for args.model in ['nCLNR','CLNR']: #,'GRACE','CCA-SSG'
     for args.out_dim in [64,126,256,512]: 
         if args.model in ['nCLNR','bCLNR','dCLNR','CLNR','GCLNR']:
             args.epochs = 600
