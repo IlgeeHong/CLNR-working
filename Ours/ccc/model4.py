@@ -194,7 +194,7 @@ class ContrastiveLearning(nn.Module):
         label = label.to(self.device)
 
         embedding = self.model.projection(self.model.get_embedding(self.data.to(self.device)))
-        val_embedding = F.normalize(embedding[val_idx], p=2, dim=1).cpu()
+        val_embedding = F.normalize(embedding[val_idx]).cpu()
         val_label = label[val_idx].cpu()
         plt.figure(figsize=(7,7))
         plt.xticks([])
