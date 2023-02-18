@@ -45,8 +45,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 results =[]
 args.model = 'GRACE'
-args.epochs = 50
-args.lr1 = 1e-3
+args.epochs = 400
+args.lr1 = 5e-4
 args.wd1 = 0.0
 args.loss_type = 'ntxent'
     
