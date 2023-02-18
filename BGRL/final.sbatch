@@ -19,12 +19,12 @@ echo "My SLURM_ARRAY_TASK_ID: " $SLURM_ARRAY_TASK_ID
 # Add lines here to run your computations.
 module load python
 module load cuda
-source activate pytorch_env  
+# source activate pytorch_env  
 
 cd $SCRATCH/$USER/SelfGCon
 echo $1
 echo $2
 python3 BGRL/final.py
-conda deactivate
+# conda deactivate
 ~
 ~
