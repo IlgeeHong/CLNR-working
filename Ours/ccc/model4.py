@@ -201,7 +201,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(val_embedding[:,0], val_embedding[:,1],s=200) #c=val_label,
-        plt.title("Uniformity", fontsize = 20)
+        plt.title("Uniformity", fontsize = 25)
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/Uniformity' + '_' + str(self.dataset) + '.png')    
 
         plt.figure(figsize=(7,7))
