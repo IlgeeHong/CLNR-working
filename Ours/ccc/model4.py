@@ -193,7 +193,7 @@ class ContrastiveLearning(nn.Module):
             label = self.data.y
         label = label.to(self.device)
 
-        embedding = self.model.projection(self.model.get_embedding(self.data.to(self.device)))
+        embedding = self.model.projection(self.model.get_embedding(self.data.to(self.device))).detach()
         val_embedding = F.normalize(embedding[val_idx]).cpu()
         val_label = label[val_idx].cpu()
 
