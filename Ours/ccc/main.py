@@ -25,7 +25,7 @@ from statistics import mean, stdev
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default="Cora") #ogbn-arxiv
-parser.add_argument('--n_experiments', type=int, default=2)
+parser.add_argument('--n_experiments', type=int, default=1)
 parser.add_argument('--n_layers', type=int, default=2)
 parser.add_argument('--tau', type=float, default=0.5) 
 parser.add_argument('--lr2', type=float, default=1e-2) # ogbn 5e-3 ???
@@ -72,22 +72,24 @@ for args.model in ['CCA-SSG']:# ['CLNR','nCLNR','dCLNR','GRACE','GCLNR']: #
         # Time
         start = torch.cuda.Event(enable_timing=True)
         end = torch.cuda.Event(enable_timing=True)
+        
         start.record()      
         model.train()
         end.record()
         torch.cuda.synchronize()
         recored_time = start.elapsed_time(end)
-        eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx)
-        eval_acc_list.append(eval_acc.item())
-        uniformity_list.append(Lu.item())
-        alignment_list.append(La.item())
         
-    # eval_acc_mean = eval_acc_list
-    # eval_acc_std = 0
-    # Lu_mean = uniformity_list
-    # Lu_std = 0
-    # La_mean = alignment_list
-    # La_std = 0
+        eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx)
+        # eval_acc_list.append(eval_acc.item())
+        # uniformity_list.append(Lu.item())
+        # alignment_list.append(La.item())
+        
+    eval_acc_mean = eval_acc
+    eval_acc_std = 0
+    Lu_mean = Lu
+    Lu_std = 0
+    La_mean = La
+    La_std = 0
 
     eval_acc_mean = round(mean(eval_acc_list),4)
     eval_acc_std = round(stdev(eval_acc_list),4)
