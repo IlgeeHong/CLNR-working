@@ -80,15 +80,15 @@ for args.model in ['CCA-SSG']:# ['CLNR','nCLNR','dCLNR','GRACE','GCLNR']: #
         recored_time = start.elapsed_time(end)
         
         eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx)
-        # eval_acc_list.append(eval_acc.item())
-        # uniformity_list.append(Lu.item())
-        # alignment_list.append(La.item())
+        eval_acc_list.append(eval_acc.item())
+        uniformity_list.append(Lu.item())
+        alignment_list.append(La.item())
         
-    eval_acc_mean = eval_acc
+    eval_acc_mean = eval_acc_list
     eval_acc_std = 0
-    Lu_mean = Lu
+    Lu_mean = uniformity_list
     Lu_std = 0
-    La_mean = La
+    La_mean = alignment_list
     La_std = 0
 
     # eval_acc_mean = round(mean(eval_acc_list),4)
