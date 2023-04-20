@@ -91,12 +91,12 @@ for args.model in ['CCA-SSG']:# ['CLNR','nCLNR','dCLNR','GRACE','GCLNR']: #
     La_mean = La
     La_std = 0
 
-    eval_acc_mean = round(mean(eval_acc_list),4)
-    eval_acc_std = round(stdev(eval_acc_list),4)
-    Lu_mean = round(mean(uniformity_list),4)
-    Lu_std = round(stdev(uniformity_list),4)
-    La_mean = round(mean(alignment_list),4)
-    La_std = round(stdev(alignment_list),4)
+    # eval_acc_mean = round(mean(eval_acc_list),4)
+    # eval_acc_std = round(stdev(eval_acc_list),4)
+    # Lu_mean = round(mean(uniformity_list),4)
+    # Lu_std = round(stdev(uniformity_list),4)
+    # La_mean = round(mean(alignment_list),4)
+    # La_std = round(stdev(alignment_list),4)
 
     print('model: ' + args.model + ' done')
     results += [[args.model, args.dataset, recored_time, args.epochs, args.out_dim, eval_acc_mean, eval_acc_std, Lu_mean, Lu_std, La_mean, La_std]]#
