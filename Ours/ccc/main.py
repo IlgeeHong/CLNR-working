@@ -69,7 +69,14 @@ for args.model in ['CCA-SSG']:# ['CLNR','nCLNR','dCLNR','GRACE','GCLNR']: #
     for exp in range(args.n_experiments):
         data, train_idx, val_idx, test_idx = load(args.dataset)
         model = ContrastiveLearning(args, data, device)
+        # Time
+        start = torch.cuda.Event(enable_timing=True)
+        end = torch.cuda.Event(enable_timing=True)
+        start.record()      
         model.train()
+        end.record()
+        torch.cuda.synchronize()
+        recored_time = start.elapsed_time(end)
         eval_acc, Lu, La = model.LinearEvaluation(train_idx, val_idx, test_idx)
         eval_acc_list.append(eval_acc.item())
         uniformity_list.append(Lu.item())
@@ -90,6 +97,6 @@ for args.model in ['CCA-SSG']:# ['CLNR','nCLNR','dCLNR','GRACE','GCLNR']: #
     La_std = round(stdev(alignment_list),4)
 
     print('model: ' + args.model + ' done')
-    results += [[args.model, args.dataset, args.epochs, args.out_dim, eval_acc_mean, eval_acc_std, Lu_mean, Lu_std, La_mean, La_std]]#
-res = pd.DataFrame(results, columns=['model', 'dataset', 'epochs', 'out_dim', 'acc_mean', 'acc_std', 'Lu_mean', 'Lu_std', 'La_mean', 'La_std'])#, 
+    results += [[args.model, args.dataset, recored_time, args.epochs, args.out_dim, eval_acc_mean, eval_acc_std, Lu_mean, Lu_std, La_mean, La_std]]#
+res = pd.DataFrame(results, columns=['model', 'dataset', 'time', 'epochs', 'out_dim', 'acc_mean', 'acc_std', 'Lu_mean', 'Lu_std', 'La_mean', 'La_std'])#, 
 res.to_csv(file_path + "_" + str(args.batch) + "_" + str(args.out_dim) + "_" + str(args.hid_dim) + "_" + args.dataset +  ".csv", index=False) #str(args.epochs) + args.model + "_" + 
