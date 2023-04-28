@@ -230,7 +230,7 @@ class ContrastiveLearning(nn.Module):
         plt.scatter(X1[:,0],X1[:,1],s=200) #c=val_label,
         plt.ylim(-1.2,1.2)
         plt.xlim(-1.2,1.2)
-        plt.title("Class 0", fontsize = 30)
+        plt.title("Class 0", fontsize = 40, weight='bold')
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_0' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')    
 
         plt.figure(figsize=(10,10))
@@ -239,7 +239,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(X2[:,0],X2[:,1],s=200) #c=val_label,
-        plt.title("Class 1", fontsize = 30)
+        plt.title("Class 1", fontsize = 40, weight='bold')
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_1' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         plt.figure(figsize=(10,10))
@@ -248,7 +248,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(X3[:,0],X3[:,1],s=200) #c=val_label,
-        plt.title("Class 2", fontsize = 30)
+        plt.title("Class 2", fontsize = 40, weight='bold')
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_2' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         plt.figure(figsize=(10,10))
@@ -257,7 +257,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(X4[:,0],X4[:,1],s=200) #c=val_label,
-        plt.title("Class 3", fontsize = 30)
+        plt.title("Class 3", fontsize = 40, weight='bold')
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_3' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         plt.figure(figsize=(10,10))
@@ -266,7 +266,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(X5[:,0],X5[:,1],s=200) #c=val_label,
-        plt.title("Class 4", fontsize = 30)
+        plt.title("Class 4", fontsize = 40, weight='bold')
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_4' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         plt.figure(figsize=(10,10))
@@ -275,7 +275,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(X6[:,0],X6[:,1],s=200) #c=val_label,
-        plt.title("Class 5", fontsize = 30)
+        plt.title("Class 5", fontsize = 40, weight='bold')
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_5' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         plt.figure(figsize=(10,10))
@@ -284,7 +284,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(X7[:,0],X7[:,1],s=200) #c=val_label,
-        plt.title("Class 6", fontsize = 30)
+        plt.title("Class 6", fontsize = 40, weight='bold')
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_6' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         new_data1 = random_aug(self.data,self.fmr,self.edr)
