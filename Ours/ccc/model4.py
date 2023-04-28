@@ -299,7 +299,7 @@ class ContrastiveLearning(nn.Module):
         align = (z1-z2).norm(p=2, dim=1).pow(2).cpu()
         align_mean = (z1-z2).norm(p=2, dim=1).pow(2).mean().cpu()
         
-        plt.figure(figsize=(7,7))
+        plt.figure(figsize=(8,8))
         plt.hist(align, edgecolor='black', zorder=0)
         plt.axvline(align_mean, linestyle='--', linewidth = 5, c='black', zorder=1)
         plt.ylabel('Count',size=30)
