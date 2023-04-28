@@ -203,7 +203,7 @@ class ContrastiveLearning(nn.Module):
         plt.ylim(-1.2,1.2)
         plt.xlim(-1.2,1.2)
         plt.scatter(val_embedding[:,0], val_embedding[:,1],s=200) #c=val_label,
-        plt.title("Uniformity", fontsize = 25)
+        plt.title("Uniformity", fontsize = 40, weight='bold')
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/Uniformity' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')    
         
         plt.figure(figsize=(7,7))
@@ -230,7 +230,7 @@ class ContrastiveLearning(nn.Module):
         plt.scatter(X1[:,0],X1[:,1],s=200) #c=val_label,
         plt.ylim(-1.2,1.2)
         plt.xlim(-1.2,1.2)
-        plt.title("Class 0", fontsize = 20)
+        plt.title("Class 0", fontsize = 30)
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_0' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')    
 
         plt.figure(figsize=(7,7))
@@ -239,7 +239,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(X2[:,0],X2[:,1],s=200) #c=val_label,
-        plt.title("Class 1", fontsize = 20)
+        plt.title("Class 1", fontsize = 30)
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_1' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         plt.figure(figsize=(7,7))
@@ -248,7 +248,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(X3[:,0],X3[:,1],s=200) #c=val_label,
-        plt.title("Class 2", fontsize = 20)
+        plt.title("Class 2", fontsize = 30)
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_2' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         plt.figure(figsize=(7,7))
@@ -257,7 +257,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(X4[:,0],X4[:,1],s=200) #c=val_label,
-        plt.title("Class 3", fontsize = 20)
+        plt.title("Class 3", fontsize = 30)
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_3' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         plt.figure(figsize=(7,7))
@@ -266,7 +266,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(X5[:,0],X5[:,1],s=200) #c=val_label,
-        plt.title("Class 4", fontsize = 20)
+        plt.title("Class 4", fontsize = 30)
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_4' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         plt.figure(figsize=(7,7))
@@ -275,7 +275,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(X6[:,0],X6[:,1],s=200) #c=val_label,
-        plt.title("Class 5", fontsize = 20)
+        plt.title("Class 5", fontsize = 30)
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_5' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         plt.figure(figsize=(7,7))
@@ -284,7 +284,7 @@ class ContrastiveLearning(nn.Module):
         plt.xticks([])
         plt.yticks([])
         plt.scatter(X7[:,0],X7[:,1],s=200) #c=val_label,
-        plt.title("Class 6", fontsize = 20)
+        plt.title("Class 6", fontsize = 30)
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/class_6' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         new_data1 = random_aug(self.data,self.fmr,self.edr)
@@ -302,11 +302,11 @@ class ContrastiveLearning(nn.Module):
         plt.figure(figsize=(7,7))
         plt.hist(align, edgecolor='black', zorder=0)
         plt.axvline(align_mean, linestyle='--', linewidth = 5, c='black', zorder=1)
-        plt.ylabel('Count',size=25)
-        plt.xlabel(r'$\ell_{2}$'+' Distances',size=25)
-        plt.title('Alignment',size=25)
-        plt.yticks(fontsize=15)
-        plt.xticks(fontsize=15)
+        plt.ylabel('Count',size=30)
+        plt.xlabel(r'$\ell_{2}$'+' Distances',size=30)
+        plt.title('Alignment',size=40, weight='bold')
+        plt.yticks(fontsize=20)
+        plt.xticks(fontsize=20)
         plt.savefig('/scratch/midway3/ilgee/SelfGCon/Ours/ccc/figure/alignment' + '_' + str(self.dataset) + '_' + str(self.model_name) + '.png')
 
         train_labels = label[train_idx]
